@@ -17,6 +17,9 @@ const webpack = require('webpack');
 module.exports = {
   // Main entry point for the web application
   mode: isDevelopment ? 'development' : 'production',
+  optimization: {
+        minimize: false
+  },
   entry: {
     main: path.resolve(__dirname, 'electron/main/index.js'),
   },

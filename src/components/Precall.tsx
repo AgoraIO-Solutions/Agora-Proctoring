@@ -10,7 +10,8 @@
 *********************************************
 */
 
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
+import PhotoIdImg from '../assets/photoid.png';
 import {
   View,
   Text,
@@ -48,34 +49,23 @@ const Precall = (props: any) => {
     setDim([e.nativeEvent.layout.width, e.nativeEvent.layout.height]);
   };
   const role = useRole();
-  async function snap(video, preview) {
-    var ctx = preview.getContext('2d');
-    //ctx.canvas.width = 640;
-    //ctx.canvas.height = 480;
-    ctx.drawImage(video, 0, 0); //,640, 480,0,0,320,240);
-    var image_data_uri = preview.toDataURL('image/jpeg', 0.9);
-    var raw_image_data = image_data_uri.replace(
-      /^data\:image\/\w+\;base64\,/,
-      '',
-    );
-    var http = new XMLHttpRequest();
-    http.open('POST', 'https://sa-utils.agora.io/upload', true);
-    var image_fmt = '';
-    if (image_data_uri.match(/^data\:image\/(\w+)/)) {
-      image_fmt = RegExp.$1;
-    }
 
-    var blob = new Blob([base64DecToArr(raw_image_data)], {
-      type: 'image/' + image_fmt,
-    });
-    var form = new FormData();
-    var fid = (Math.random() * 1000000000000000).toFixed(0);
-    var fileup = fid + '.jpg';
-    form.append('uploads', blob, fileup);
-    http.send(form);
-    var imgurl = 'https://sa-utils.agora.io/files/' + fileup;
-    return imgurl;
-  }
+
+  useEffect(() => {
+
+    var preview=document.getElementById('preview');
+    if (preview) {
+      var ctx = preview.getContext('2d');    
+      //var defImg = new Image(424,240);
+      var defImg = new Image();
+      defImg.src = PhotoIdImg; //"https://sa-utils.agora.io/files/89201587990641.jpg";
+      defImg.onload = function() {
+        preview.width = defImg.width;
+        preview.height = defImg.height;
+        ctx.drawImage(defImg, 0, 0);
+      };
+    }
+  });
 
   return (
     // <ImageBackground
@@ -190,14 +180,19 @@ const Precall = (props: any) => {
             </View>
             {role === Role.Student && (
               <>
-                <Text>
-                  {snapped ? 'Image Preview:' : 'Take a picture of your ID'}
+                  <Text 
+                    style={{
+                      fontSize: 16,
+                      margin: 4,
+                   }}>
+                  {snapped ? 'Image Preview:' : 'Please hold your photo ID up to your webcam'}
                 </Text>
                 <canvas
                   id="preview"
                   width="848"
                   height="480"
-                  style={{display: snapped ? 'block' : 'none', width: 424, height: 240}}
+                  //style={{display: snapped ? 'block' : 'none', width: 424, height: 240}}
+                  style={{display: 'block', width: 424, height: 240}}
                 />
               </>
             )}
@@ -214,26 +209,31 @@ const Precall = (props: any) => {
                   <View style={{marginBottom: 20}} />
                   <PrimaryButton
                     onPress={() => {
+                        document.getElementById('preview').width = 848;
+                        document.getElementById('preview').height = 480;
                       window.AgoraProctorUtils.snap(
                         document.getElementsByTagName('video')[0],
                         document.getElementById('preview'),
                       ).then(function (result) {
                         console.log(result);
+
                         setSnapped(true);
                       });
                     }}
-                    text="Click Picture"
+                    text="Take Photo"
                   />
                   <View style={{height: 20}} />
                 </>
               )}
-              <Picker
-                selectedValue={username.split('-')[1]}
-                style={[{borderColor: primaryColor}, style.popupPicker]}
-                onValueChange={(itemValue) => setUsername(itemValue)}>
-                <Picker.Item label={'Primary'} value={'Primary'} />
-                <Picker.Item label={'Secondary'} value={'Secondary'} />
-              </Picker>
+                   {role === Role.Student && (
+                  <Picker
+                    selectedValue={username.split('-')[1]}
+                    style={[{borderColor: primaryColor}, style.popupPicker]}
+                    onValueChange={(itemValue) => setUsername(itemValue)}>
+                    <Picker.Item label={'Computer where the test is being completed'} value={'Primary'} />
+                    <Picker.Item label={'Secondary device with camera'} value={'Secondary'} />
+                  </Picker>
+               )}
               <View style={{height: 20}} />
               <PrimaryButton
                 onPress={() => setCallActive(true)}
@@ -314,6 +314,9 @@ const style = StyleSheet.create({
     maxWidth: 400,
     minHeight: 45,
     alignSelf: 'center',
+  },
+  text: {
+    fontSize: 18,
   },
   primaryBtn: {
     width: '60%',

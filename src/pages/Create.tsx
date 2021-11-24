@@ -158,7 +158,7 @@ const Create = () => {
                       setStudentInput('');
                     }
                   }}
-                  placeholder="Student Name"
+                  placeholder="Student name"
                 />
                 <View style={{marginVertical: 10}} />
                 <PrimaryButton

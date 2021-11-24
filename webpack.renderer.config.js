@@ -21,6 +21,9 @@ const webpack = require('webpack');
 const commons = require('./webpack.commons');
 module.exports = merge(commons, {
   mode: isDevelopment ? 'development' : 'production',
+  optimization: {
+        minimize: false
+  },
   entry: {
     main: path.resolve(__dirname, 'electron/renderer/index.js'),
   },

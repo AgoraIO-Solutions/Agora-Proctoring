@@ -17,9 +17,15 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 module.exports = merge(commons, {
   // Enable optimizations in production
   mode: isDevelopment ? 'development' : 'production',
+  optimization: {
+        minimize: false
+  },
   // Main entry point for the web application
   entry: {
     main: './index.web.js',
+  },
+  optimization: {
+ 	minimize: false
   },
   // Webpack dev server config
   devServer: {
