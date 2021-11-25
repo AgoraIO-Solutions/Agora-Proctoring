@@ -52,9 +52,9 @@ const Precall = (props: any) => {
 
 
   useEffect(() => {
-
+    
     var preview=document.getElementById('preview');
-    if (preview) {
+    if (preview && !snapped) {
       var ctx = preview.getContext('2d');    
       //var defImg = new Image(424,240);
       var defImg = new Image();
