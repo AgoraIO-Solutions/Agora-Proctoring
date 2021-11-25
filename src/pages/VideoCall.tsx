@@ -289,6 +289,8 @@ const VideoCall: React.FC = () => {
                             setPrivateMessageLastSeen,
                           }) => (
                             <>
+                        
+                              { role === Role.Teacher ? (
                               <Navbar
                                 sidePanel={sidePanel}
                                 setSidePanel={setSidePanel}
@@ -306,6 +308,9 @@ const VideoCall: React.FC = () => {
                                   setLastCheckedPublicState
                                 }
                               />
+                              ): (
+                                <></>
+                              )}
                               <View
                                 style={[
                                   style.videoView,

@@ -118,7 +118,7 @@ const Controls = (props: any) => {
         ) : (
           <></>
         )}
-        {$config.SCREEN_SHARING && role === Role.Teacher ? (
+          {$config.SCREEN_SHARING ? (
           !mobileAndTabletCheck() ? (
             <View style={{alignSelf: 'center'}}>
               <ScreenshareButton

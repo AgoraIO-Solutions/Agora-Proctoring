@@ -183,7 +183,8 @@ const Precall = (props: any) => {
                   <Text 
                     style={{
                       fontSize: 16,
-                      margin: 4,
+                      margin: 8,
+                      marginTop: 20,
                    }}>
                   {snapped ? 'Image Preview:' : 'Please hold your photo ID up to your webcam'}
                 </Text>
@@ -206,8 +207,10 @@ const Precall = (props: any) => {
               }}>
               {role === Role.Student && (
                 <>
-                  <View style={{marginBottom: 20}} />
+                  <View style={{marginBottom: 10}} />
                   <PrimaryButton
+                  
+
                     onPress={() => {
                         document.getElementById('preview').width = 848;
                         document.getElementById('preview').height = 480;
@@ -222,7 +225,7 @@ const Precall = (props: any) => {
                     }}
                     text="Take Photo"
                   />
-                  <View style={{height: 20}} />
+                  <View style={{height: 15}} />
                 </>
               )}
                    {role === Role.Student && (
@@ -230,8 +233,8 @@ const Precall = (props: any) => {
                     selectedValue={username.split('-')[1]}
                     style={[{borderColor: primaryColor}, style.popupPicker]}
                     onValueChange={(itemValue) => setUsername(itemValue)}>
-                    <Picker.Item label={'Computer where the test is being completed'} value={'Primary'} />
-                    <Picker.Item label={'Secondary device with camera'} value={'Secondary'} />
+                    <Picker.Item label={'My main computer (where exam is taken)'} value={'Primary'} />
+                    <Picker.Item label={'My additional device with camera'} value={'Secondary'} />
                   </Picker>
                )}
               <View style={{height: 20}} />
@@ -270,7 +273,7 @@ const style = StyleSheet.create({
   },
   popupPicker: {
     height: 30,
-    marginBottom: 10,
+    marginBottom: 0,
     borderRadius: 50,
     paddingHorizontal: 15,
     fontSize: 15,
@@ -294,7 +297,7 @@ const style = StyleSheet.create({
     fontSize: 20,
     fontWeight: '400',
     color: $config.PRIMARY_FONT_COLOR,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   inputs: {
     flex: 1,
@@ -310,7 +313,7 @@ const style = StyleSheet.create({
     borderWidth: 2,
     color: $config.PRIMARY_FONT_COLOR,
     fontSize: 16,
-    marginBottom: 15,
+    marginBottom: 10,
     maxWidth: 400,
     minHeight: 45,
     alignSelf: 'center',
