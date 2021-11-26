@@ -184,16 +184,16 @@ const Precall = (props: any) => {
                     style={{
                       fontSize: 16,
                       margin: 8,
-                      marginTop: 20,
+                      marginTop: 8,
                    }}>
-                  {snapped ? 'Image Preview:' : 'Please hold your photo ID up to your webcam'}
+                  {snapped ? 'Photo ID preview' : 'Please hold your photo ID up to your webcam'}
                 </Text>
                 <canvas
                   id="preview"
                   width="848"
                   height="480"
                   //style={{display: snapped ? 'block' : 'none', width: 424, height: 240}}
-                  style={{display: 'block', width: 424, height: 240}}
+                  style={{display: 'block', width: 320, height: 180}}
                 />
               </>
             )}
@@ -223,12 +223,12 @@ const Precall = (props: any) => {
                         setSnapped(true);
                       });
                     }}
-                    text="Take Photo"
+                    text={snapped ? 'Retake Photo' : 'Take Photo'} 
                   />
                   <View style={{height: 15}} />
                 </>
               )}
-                   {role === Role.Student && (
+                   {snapped && role === Role.Student && (
                   <Picker
                     selectedValue={username.split('-')[1]}
                     style={[{borderColor: primaryColor}, style.popupPicker]}
@@ -238,11 +238,13 @@ const Precall = (props: any) => {
                   </Picker>
                )}
               <View style={{height: 20}} />
-              <PrimaryButton
+              {snapped && (
+                <PrimaryButton
                 onPress={() => setCallActive(true)}
                 disabled={!snapped && role === Role.Student}
                 text={snapped ? 'Join Exam' : 'Join Exam'}
-              />
+                 />
+              )}
             </View>
           </View>
         </View>

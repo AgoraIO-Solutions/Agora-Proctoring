@@ -209,7 +209,7 @@ const ScreenshareButton = (props: ScreenSharingProps) => {
         <Image
           source={{
             uri: screenshareActive
-              ? icons.screenshareOffIcon
+              ? ""
               : icons.screenshareIcon,
           }}
           style={[style.buttonIcon, {tintColor: primaryColor}]}
@@ -222,7 +222,12 @@ const ScreenshareButton = (props: ScreenSharingProps) => {
           marginTop: 5,
           color: $config.PRIMARY_COLOR,
         }}>
-        Share
+          {
+          screenshareActive
+            ? ""
+            : "Start Screen Share"
+        }
+        
       </Text>
     </TouchableOpacity>
   );
@@ -230,10 +235,11 @@ const ScreenshareButton = (props: ScreenSharingProps) => {
 
 const style = StyleSheet.create({
   localButton: {
-    backgroundColor: $config.SECONDARY_FONT_COLOR,
+    //backgroundColor: $config.SECONDARY_FONT_COLOR,
+    backgroundColor: '#4BEB5B',
     borderRadius: 20,
     borderColor: $config.PRIMARY_COLOR,
-    width: 40,
+    width: 140,
     height: 40,
     display: 'flex',
     alignSelf: 'center',
@@ -241,7 +247,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
   },
   greenLocalButton: {
-    backgroundColor: '#4BEB5B',
+    backgroundColor: $config.SECONDARY_FONT_COLOR,
     borderRadius: 20,
     borderColor: '#F86051',
     width: 40,

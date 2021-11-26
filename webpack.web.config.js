@@ -20,12 +20,10 @@ module.exports = merge(commons, {
   optimization: {
         minimize: false
   },
+  devtool: 'cheap-module-source-map',
   // Main entry point for the web application
   entry: {
     main: './index.web.js',
-  },
-  optimization: {
- 	minimize: false
   },
   // Webpack dev server config
   devServer: {
