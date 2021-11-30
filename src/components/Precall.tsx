@@ -39,7 +39,7 @@ import {Role} from '../../bridge/rtc/webNg/Types';
 const Precall = (props: any) => {
   const {primaryColor} = useContext(ColorContext);
   const [snapped, setSnapped] = useState(false);
-  const {setCallActive, queryComplete, username, setUsername, error} = props;
+  const {setCallActive, queryComplete, username, setUsername, error, setPhotoIDUrl} = props;
   const [dim, setDim] = useState([
     Dimensions.get('window').width,
     Dimensions.get('window').height,
@@ -50,22 +50,20 @@ const Precall = (props: any) => {
   };
   const role = useRole();
 
-
   useEffect(() => {
-
-    var preview=document.getElementById('preview');
+    var preview = document.getElementById('preview');
     if (preview) {
-      var ctx = preview.getContext('2d');    
+      var ctx = preview.getContext('2d');
       //var defImg = new Image(424,240);
       var defImg = new Image();
       defImg.src = PhotoIdImg; //"https://sa-utils.agora.io/files/89201587990641.jpg";
-      defImg.onload = function() {
+      defImg.onload = function () {
         preview.width = defImg.width;
         preview.height = defImg.height;
         ctx.drawImage(defImg, 0, 0);
       };
     }
-  });
+  }, []);
 
   return (
     // <ImageBackground
@@ -180,12 +178,14 @@ const Precall = (props: any) => {
             </View>
             {role === Role.Student && (
               <>
-                  <Text 
-                    style={{
-                      fontSize: 16,
-                      margin: 4,
-                   }}>
-                  {snapped ? 'Image Preview:' : 'Please hold your photo ID up to your webcam'}
+                <Text
+                  style={{
+                    fontSize: 16,
+                    margin: 4,
+                  }}>
+                  {snapped
+                    ? 'Image Preview:'
+                    : 'Please hold your photo ID up to your webcam'}
                 </Text>
                 <canvas
                   id="preview"
@@ -209,14 +209,14 @@ const Precall = (props: any) => {
                   <View style={{marginBottom: 20}} />
                   <PrimaryButton
                     onPress={() => {
-                        document.getElementById('preview').width = 848;
-                        document.getElementById('preview').height = 480;
+                      document.getElementById('preview').width = 848;
+                      document.getElementById('preview').height = 480;
                       window.AgoraProctorUtils.snap(
                         document.getElementsByTagName('video')[0],
                         document.getElementById('preview'),
                       ).then(function (result) {
                         console.log(result);
-
+                        setPhotoIDUrl(result);
                         setSnapped(true);
                       });
                     }}
@@ -225,19 +225,29 @@ const Precall = (props: any) => {
                   <View style={{height: 20}} />
                 </>
               )}
-                   {role === Role.Student && (
-                  <Picker
-                    selectedValue={username.split('-')[1]}
-                    style={[{borderColor: primaryColor}, style.popupPicker]}
-                    onValueChange={(itemValue) => setUsername(itemValue)}>
-                    <Picker.Item label={'Computer where the test is being completed'} value={'Primary'} />
-                    <Picker.Item label={'Secondary device with camera'} value={'Secondary'} />
-                  </Picker>
-               )}
+              {role === Role.Student && (
+                <Picker
+                  selectedValue={username.split('-')[1]}
+                  style={[{borderColor: primaryColor}, style.popupPicker]}
+                  onValueChange={(itemValue) => setUsername(itemValue)}>
+                  <Picker.Item
+                    label={'Computer where the test is being completed'}
+                    value={'Primary'}
+                  />
+                  <Picker.Item
+                    label={'Secondary device with camera'}
+                    value={'Secondary'}
+                  />
+                </Picker>
+              )}
               <View style={{height: 20}} />
               <PrimaryButton
                 onPress={() => setCallActive(true)}
-                disabled={!snapped && role === Role.Student}
+                disabled={
+                  !snapped &&
+                  role === Role.Student &&
+                  username.endsWith('Primary')
+                }
                 text={snapped ? 'Join Exam' : 'Join Exam'}
               />
             </View>

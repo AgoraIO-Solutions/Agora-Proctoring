@@ -54,8 +54,6 @@ const SurfaceView = (props: SurfaceViewInterface) => {
       role === Role.Student &&
       window?.AgoraProctorUtils
     ) {
-      console.log('!!!!agora');
-      console.log('!!!!agora', window.AgoraProctorUtils.faceDetect);
       // setInterval(() => {
       // @ts-ignore
       window?.AgoraProctorUtils?.faceDetect(

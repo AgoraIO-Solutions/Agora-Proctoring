@@ -16,7 +16,7 @@ const styles = {
     width: '100%',
     height: '100%',
     backgroundColor: $config.SECONDARY_FONT_COLOR,
-    borderRadius: 15,
+    // borderRadius: 15,
   },
   bottomBar: {
     flex: Platform.OS === 'web' ? 1.3 : 1.6,

@@ -207,6 +207,7 @@ export function useChannelInfo() {
 const VideoCall: React.FC = () => {
   // const {store} = useContext(StorageContext);
   const [teacher, students] = useChannelInfo();
+  const [photoIDUrl, setPhotoIDUrl] = useState<string>('');
   const role = useRole();
   const [username, setUsername] = useState(
     role === Role.Teacher ? teacher : `${students[0]}-Primary`,
@@ -270,6 +271,7 @@ const VideoCall: React.FC = () => {
               <WhiteboardConfigure>
                 <DeviceConfigure>
                   <RtmConfigure
+                    photoIDUrl={photoIDUrl}
                     setRecordingActive={setRecordingActive}
                     name={username}
                     callActive={callActive}>
@@ -391,6 +393,7 @@ const VideoCall: React.FC = () => {
                     ) : $config.PRECALL ? (
                       <Precall
                         error={errorMessage}
+                        setPhotoIDUrl={setPhotoIDUrl}
                         username={username}
                         setUsername={(name: string) => {
                           if (role === Role.Student) {
