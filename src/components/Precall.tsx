@@ -35,10 +35,14 @@ import ColorContext from './ColorContext';
 import Error from '../subComponents/Error';
 import {useRole} from '../pages/VideoCall';
 import {Role} from '../../bridge/rtc/webNg/Types';
+import {whiteboardContext} from './WhiteboardConfigure';
 
 const Precall = (props: any) => {
   const {primaryColor} = useContext(ColorContext);
   const [snapped, setSnapped] = useState(false);
+  const {whiteboardActive,  setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom} =
+  useContext(whiteboardContext);
+  //const [examURL, setExamURL] = useState('https://docs.google.com/forms/d/e/1FAIpQLSe7nYsfoCskW9Fow8bpvv6gRirjSwEnGsLEOFPM90dHna4XgQ/viewform');
   const {setCallActive, queryComplete, username, setUsername, error} = props;
   const [dim, setDim] = useState([
     Dimensions.get('window').width,
@@ -237,8 +241,28 @@ const Precall = (props: any) => {
                     <Picker.Item label={'My additional device with camera'} value={'Secondary'} />
                   </Picker>
                )}
+
+                {role === Role.Teacher && (
+                <>
+                <View style={{marginVertical: 10}} />
+                <Text
+                  style={{
+                    fontSize: 16,
+                    margin: 8,
+                    marginTop: 8,
+                }}>
+              Exam URL
+            </Text>
+                <TextInput
+                  value={whiteboardURLState}
+                  onChangeText={(text) => setWhiteboardURL(text)}
+                  placeholder="Exam URL"                
+                />
+                <View style={{marginVertical: 10}} />
+                </>
+                  )}               
               <View style={{height: 20}} />
-              {snapped && (
+              {(snapped || role != Role.Student ) && (
                 <PrimaryButton
                 onPress={() => setCallActive(true)}
                 disabled={!snapped && role === Role.Student}

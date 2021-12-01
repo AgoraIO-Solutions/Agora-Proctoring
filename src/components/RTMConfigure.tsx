@@ -38,7 +38,7 @@ const RtmConfigure = (props: any) => {
   const [messageStore, setMessageStore] = useState<messageStoreInterface[]>([]);
   const [privateMessageStore, setPrivateMessageStore] = useState({});
   const [teacher, students] = useChannelInfo();
-  const {whiteboardActive, joinWhiteboardRoom, leaveWhiteboardRoom} =
+  const {whiteboardActive,  setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom} =
     useContext(whiteboardContext);
   const [login, setLogin] = useState<boolean>(false);
   const [userList, setUserList] = useState({});
@@ -239,8 +239,9 @@ const RtmConfigure = (props: any) => {
             text.slice(1) === controlMessageEnum.cloudRecordingUnactive
           ) {
             setRecordingActive(false);
-          } else if (text.slice(1) === controlMessageEnum.whiteboardStarted) {
+          } else if (text.substr(1, 1) === controlMessageEnum.whiteboardStarted) {
             // Whiteboard: Join room when Whiteboard started message received
+            setWhiteboardURL(text.slice(2));
             joinWhiteboardRoom();
           } else if (text.slice(1) === controlMessageEnum.whiteboardStoppped) {
             // Whiteboard: Leave room when Whiteboard stopped message received
@@ -320,7 +321,7 @@ const RtmConfigure = (props: any) => {
   };
 
   const sendMessage = async (msg: string) => {
-    if (msg !== '') {
+    if (msg !== '' && engine.current) {
       await (engine.current as RtmEngine).sendMessageByChannelId(
         RtcEngine.teacher,
         mType.Normal + msg,
@@ -337,7 +338,7 @@ const RtmConfigure = (props: any) => {
       adjustedUID = uid + parseInt(0xffffffff) + 1;
     }
     let ts = new Date().getTime();
-    if (msg !== '') {
+    if (msg !== '' && engine.current) {
       await (engine.current as RtmEngine).sendMessageToPeer({
         peerId: adjustedUID.toString(),
         offline: false,
@@ -350,10 +351,12 @@ const RtmConfigure = (props: any) => {
     }
   };
   const sendControlMessage = async (msg: string) => {
+    if (engine.current) {
     await (engine.current as RtmEngine).sendMessageByChannelId(
       RtcEngine.teacher,
       mType.Control + msg,
     );
+    }
   };
 
   // Whiteboard: RTM Method to add the whiteboard state to existing local user attributes 
@@ -377,12 +380,14 @@ const RtmConfigure = (props: any) => {
     });
   };
   const end = async () => {
+    if (engine.current) {
     callActive
       ? (await (engine.current as RtmEngine).logout(),
         await (engine.current as RtmEngine).destroyClient(),
         // setLogin(false),
         console.log('RTM cleanup done'))
       : {};
+    }
   };
 
   useEffect(() => {

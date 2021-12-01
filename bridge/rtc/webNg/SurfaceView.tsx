@@ -58,13 +58,25 @@ const SurfaceView = (props: SurfaceViewInterface) => {
       console.log('!!!!agora', window.AgoraProctorUtils.faceDetect);
       // setInterval(() => {
       // @ts-ignore
-      window?.AgoraProctorUtils?.faceDetect(
-        document.getElementById('canvas'),
-        document.getElementById('0')?.children[0]?.children[0],
-      );
+      if (document.getElementById('0')?.children[0]?.children[0]) {
+        window?.AgoraProctorUtils?.faceDetect(
+          document.getElementById('canvas'),
+          document.getElementById('0')?.children[0]?.children[0],
+        );
+      } else {
+
+              if (stream?.play) {
+        if (props.renderMode === 2) {
+          stream.play(String(props.uid), {fit: 'contain'});
+        } else {
+          stream.play(String(props.uid));
+        }
+      }
+      }
       // }, 3000);
     }
-  }, [hasJoinedChannel]);
+  });//, [hasJoinedChannel,props.uid, props.renderMode, stream]);
+  //}, [hasJoinedChannel]);
 
   useEffect(
     function () {

@@ -24,7 +24,8 @@ import {Role} from '../../bridge/rtc/webNg/Types';
 
 const WhiteboardButton = ({setLayout}) => {
   const {primaryColor} = useContext(ColorContext);
-  const {whiteboardActive, joinWhiteboardRoom, leaveWhiteboardRoom} =
+
+    const {whiteboardActive,  setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom} =
     useContext(whiteboardContext);
   const {engine, sendControlMessage, updateWbUserAttribute} =
     useContext(ChatContext);
@@ -52,7 +53,7 @@ const WhiteboardButton = ({setLayout}) => {
             updateWbUserAttribute('inactive');
           } else {
             joinWhiteboardRoom();
-            sendControlMessage(controlMessageEnum.whiteboardStarted);
+            sendControlMessage(controlMessageEnum.whiteboardStarted+whiteboardURLState);
             updateWbUserAttribute('active');
           }
         }}>

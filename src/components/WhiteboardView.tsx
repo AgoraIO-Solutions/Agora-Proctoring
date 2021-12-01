@@ -10,13 +10,19 @@
 *********************************************
 */
 
-import React from 'react';
+import React, {useContext} from 'react';
 import {StyleSheet, View} from 'react-native';
 
+import {whiteboardContext} from './WhiteboardConfigure';
+  
 const WhiteboardView: React.FC = () => {
+  const whiteboard = useContext(whiteboardContext);
+  console.log(whiteboard.whiteboardURLState);
   return (
-    <View style={style.flex1}>
-      <iframe height="100%" src="https://docs.google.com/forms/d/e/1FAIpQLSe7nYsfoCskW9Fow8bpvv6gRirjSwEnGsLEOFPM90dHna4XgQ/viewform" />
+    <View 
+    style={style.flex1}>
+      <iframe height="100%" src={whiteboard.whiteboardURLState} />
+      {/* <iframe height="100%" src="https://docs.google.com/forms/d/e/1FAIpQLSe7nYsfoCskW9Fow8bpvv6gRirjSwEnGsLEOFPM90dHna4XgQ/viewform" /> */}
     </View>
   );
 };
