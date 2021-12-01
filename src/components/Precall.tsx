@@ -42,8 +42,9 @@ const Precall = (props: any) => {
   const [snapped, setSnapped] = useState(false);
   const {whiteboardActive,  setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom} =
   useContext(whiteboardContext);
-  //const [examURL, setExamURL] = useState('https://docs.google.com/forms/d/e/1FAIpQLSe7nYsfoCskW9Fow8bpvv6gRirjSwEnGsLEOFPM90dHna4XgQ/viewform');
-  const {setCallActive, queryComplete, username, setUsername, error} = props;
+
+  const {setCallActive, queryComplete, username, setUsername, error, setPhotoIDUrl} = props;
+
   const [dim, setDim] = useState([
     Dimensions.get('window').width,
     Dimensions.get('window').height,
@@ -54,22 +55,21 @@ const Precall = (props: any) => {
   };
   const role = useRole();
 
-
   useEffect(() => {
-    
+
     var preview=document.getElementById('preview');
     if (preview && !snapped) {
       var ctx = preview.getContext('2d');    
       //var defImg = new Image(424,240);
       var defImg = new Image();
-      defImg.src = PhotoIdImg; //"https://sa-utils.agora.io/files/89201587990641.jpg";
-      defImg.onload = function() {
+      defImg.src = PhotoIdImg; 
+      defImg.onload = function () {
         preview.width = defImg.width;
         preview.height = defImg.height;
         ctx.drawImage(defImg, 0, 0);
       };
     }
-  });
+  }, []);
 
   return (
     // <ImageBackground
@@ -191,6 +191,7 @@ const Precall = (props: any) => {
                       marginTop: 8,
                    }}>
                   {snapped ? 'Photo ID preview' : 'Please hold your photo ID up to your webcam'}
+
                 </Text>
                 <canvas
                   id="preview"
@@ -216,14 +217,14 @@ const Precall = (props: any) => {
                   
 
                     onPress={() => {
-                        document.getElementById('preview').width = 848;
-                        document.getElementById('preview').height = 480;
+                      document.getElementById('preview').width = 848;
+                      document.getElementById('preview').height = 480;
                       window.AgoraProctorUtils.snap(
                         document.getElementsByTagName('video')[0],
                         document.getElementById('preview'),
                       ).then(function (result) {
                         console.log(result);
-
+                        setPhotoIDUrl(result);
                         setSnapped(true);
                       });
                     }}
@@ -232,6 +233,7 @@ const Precall = (props: any) => {
                   <View style={{height: 15}} />
                 </>
               )}
+
                    {snapped && role === Role.Student && (
                   <Picker
                     selectedValue={username.split('-')[1]}
@@ -261,11 +263,16 @@ const Precall = (props: any) => {
                 <View style={{marginVertical: 10}} />
                 </>
                   )}               
+
               <View style={{height: 20}} />
               {(snapped || role != Role.Student ) && (
                 <PrimaryButton
                 onPress={() => setCallActive(true)}
-                disabled={!snapped && role === Role.Student}
+                disabled={
+                  !snapped &&
+                  role === Role.Student &&
+                  username.endsWith('Primary')
+                }
                 text={snapped ? 'Join Exam' : 'Join Exam'}
                  />
               )}

@@ -1,12 +1,12 @@
 /*
 ********************************************
  Copyright © 2021 Agora Lab, Inc., all rights reserved.
- AppBuilder and all associated components, source code, APIs, services, and documentation 
- (the “Materials”) are owned by Agora Lab, Inc. and its licensors. The Materials may not be 
- accessed, used, modified, or distributed for any purpose without a license from Agora Lab, Inc.  
- Use without a license or in violation of any license terms and conditions (including use for 
- any purpose competitive to Agora Lab, Inc.’s business) is strictly prohibited. For more 
- information visit https://appbuilder.agora.io. 
+ AppBuilder and all associated components, source code, APIs, services, and documentation
+ (the “Materials”) are owned by Agora Lab, Inc. and its licensors. The Materials may not be
+ accessed, used, modified, or distributed for any purpose without a license from Agora Lab, Inc.
+ Use without a license or in violation of any license terms and conditions (including use for
+ any purpose competitive to Agora Lab, Inc.’s business) is strictly prohibited. For more
+ information visit https://appbuilder.agora.io.
 *********************************************
 */
 import React, {useState, useContext, useEffect, useRef} from 'react';
@@ -32,9 +32,10 @@ export enum UserType {
 }
 
 const RtmConfigure = (props: any) => {
-  const {setRecordingActive, callActive, name} = props;
+  const {setRecordingActive, callActive, name, photoIDUrl} = props;
   const {rtcProps} = useContext(PropsContext);
-  const {dispatch, uidRef, hasJoinedChannel, RtcEngine} = useContext(RtcContext);
+  const {dispatch, uidRef, hasJoinedChannel, RtcEngine} =
+    useContext(RtcContext);
   const [messageStore, setMessageStore] = useState<messageStoreInterface[]>([]);
   const [privateMessageStore, setPrivateMessageStore] = useState({});
   const [teacher, students] = useChannelInfo();
@@ -61,7 +62,7 @@ const RtmConfigure = (props: any) => {
       }
       function facesDetected(evt: string) {
         if (role === Role.Student) {
-          sendMessage(students[0] + ' - Faces Detected count= ' + evt);
+          sendMessage(students[0] + ' - Faces Detected count: ' + evt);
         }
       }
       if (window?.AgoraProctorUtils) {
@@ -141,6 +142,7 @@ const RtmConfigure = (props: any) => {
                 name: attr?.attributes?.name || 'User',
                 type: UserType.Normal,
                 screenUid: parseInt(attr?.attributes?.screenUid),
+                id: attr?.attributes?.id,
               },
               [parseInt(attr?.attributes?.screenUid)]: {
                 name: `${attr?.attributes?.name || 'User'}'s screenshare`,
@@ -259,6 +261,7 @@ const RtmConfigure = (props: any) => {
     });
     await engine.current.setLocalUserAttributes([
       {key: 'name', value: name || 'User'},
+      {key: 'id', value: photoIDUrl ? photoIDUrl : 'empty'},
       {key: 'screenUid', value: String(rtcProps.screenShareUid)},
     ]);
     await engine.current.joinChannel(RtcEngine.teacher);
@@ -295,7 +298,11 @@ const RtmConfigure = (props: any) => {
             setUserList((prevState) => {
               console.log('User ATTRIB:' + attr.attributes.whiteboardRoom);
               if (attr?.attributes?.whiteboardRoom === 'active') {
-                console.log('WHITERTM:' + attr.attributes.whiteboardRoom + attr.attributes.name);
+                console.log(
+                  'WHITERTM:' +
+                    attr.attributes.whiteboardRoom +
+                    attr.attributes.name,
+                );
                 joinWhiteboardRoom();
               }
               return {
@@ -359,7 +366,7 @@ const RtmConfigure = (props: any) => {
     }
   };
 
-  // Whiteboard: RTM Method to add the whiteboard state to existing local user attributes 
+  // Whiteboard: RTM Method to add the whiteboard state to existing local user attributes
   const updateWbUserAttribute = async (whiteboardState: string) => {
     (engine.current as RtmEngine).setLocalUserAttributes([
       {key: 'name', value: name || 'User'},
@@ -398,7 +405,7 @@ const RtmConfigure = (props: any) => {
       end();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [RtcEngine.teacher, rtcProps.appId, callActive, hasJoinedChannel]);
+  }, [callActive, hasJoinedChannel]);
 
   return (
     <ChatContext.Provider
@@ -413,8 +420,7 @@ const RtmConfigure = (props: any) => {
         engine: engine.current,
         localUid: localUid.current,
         userList: userList,
-      }}
-    >
+      }}>
       {login ? props.children : <></>}
     </ChatContext.Provider>
   );
