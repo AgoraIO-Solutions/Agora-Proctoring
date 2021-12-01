@@ -119,7 +119,7 @@ const GridVideo = (props: GridVideoProps) => {
               <View style={{flex: 1}}>
                 <View
                   style={{
-                    flex: 0.5,
+                    flex: 0.2,
                     overflowY: 'scroll',
                     marginBottom: 10,
                   }}>
@@ -168,38 +168,54 @@ const GridVideo = (props: GridVideoProps) => {
                 </View>
                 <View
                   style={{
+                    display: 'grid',
+                    gridTemplateColumns: `1fr 1fr`,
+                    gridTemplateRows: `1fr 1fr`,
                     flex: 1,
-                    flexDirection: 'row',
-                    overflowX: 'scroll',
+                    gridGrap: '10px',
+                    // flex: 1,
+                    // flexDirection: 'row',
+                    // overflowX: 'scroll',
                   }}>
+                  {users.map(
+                    (u, i) =>
+                      userList[u.uid]?.name?.startsWith(
+                        students[ridx * dims.c + cidx],
+                      ) &&
+                      userList[u?.uid]?.name?.endsWith('Primary') && (
+                        <View
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            // borderWidth: 1,
+                            borderColor: '#ccc',
+                            // marginRight: 10,
+                            borderStyle: 'solid',
+                          }}>
+                          <Text
+                            style={{
+                              position: 'absolute',
+                              // alignSelf: 'center',
+                              padding: 5,
+                              fontWeight: '700',
+                              fontSize: 18,
+                              color: '#fff',
+                              textShadowColor: '#000',
+                              textShadowRadius: 10,
+                            }}>
+                            Student Photo ID {JSON.stringify(userList[u.uid])}
+                          </Text>
+                          <img style={{height: '100%', width: '100%', margin: 'auto'}} src={userList[u?.uid]?.id} />
+                        </View>
+                      ),
+                  )}
                   {users.map((u, i) =>
                     userList[u.uid]?.name?.startsWith(
                       students[ridx * dims.c + cidx],
                     ) ? (
                       <React.Fragment key={u.uid}>
-                        {userList[u?.uid]?.id !== 'empty' && (
-                          <View
-                            style={{
-                              maxWidth: 500,
-                              // borderWidth: 1,
-                              borderColor: '#ccc',
-                              marginRight: 10,
-                              borderStyle: 'solid',
-                            }}>
-                            <Text
-                              style={{
-                                alignSelf: 'center',
-                                padding: 5,
-                                fontWeight: '700',
-                                fontSize: 18,
-                              }}>
-                              Student Photo ID
-                            </Text>
-                            <img src={userList[u?.uid]?.id} />
-                          </View>
-                        )}
                         <View
-                          style={{width: 550, height: '100%', marginRight: 10}}>
+                          style={{width: '100%', height: '100%'}}>
                           <MaxVideoView
                             fallback={() => {
                               if (u.uid === 'local') {

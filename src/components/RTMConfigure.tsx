@@ -53,7 +53,7 @@ const RtmConfigure = (props: any) => {
   };
 
   useEffect(() => {
-    console.log('!!!', name, role, students[0]);
+    // console.log('!!!', name, role, students[0]);
     if (login) {
       function processEvent(evt: string) {
         if (role === Role.Student) {
@@ -113,7 +113,12 @@ const RtmConfigure = (props: any) => {
       const backoffAttributes = backOff(
         async () => {
           const attr = await engine.current.getUserAttributesByUid(data.uid);
-          if (attr?.attributes?.name && attr?.attributes?.screenUid) {
+          console.log('!attr', attr);
+          if (
+            attr?.attributes?.name &&
+            attr?.attributes?.screenUid &&
+            attr?.attributes?.id
+          ) {
             return attr;
           } else {
             throw attr;
@@ -274,7 +279,12 @@ const RtmConfigure = (props: any) => {
               const attr = await engine.current.getUserAttributesByUid(
                 member.uid,
               );
-              if (attr?.attributes?.name && attr?.attributes?.screenUid) {
+              console.log('!attr2', attr);
+              if (
+                attr?.attributes?.name &&
+                attr?.attributes?.screenUid &&
+                attr?.attributes?.id
+              ) {
                 return attr;
               } else {
                 throw attr;
@@ -310,6 +320,7 @@ const RtmConfigure = (props: any) => {
                 [member.uid]: {
                   name: attr?.attributes?.name || 'User',
                   type: UserType.Normal,
+                  id: attr?.attributes?.id,
                   screenUid: parseInt(attr?.attributes?.screenUid),
                 },
                 [parseInt(attr?.attributes?.screenUid)]: {
@@ -370,6 +381,7 @@ const RtmConfigure = (props: any) => {
   const updateWbUserAttribute = async (whiteboardState: string) => {
     (engine.current as RtmEngine).setLocalUserAttributes([
       {key: 'name', value: name || 'User'},
+      {key: 'id', value: photoIDUrl ? photoIDUrl : 'empty'},
       {key: 'screenUid', value: String(rtcProps.screenShareUid)},
       {key: 'whiteboardRoom', value: whiteboardState},
     ]);
