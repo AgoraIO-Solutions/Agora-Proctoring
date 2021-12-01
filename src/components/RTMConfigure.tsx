@@ -267,7 +267,7 @@ const RtmConfigure = (props: any) => {
     await engine.current.setLocalUserAttributes([
       {key: 'name', value: name || 'User'},
       {key: 'id', value: photoIDUrl ? photoIDUrl : 'empty'},
-      {key: 'screenUid', value: String(rtcProps.screenShareUid)},
+      {key: 'screenUid', value: String(uidRef.current + 1)},
     ]);
     await engine.current.joinChannel(RtcEngine.teacher);
     engine.current
@@ -382,7 +382,7 @@ const RtmConfigure = (props: any) => {
     (engine.current as RtmEngine).setLocalUserAttributes([
       {key: 'name', value: name || 'User'},
       {key: 'id', value: photoIDUrl ? photoIDUrl : 'empty'},
-      {key: 'screenUid', value: String(rtcProps.screenShareUid)},
+      {key: 'screenUid', value: String(uidRef.current + 1)},
       {key: 'whiteboardRoom', value: whiteboardState},
     ]);
   };

@@ -64,9 +64,10 @@ const ScreenshareButton = (props: ScreenSharingProps) => {
   const {phrase} = useParams();
   const {screenshareActive, setScreenshareActive, setLayout, recordingActive} =
     props;
+  const {uidRef} = rtc;
+  console.log('!uid', uidRef.current + 1);
   const {channel, appId, screenShareUid, screenShareToken, encryption} =
     useContext(PropsContext).rtcProps;
-
   // const [setPresenterQuery] = useMutation(SET_PRESENTER);
   // const [setNormalQuery] = useMutation(SET_NORMAL);
 
@@ -94,42 +95,42 @@ const ScreenshareButton = (props: ScreenSharingProps) => {
     });
   }, []);
 
-  useEffect(() => {
-    if (prevUsers !== undefined) {
-      let joinedUser = users.filter((person) =>
-        prevUsers.users.every((person2) => !(person2.uid === person.uid)),
-      );
-      let leftUser = prevUsers.users.filter((person) =>
-        users.every((person2) => !(person2.uid === person.uid)),
-      );
+  // useEffect(() => {
+  //   if (prevUsers !== undefined) {
+  //     let joinedUser = users.filter((person) =>
+  //       prevUsers.users.every((person2) => !(person2.uid === person.uid)),
+  //     );
+  //     let leftUser = prevUsers.users.filter((person) =>
+  //       users.every((person2) => !(person2.uid === person.uid)),
+  //     );
 
-      if (joinedUser.length === 1) {
-        const newUserUid = joinedUser[0].uid;
-        if (userList[newUserUid] && userList[newUserUid].type === 1) {
-          dispatch({
-            type: 'SwapVideo',
-            value: [joinedUser[0]],
-          });
-          setLayout(Layout.Pinned);
-        } else if (newUserUid === 1) {
-          dispatch({
-            type: 'SwapVideo',
-            value: [joinedUser[0]],
-          });
-          setLayout(Layout.Pinned);
-        }
-      }
+  //     if (joinedUser.length === 1) {
+  //       const newUserUid = joinedUser[0].uid;
+  //       if (userList[newUserUid] && userList[newUserUid].type === 1) {
+  //         dispatch({
+  //           type: 'SwapVideo',
+  //           value: [joinedUser[0]],
+  //         });
+  //         setLayout(Layout.Pinned);
+  //       } else if (newUserUid === 1) {
+  //         dispatch({
+  //           type: 'SwapVideo',
+  //           value: [joinedUser[0]],
+  //         });
+  //         setLayout(Layout.Pinned);
+  //       }
+  //     }
 
-      if (leftUser.length === 1) {
-        const leftUserUid = leftUser[0].uid;
-        if (userList[leftUserUid] && userList[leftUserUid].type === 1) {
-          setLayout((l: Layout) =>
-            l === Layout.Pinned ? Layout.Grid : Layout.Pinned,
-          );
-        }
-      }
-    }
-  }, [users, userList]);
+  //     if (leftUser.length === 1) {
+  //       const leftUserUid = leftUser[0].uid;
+  //       if (userList[leftUserUid] && userList[leftUserUid].type === 1) {
+  //         setLayout((l: Layout) =>
+  //           l === Layout.Pinned ? Layout.Grid : Layout.Pinned,
+  //         );
+  //       }
+  //     }
+  //   }
+  // }, [users, userList]);
   return (
     <TouchableOpacity
       onPress={async () => {
@@ -176,7 +177,7 @@ const ScreenshareButton = (props: ScreenSharingProps) => {
             screenShareToken,
             channel,
             null,
-            screenShareUid,
+            uidRef.current + 1,
             appId,
             rtc.RtcEngine,
             encryption,

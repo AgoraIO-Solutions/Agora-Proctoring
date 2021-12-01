@@ -172,7 +172,7 @@ const GridVideo = (props: GridVideoProps) => {
                     gridTemplateColumns: `1fr 1fr`,
                     gridTemplateRows: `1fr 1fr`,
                     flex: 1,
-                    gridGrap: '10px',
+                    gridGrap: 8,
                     // flex: 1,
                     // flexDirection: 'row',
                     // overflowX: 'scroll',
@@ -203,7 +203,7 @@ const GridVideo = (props: GridVideoProps) => {
                               textShadowColor: '#000',
                               textShadowRadius: 10,
                             }}>
-                            Student Photo ID {JSON.stringify(userList[u.uid])}
+                            Student Photo ID
                           </Text>
                           <img style={{height: '100%', width: '100%', margin: 'auto'}} src={userList[u?.uid]?.id} />
                         </View>
