@@ -28,6 +28,7 @@ module.exports = merge(commons, {
   // Webpack dev server config
   devServer: {
     port: 9000,
+    disableHostCheck: true,
     historyApiFallback: true, // Support for react-router
     contentBase: './',
   },
