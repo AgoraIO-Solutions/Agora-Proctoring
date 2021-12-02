@@ -113,7 +113,7 @@ const RtmConfigure = (props: any) => {
       const backoffAttributes = backOff(
         async () => {
           const attr = await engine.current.getUserAttributesByUid(data.uid);
-          console.log('!attr', attr);
+          // console.log('!attr', attr);
           if (
             attr?.attributes?.name &&
             attr?.attributes?.screenUid &&
@@ -279,7 +279,7 @@ const RtmConfigure = (props: any) => {
               const attr = await engine.current.getUserAttributesByUid(
                 member.uid,
               );
-              console.log('!attr2', attr);
+              // console.log('!attr2', attr);
               if (
                 attr?.attributes?.name &&
                 attr?.attributes?.screenUid &&

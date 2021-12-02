@@ -130,9 +130,8 @@ const GridVideo = (props: GridVideoProps) => {
                   </View>
                   {users.map(
                     (u) =>
-                      userList[u.uid]?.name?.startsWith(
-                        students[ridx * dims.c + cidx],
-                      )
+                      userList[u.uid]?.name?.split('-')[0] ===
+                      students[ridx * dims.c + cidx]
                         ? messageStore
                             // .filter((m: any) => m.uid === u.uid)
                             .map((m: any, i) =>
@@ -179,9 +178,8 @@ const GridVideo = (props: GridVideoProps) => {
                   }}>
                   {users.map(
                     (u, i) =>
-                      userList[u.uid]?.name?.startsWith(
-                        students[ridx * dims.c + cidx],
-                      ) &&
+                    userList[u.uid]?.name?.split('-')[0] ===
+                    students[ridx * dims.c + cidx] &&
                       userList[u?.uid]?.name?.endsWith('Primary') && (
                         <View
                           style={{
@@ -205,14 +203,20 @@ const GridVideo = (props: GridVideoProps) => {
                             }}>
                             Student Photo ID
                           </Text>
-                          <img style={{height: '100%', width: '100%', margin: 'auto'}} src={userList[u?.uid]?.id} />
+                          <img
+                            style={{
+                              height: isDesktop ? undefined : '100%',
+                              width: isDesktop ? '100%' : undefined,
+                              margin: 'auto',
+                            }}
+                            src={userList[u?.uid]?.id}
+                          />
                         </View>
                       ),
                   )}
                   {users.map((u, i) =>
-                    userList[u.uid]?.name?.startsWith(
-                      students[ridx * dims.c + cidx],
-                    ) ? (
+                    userList[u.uid]?.name?.split('-')[0] ===
+                    students[ridx * dims.c + cidx] ? (
                       <React.Fragment key={u.uid}>
                         <View
                           style={{width: '100%', height: '100%'}}>

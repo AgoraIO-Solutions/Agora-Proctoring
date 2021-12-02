@@ -165,7 +165,6 @@ const Share = (props: {teacherName: string; students: string[]}) => {
             <Text style={style.urlTitle}>Student exam URLs</Text>
             <View style={{marginVertical: 5}} />
             <View style={{...style.urlHolder, flexDirection: 'column'}}>
-              {console.log('!!students', students)}
               {students.map((student, i) => (
                 <View key={i} style={{flexDirection: 'row'}}>
                   <Text style={{fontWeight: '600', fontSize: 18}}>
