@@ -65,7 +65,6 @@ const ScreenshareButton = (props: ScreenSharingProps) => {
   const {screenshareActive, setScreenshareActive, setLayout, recordingActive} =
     props;
   const {uidRef} = rtc;
-  console.log('!uid', uidRef.current + 1);
   const {channel, appId, screenShareUid, screenShareToken, encryption} =
     useContext(PropsContext).rtcProps;
   // const [setPresenterQuery] = useMutation(SET_PRESENTER);

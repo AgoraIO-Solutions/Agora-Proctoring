@@ -113,29 +113,29 @@ const NotificationControl = ({children, chatDisplayed, setSidePanel}) => {
   //   }
   // }, [messageStore, userList]);
 
-  useEffect(() => {
-    if (
-      messageStore.length !== 0 &&
-      messageStore[messageStore.length - 1]?.uid !== localUid &&
-      role === Role.Teacher
-    ) {
-      Toast.show({
-        text1:
-          messageStore[messageStore.length - 1]?.msg.length > 50
-            ? messageStore[messageStore.length - 1]?.msg.slice(1, 50) + '...'
-            : messageStore[messageStore.length - 1]?.msg.slice(1),
-        text2: userList[messageStore[messageStore.length - 1]?.uid]
-          ? 'From: ' + userList[messageStore[messageStore.length - 1]?.uid].name
-          : '',
-        visibilityTime: 1000,
-        onPress: () => {
-          setSidePanel(SidePanelType.Chat);
-          setLastCheckedPublicState(messageStore.length);
-        },
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messageStore]);
+  // useEffect(() => {
+  //   if (
+  //     messageStore.length !== 0 &&
+  //     messageStore[messageStore.length - 1]?.uid !== localUid &&
+  //     role === Role.Teacher
+  //   ) {
+  //     Toast.show({
+  //       text1:
+  //         messageStore[messageStore.length - 1]?.msg.length > 50
+  //           ? messageStore[messageStore.length - 1]?.msg.slice(1, 50) + '...'
+  //           : messageStore[messageStore.length - 1]?.msg.slice(1),
+  //       text2: userList[messageStore[messageStore.length - 1]?.uid]
+  //         ? 'From: ' + userList[messageStore[messageStore.length - 1]?.uid].name
+  //         : '',
+  //       visibilityTime: 1000,
+  //       onPress: () => {
+  //         setSidePanel(SidePanelType.Chat);
+  //         setLastCheckedPublicState(messageStore.length);
+  //       },
+  //     });
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [messageStore]);
 
   return children({
     pendingPublicNotification,

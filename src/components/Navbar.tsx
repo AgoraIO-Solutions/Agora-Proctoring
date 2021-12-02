@@ -145,6 +145,7 @@ const Navbar = (props: any) => {
               {Platform.OS === 'web' && isDesktop ? (
                 <View
                   style={{
+                    display: 'none',
                     backgroundColor: $config.PRIMARY_FONT_COLOR + '80',
                     width: 1,
                     height: '100%',
@@ -156,7 +157,7 @@ const Navbar = (props: any) => {
               ) : (
                 <></>
               )}
-              <View style={{width: '25%', height: '120%'}}>
+              <View style={{width: '25%', height: '120%', display: 'none',}}>
                 <View
                   style={{alignSelf: 'center', width: '100%', height: '110%'}}>
                   <TouchableOpacity

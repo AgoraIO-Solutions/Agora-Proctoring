@@ -162,10 +162,12 @@ const Create = () => {
                 />
                 <View style={{marginVertical: 10}} />
                 <PrimaryButton
-                  disabled={studentInput === ''}
+                  disabled={
+                    studentInput === '' || studentInput.split('-')[0] === ''
+                  }
                   onPress={() => {
                     if (studentInput) {
-                      setStudents([...students, studentInput]);
+                      setStudents([...students, studentInput.split('-')[0]]);
                       setStudentInput('');
                     }
                   }}
