@@ -10,7 +10,7 @@
 *********************************************
 */
 
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import PhotoIdImg from '../assets/photoid.png';
 import {
   View,
@@ -22,9 +22,9 @@ import {
 } from 'react-native';
 import TextInput from '../atoms/TextInput';
 import PrimaryButton from '../atoms/PrimaryButton';
-import {MaxUidConsumer} from '../../agora-rn-uikit/src/MaxUidContext';
-import {MaxVideoView} from '../../agora-rn-uikit/Components';
-import {LocalAudioMute, LocalVideoMute} from '../../agora-rn-uikit/Components';
+import { MaxUidConsumer } from '../../agora-rn-uikit/src/MaxUidContext';
+import { MaxVideoView } from '../../agora-rn-uikit/Components';
+import { LocalAudioMute, LocalVideoMute } from '../../agora-rn-uikit/Components';
 import LocalUserContext from '../../agora-rn-uikit/src/LocalUserContext';
 import SelectDevice from '../subComponents/SelectDevice';
 import Logo from '../subComponents/Logo';
@@ -33,17 +33,18 @@ import ColorContext from './ColorContext';
 // import {useHistory} from './Router';
 // import {precallCard} from '../../theme.json';
 import Error from '../subComponents/Error';
-import {useRole} from '../pages/VideoCall';
-import {Role} from '../../bridge/rtc/webNg/Types';
-import {whiteboardContext} from './WhiteboardConfigure';
+import { useRole } from '../pages/VideoCall';
+import { Role } from '../../bridge/rtc/webNg/Types';
+import { whiteboardContext } from './WhiteboardConfigure';
 
 const Precall = (props: any) => {
-  const {primaryColor} = useContext(ColorContext);
+  const { primaryColor } = useContext(ColorContext);
   const [snapped, setSnapped] = useState(false);
-  const {whiteboardActive,  setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom} =
-  useContext(whiteboardContext);
+  const [deviceTypeSelected, setDeviceTypeSelected] = useState(false);
+  const { whiteboardActive, setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom } =
+    useContext(whiteboardContext);
 
-  const {setCallActive, queryComplete, username, setUsername, error, setPhotoIDUrl} = props;
+  const { setCallActive, queryComplete, username, setUsername, error, setPhotoIDUrl } = props;
 
   const [dim, setDim] = useState([
     Dimensions.get('window').width,
@@ -57,19 +58,20 @@ const Precall = (props: any) => {
 
   useEffect(() => {
 
-    var preview=document.getElementById('preview');
-    if (preview && !snapped) {
-      var ctx = preview.getContext('2d');    
-      //var defImg = new Image(424,240);
+    var preview = document.getElementById('preview');
+    //alert(preview+" "+snapped+" "+deviceTypeSelected );
+    if (preview &&  !snapped && deviceTypeSelected) {
+      
+      var ctx = preview.getContext('2d');
       var defImg = new Image();
-      defImg.src = PhotoIdImg; 
+      defImg.src = PhotoIdImg;
       defImg.onload = function () {
         preview.width = defImg.width;
         preview.height = defImg.height;
         ctx.drawImage(defImg, 0, 0);
       };
     }
-  }, []);
+  });
 
   return (
     // <ImageBackground
@@ -86,14 +88,14 @@ const Precall = (props: any) => {
         <View style={style.leftContent}>
           <MaxUidConsumer>
             {(maxUsers) => (
-              <View style={{borderRadius: 10, flex: 1}}>
+              <View style={{ borderRadius: 10, flex: 1 }}>
                 <MaxVideoView user={maxUsers[0]} key={maxUsers[0].uid} />
               </View>
             )}
           </MaxUidConsumer>
           <View style={style.precallControls}>
             <LocalUserContext>
-              <View style={{alignSelf: 'center'}}>
+              <View style={{ alignSelf: 'center' }}>
                 <LocalVideoMute />
                 {/* <Text
                   style={{
@@ -104,7 +106,7 @@ const Precall = (props: any) => {
                   Video
                 </Text> */}
               </View>
-              <View style={{alignSelf: 'center'}}>
+              <View style={{ alignSelf: 'center' }}>
                 <LocalAudioMute />
                 {/* <Text
                   style={{
@@ -117,38 +119,9 @@ const Precall = (props: any) => {
               </View>
             </LocalUserContext>
           </View>
-          {/* {dim[0] < dim[1] + 150 ? (
-            <View style={[style.margin5Btm, {alignItems: 'center'}]}>
-              <Picker
-                selectedValue={username.split('-')[1]}
-                style={[{borderColor: primaryColor}, style.popupPicker]}
-                onValueChange={(itemValue) => setUsername(itemValue)}>
-                <Picker.Item label={'Primary'} value={'Primary'} />
-                <Picker.Item label={'Secondary'} value={'Secondary'} />
-              </Picker>
-              <TextInput
-                value={username}
-                onChangeText={(text) => {
-                  if (username !== 'Getting name...') {
-                    setUsername(text);
-                  }
-                }}
-                onSubmitEditing={() => {}}
-                placeholder="Device Name"
-              />
-              <View style={style.margin5Btm} />
-              <PrimaryButton
-                onPress={() => setCallActive(true)}
-                disabled={!queryComplete}
-                text={queryComplete ? 'Join Room' : 'Loading...'}
-              />
-            </View>
-          ) : (
-            <></>
-          )} */}
+
         </View>
-        {/* {dim[0] >= dim[1] + 150 ? (
-          // <View style={[style.full]}> */}
+
         <View
           style={{
             flex: 1,
@@ -161,20 +134,20 @@ const Precall = (props: any) => {
             borderStyle: 'solid',
             borderColor: $config.PRIMARY_COLOR,
             height: '90%',
-            minHeight: 340,
-            minWidth: 380,
+            minHeight: 140,
+            minWidth: 180,
             alignSelf: 'center',
             justifyContent: 'center',
             marginBottom: '5%',
           }}>
-          <View style={[{shadowColor: primaryColor}, style.precallPickers]}>
+          <View style={[{ shadowColor: primaryColor }, style.precallPickers]}>
             {/* <View style={{flex: 1}}> */}
             <Text
-              style={[style.subHeading, {color: $config.PRIMARY_FONT_COLOR}]}>
+              style={[style.subHeading, { color: $config.PRIMARY_FONT_COLOR }]}>
               Select Input Device
             </Text>
             {/* </View> */}
-            <View style={{height: 20}} />
+            <View style={{ height: 20 }} />
             <View
               style={{
                 flex: 1,
@@ -182,14 +155,15 @@ const Precall = (props: any) => {
               }}>
               <SelectDevice />
             </View>
-            {role === Role.Student && (
+
+            {deviceTypeSelected && role === Role.Student && (
               <>
-                  <Text 
-                    style={{
-                      fontSize: 16,
-                      margin: 8,
-                      marginTop: 8,
-                   }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    margin: 8,
+                    marginTop: 8,
+                  }}>
                   {snapped ? 'Photo ID preview' : 'Please hold your photo ID up to your webcam'}
 
                 </Text>
@@ -198,7 +172,7 @@ const Precall = (props: any) => {
                   width="848"
                   height="480"
                   //style={{display: snapped ? 'block' : 'none', width: 424, height: 240}}
-                  style={{display: 'block', width: 320, height: 180}}
+                  style={{ display: 'block', width: 320, height: 180 }}
                 />
               </>
             )}
@@ -210,12 +184,11 @@ const Precall = (props: any) => {
                 alignItems: 'center',
                 marginTop: 50,
               }}>
-              {role === Role.Student && (
+                
+              {deviceTypeSelected && role === Role.Student && (
                 <>
-                  <View style={{marginBottom: 10}} />
+                  <View style={{ marginBottom: 10 }} />
                   <PrimaryButton
-                  
-
                     onPress={() => {
                       document.getElementById('preview').width = 848;
                       document.getElementById('preview').height = 480;
@@ -228,53 +201,77 @@ const Precall = (props: any) => {
                         setSnapped(true);
                       });
                     }}
-                    text={snapped ? 'Retake Photo' : 'Take Photo'} 
+                    text={snapped ? 'Retake Photo' : 'Take Photo'}
                   />
-                  <View style={{height: 15}} />
+                  <View style={{ height: 15 }} />
                 </>
               )}
 
-                   {snapped && role === Role.Student && (
-                  <Picker
-                    selectedValue={username.split('-')[1]}
-                    style={[{borderColor: primaryColor}, style.popupPicker]}
-                    onValueChange={(itemValue) => setUsername(itemValue)}>
-                    <Picker.Item label={'My main computer (where exam is taken)'} value={'Primary'} />
-                    <Picker.Item label={'My additional device with camera'} value={'Secondary'} />
-                  </Picker>
-               )}
-
-                {role === Role.Teacher && (
+          
+          {role === Role.Student && !deviceTypeSelected && (
                 <>
-                <View style={{marginVertical: 10}} />
-                <Text
-                  style={{
-                    fontSize: 16,
-                    margin: 8,
-                    marginTop: 8,
-                }}>
-              Exam URL
-            </Text>
-                <TextInput
-                  value={whiteboardURLState}
-                  onChangeText={(text) => setWhiteboardURL(text)}
-                  placeholder="Exam URL"                
-                />
-                <View style={{marginVertical: 10}} />
-                </>
-                  )}               
+                  <View style={{ marginBottom: 10 }} />
+                  
+                  <Text
+                    style={[style.subHeading, { color: $config.PRIMARY_FONT_COLOR }]}>
+                   Select Device Type
+                </Text>
 
-              <View style={{height: 20}} />
-              {(snapped || role != Role.Student ) && (
+                <View style={{ marginBottom: 10 }} />
+                  <PrimaryButton
+                    onPress={() => {            
+                      setUsername('Primary');    
+                      setDeviceTypeSelected(true);   
+                    }}
+                    text={'My Main Computer'}
+                  />
+                  Where I will take the exam
+                  <View style={{ height: 25 }} />
+
+                  <View style={{ marginBottom: 20 }} />
+                  <PrimaryButton
+                    onPress={() => {            
+                      setUsername('Secondary');     
+                      setDeviceTypeSelected(true);   
+                    }}
+                    text={'Additional Camera Device'}
+                  />
+                  <View style={{ height: 15 }} />
+
+                </>
+              )}
+
+              {role === Role.Teacher && (
+                <>
+                  <View style={{ marginVertical: 10 }} />
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      margin: 8,
+                      marginTop: 8,
+                    }}>
+                    Exam URL
+                  </Text>
+                  <TextInput
+                    value={whiteboardURLState}
+                    onChangeText={(text) => setWhiteboardURL(text)}
+                    placeholder="Exam URL"
+                  />
+                  <View style={{ marginVertical: 10 }} />
+                </>
+              )}
+
+              <View style={{ height: 20 }} />
+              {(snapped || role != Role.Student) && (
                 <PrimaryButton
-                onPress={() => setCallActive(true)}
-                disabled={
-                  !snapped &&
-                  role === Role.Student &&
-                  username.endsWith('Primary')
-                }
-                text={snapped ? 'Join Exam' : 'Join Exam'}
-                 />
+                  onPress={() => setCallActive(true)}
+                  disabled={
+                    !snapped &&
+                    role === Role.Student &&
+                    username.endsWith('Primary')
+                  }
+                  text={snapped ? 'Join Exam' : 'Join Exam'}
+                />
               )}
             </View>
           </View>
@@ -290,7 +287,7 @@ const Precall = (props: any) => {
 };
 
 const style = StyleSheet.create({
-  full: {flex: 1},
+  full: { flex: 1 },
   main: {
     flex: 2,
     justifyContent: 'space-evenly',
@@ -312,7 +309,7 @@ const style = StyleSheet.create({
     fontSize: 15,
     minHeight: 35,
   },
-  content: {flex: 6, flexDirection: 'row'},
+  content: { flex: 6, flexDirection: 'row' },
   leftContent: {
     width: '100%',
     flex: 1.3,
@@ -322,7 +319,7 @@ const style = StyleSheet.create({
     // marginRight: '5%',
   },
   subHeading: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: '700',
     color: $config.SECONDARY_FONT_COLOR,
   },
@@ -402,7 +399,7 @@ const style = StyleSheet.create({
     height: '90%',
     minHeight: 280,
   },
-  margin5Btm: {marginBottom: '5%'},
+  margin5Btm: { marginBottom: '5%' },
 });
 
 export default Precall;

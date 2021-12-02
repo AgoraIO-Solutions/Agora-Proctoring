@@ -57,19 +57,22 @@ const SurfaceView = (props: SurfaceViewInterface) => {
       // setInterval(() => {
       // @ts-ignore
       if (document.getElementById('0')?.children[0]?.children[0]) {
+        // set canvas and video elements
+
         window?.AgoraProctorUtils?.faceDetect(
           document.getElementById('canvas'),
           document.getElementById('0')?.children[0]?.children[0],
         );
+        
       } else {
-
+/*
               if (stream?.play) {
         if (props.renderMode === 2) {
           stream.play(String(props.uid), {fit: 'contain'});
         } else {
           stream.play(String(props.uid));
         }
-      }
+      }*/
       }
       // }, 3000);
     }
@@ -103,7 +106,8 @@ const SurfaceView = (props: SurfaceViewInterface) => {
           ...(props.style as Object),
           overflow: 'hidden',
           display:
-            props.uid === 0 && hasJoinedChannel && role !== Role.Teacher
+            //props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && role !== Role.Student 
+            props.uid === 0 && hasJoinedChannel && role !== Role.Teacher 
               ? 'none'
               : 'block',
       }}
@@ -116,7 +120,8 @@ const SurfaceView = (props: SurfaceViewInterface) => {
           borderRadius: 15,
           flex: 1,
           display:
-            props.uid === 0 && hasJoinedChannel && role !== Role.Teacher
+            //props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && role !== Role.Student 
+            props.uid === 0 && hasJoinedChannel && role !== Role.Teacher 
               ? 'block'
               : 'none',
         }}
