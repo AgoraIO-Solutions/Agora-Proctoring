@@ -51,7 +51,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
       : window.engine.remoteStreams.get(props.uid)?.video;
 
 
-      console.log("deviceType "+deviceType);
+      //console.log("deviceType "+deviceType);
 
   useEffect(() => {
     if (
@@ -112,7 +112,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
           overflow: 'hidden',
           display:
             //props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && role !== Role.Student 
-            props.uid === 0  && role !== Role.Teacher && deviceType==1 
+            props.uid === 0  &&  hasJoinedChannel  && role !== Role.Teacher && deviceType==1 
               ? 'none'
               : 'block',
       }}
@@ -126,7 +126,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
           flex: 1,
           display:
             //props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && role !== Role.Student 
-            props.uid === 0  && role !== Role.Teacher && deviceType==1 
+            props.uid === 0  &&  hasJoinedChannel && role !== Role.Teacher && deviceType==1 
               ? 'block'
               : 'none',
         }}
