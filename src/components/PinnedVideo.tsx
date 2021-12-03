@@ -148,6 +148,7 @@ const PinnedVideo = () => {
                       >
                         <View style={style.flex1}>
                           <MaxVideoView
+                          studentname={userList[localUid]?.name}
                             fallback={() => {
                               if (user.uid === 'local') {
                                 return FallbackLogo(userList[localUid]?.name);
@@ -228,6 +229,7 @@ const PinnedVideo = () => {
                           >
                             <View style={style.flex1}>
                               <MaxVideoView
+                              bname="i3"
                                 fallback={() => {
                                   if (user.uid === 'local') {
                                     return FallbackLogo(
@@ -306,6 +308,7 @@ const PinnedVideo = () => {
             {(maxUsers) => (
               <View style={style.flex1}>
                 <MaxVideoView
+                bname="i4"
                   fallback={() => {
                     if (maxUsers[0].uid === 'local') {
                       return FallbackLogo(userList[localUid]?.name);

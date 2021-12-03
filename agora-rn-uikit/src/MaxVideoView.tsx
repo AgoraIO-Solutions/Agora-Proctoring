@@ -21,6 +21,9 @@ const MaxVideoView: React.FC<MaxViewInterface> = (props) => {
   return props.user.uid === 'local' ? (
     props.user.video ? (
       <LocalView
+         
+      studentname={props.studentname}
+
         style={{...styles.fullView, ...(maxViewStyles as object)}}
         renderMode={VideoRenderMode.Fit}
       />

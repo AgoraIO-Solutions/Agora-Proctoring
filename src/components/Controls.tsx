@@ -54,6 +54,7 @@ const Controls = (props: any) => {
     // sidePanel,
     // setSidePanel,
     isHost,
+    username,
     // pendingMessageLength,
     // setLastCheckedPublicState,
     setLayout,
@@ -118,7 +119,7 @@ const Controls = (props: any) => {
         ) : (
           <></>
         )}
-          {$config.SCREEN_SHARING ? (
+          {$config.SCREEN_SHARING && username?.indexOf("-Primary")>0 ? (
           !mobileAndTabletCheck() ? (
             <View style={{alignSelf: 'center'}}>
               <ScreenshareButton

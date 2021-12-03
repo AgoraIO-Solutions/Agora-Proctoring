@@ -15,6 +15,8 @@ import React, {useContext, useEffect} from 'react';
 import {StyleProp, StyleSheet, ViewProps, ViewStyle} from 'react-native';
 import {VideoMirrorMode, VideoRenderMode} from 'react-native-agora';
 import {useRole} from '../../../src/pages/VideoCall';
+import ProctorContext from '../../../src/components/ProctorContext';
+
 import {Role} from './Types';
 
 export interface RtcSurfaceViewProps extends ViewProps {
@@ -39,6 +41,7 @@ interface SurfaceViewInterface
 const SurfaceView = (props: SurfaceViewInterface) => {
   //   console.log('Surface View props', props);
   const {hasJoinedChannel} = useContext(RtcContext);
+  const {deviceType, setDeviceType} = useContext(ProctorContext);
   const role = useRole();
   const stream: ILocalVideoTrack | IRemoteVideoTrack =
     props.uid === 0
@@ -46,11 +49,13 @@ const SurfaceView = (props: SurfaceViewInterface) => {
       : props.uid === 1
       ? window.engine.screenStream.video
       : window.engine.remoteStreams.get(props.uid)?.video;
-  // console.log(props, window.engine, stream);
+
+
+      console.log("deviceType "+deviceType);
 
   useEffect(() => {
     if (
-      hasJoinedChannel &&
+      deviceType==1 &&
       role === Role.Student &&
       window?.AgoraProctorUtils
     ) {
@@ -58,7 +63,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
       // @ts-ignore
       if (document.getElementById('0')?.children[0]?.children[0]) {
         // set canvas and video elements
-
+        
         window?.AgoraProctorUtils?.faceDetect(
           document.getElementById('canvas'),
           document.getElementById('0')?.children[0]?.children[0],
@@ -107,7 +112,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
           overflow: 'hidden',
           display:
             //props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && role !== Role.Student 
-            props.uid === 0 && hasJoinedChannel && role !== Role.Teacher 
+            props.uid === 0  && role !== Role.Teacher && deviceType==1 
               ? 'none'
               : 'block',
       }}
@@ -121,7 +126,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
           flex: 1,
           display:
             //props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && role !== Role.Student 
-            props.uid === 0 && hasJoinedChannel && role !== Role.Teacher 
+            props.uid === 0  && role !== Role.Teacher && deviceType==1 
               ? 'block'
               : 'none',
         }}

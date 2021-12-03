@@ -36,13 +36,16 @@ import Error from '../subComponents/Error';
 import { useRole } from '../pages/VideoCall';
 import { Role } from '../../bridge/rtc/webNg/Types';
 import { whiteboardContext } from './WhiteboardConfigure';
+import ProctorContext from '../components/ProctorContext';
+
 
 const Precall = (props: any) => {
   const { primaryColor } = useContext(ColorContext);
   const [snapped, setSnapped] = useState(false);
-  const [deviceTypeSelected, setDeviceTypeSelected] = useState(false);
   const { whiteboardActive, setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom } =
     useContext(whiteboardContext);
+
+  const {deviceType, setDeviceType} = useContext(ProctorContext);
 
   const { setCallActive, queryComplete, username, setUsername, error, setPhotoIDUrl } = props;
 
@@ -59,12 +62,12 @@ const Precall = (props: any) => {
   useEffect(() => {
 
     var preview = document.getElementById('preview');
-    //alert(preview+" "+snapped+" "+deviceTypeSelected );
-    if (preview &&  !snapped && deviceTypeSelected) {
-      
+
+    if (preview &&  !snapped && deviceType==1) {      
       var ctx = preview.getContext('2d');
       var defImg = new Image();
       defImg.src = PhotoIdImg;
+      console.log("load "+snapped+" ");
       defImg.onload = function () {
         preview.width = defImg.width;
         preview.height = defImg.height;
@@ -156,7 +159,7 @@ const Precall = (props: any) => {
               <SelectDevice />
             </View>
 
-            {deviceTypeSelected && role === Role.Student && (
+            {deviceType==1 && role === Role.Student && (
               <>
                 <Text
                   style={{
@@ -185,7 +188,7 @@ const Precall = (props: any) => {
                 marginTop: 50,
               }}>
                 
-              {deviceTypeSelected && role === Role.Student && (
+              {deviceType==1 && role === Role.Student && (
                 <>
                   <View style={{ marginBottom: 10 }} />
                   <PrimaryButton
@@ -197,8 +200,8 @@ const Precall = (props: any) => {
                         document.getElementById('preview'),
                       ).then(function (result) {
                         console.log(result);
-                        setPhotoIDUrl(result);
                         setSnapped(true);
+                        setPhotoIDUrl(result);
                       });
                     }}
                     text={snapped ? 'Retake Photo' : 'Take Photo'}
@@ -207,8 +210,8 @@ const Precall = (props: any) => {
                 </>
               )}
 
-          
-          {role === Role.Student && !deviceTypeSelected && (
+       
+          {role === Role.Student && deviceType==0 && (
                 <>
                   <View style={{ marginBottom: 10 }} />
                   
@@ -221,21 +224,38 @@ const Precall = (props: any) => {
                   <PrimaryButton
                     onPress={() => {            
                       setUsername('Primary');    
-                      setDeviceTypeSelected(true);   
+                      setDeviceType(1);
                     }}
                     text={'My Main Computer'}
                   />
-                  Where I will take the exam
+                 
+                  <Text
+                  style={{
+                    fontSize: 16,
+                    margin: 2
+                  }}>
+                  where I will take the exam
+
+                </Text>
                   <View style={{ height: 25 }} />
 
                   <View style={{ marginBottom: 20 }} />
                   <PrimaryButton
                     onPress={() => {            
                       setUsername('Secondary');     
-                      setDeviceTypeSelected(true);   
+                      setDeviceType(2);
                     }}
-                    text={'Additional Camera Device'}
+                    text={'Additional Device'}
                   />
+                
+                  <Text
+                  style={{
+                    fontSize: 16,
+                    margin: 2
+                  }}>
+                   with camera to point at me
+
+                </Text>
                   <View style={{ height: 15 }} />
 
                 </>
@@ -262,7 +282,7 @@ const Precall = (props: any) => {
               )}
 
               <View style={{ height: 20 }} />
-              {(snapped || role != Role.Student) && (
+              {(snapped || role != Role.Student || deviceType==2) && (
                 <PrimaryButton
                   onPress={() => setCallActive(true)}
                   disabled={

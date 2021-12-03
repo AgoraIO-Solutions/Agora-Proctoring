@@ -26,10 +26,12 @@ import {useParams, useLocation, useHistory} from '../components/Router';
 import Chat from '../components/Chat';
 import RtmConfigure from '../components/RTMConfigure';
 import DeviceConfigure from '../components/DeviceConfigure';
+import ProctorConfigure from '../components/ProctorConfigure';
 // import Watermark from '../subComponents/Watermark';
 import StorageContext from '../components/StorageContext';
 import Logo from '../subComponents/Logo';
 import ChatContext from '../components/ChatContext';
+import ProctorContext from '../components/ProctorContext';
 import {SidePanelType} from '../subComponents/SidePanelEnum';
 import {videoView} from '../../theme.json';
 import Layout from '../subComponents/LayoutEnum';
@@ -269,6 +271,7 @@ const VideoCall: React.FC = () => {
             }}>
             <RtcConfigure callActive={callActive}>
               <WhiteboardConfigure>
+              <ProctorConfigure>
                 <DeviceConfigure>
                   <RtmConfigure
                     photoIDUrl={photoIDUrl}
@@ -301,6 +304,7 @@ const VideoCall: React.FC = () => {
                                 recordingActive={recordingActive}
                                 setRecordingActive={setRecordingActive}
                                 isHost={isHost}
+                                username={username}
                                 title={title}
                                 pendingMessageLength={
                                   pendingPublicNotification +
@@ -326,6 +330,7 @@ const VideoCall: React.FC = () => {
                                 {sidePanel === SidePanelType.Participants ? (
                                   <ParticipantsView
                                     isHost={isHost}
+                                    username={username}
                                     // setParticipantsView={setParticipantsView}
                                     setSidePanel={setSidePanel}
                                   />
@@ -360,6 +365,7 @@ const VideoCall: React.FC = () => {
                                 {sidePanel === SidePanelType.Settings ? (
                                   <SettingsView
                                     isHost={isHost}
+                                    username={username}
                                     // setParticipantsView={setParticipantsView}
                                     setSidePanel={setSidePanel}
                                   />
@@ -378,6 +384,7 @@ const VideoCall: React.FC = () => {
                                   // chatDisplayed={chatDisplayed}
                                   // setChatDisplayed={setChatDisplayed}
                                   isHost={isHost}
+                                  username={username}
                                   // participantsView={participantsView}
                                   // setParticipantsView={setParticipantsView}
                                   sidePanel={sidePanel}
@@ -415,6 +422,7 @@ const VideoCall: React.FC = () => {
                     )}
                   </RtmConfigure>
                 </DeviceConfigure>
+                </ProctorConfigure>
               </WhiteboardConfigure>
             </RtcConfigure>
           </PropsProvider>
