@@ -110,6 +110,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
           ...style.full,
           ...(props.style as Object),
           overflow: 'hidden',
+          backgroundColor: 'transparent',
           display:
             //props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && role !== Role.Student 
             props.uid === 0  &&  hasJoinedChannel  && role !== Role.Teacher && deviceType==1 
@@ -135,7 +136,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
       />
     </>
   ) : (
-    <div style={{...style.full, backgroundColor: 'black'}} />
+    <div style={{...style.full, backgroundColor: 'orange'}} />
   );
 };
 

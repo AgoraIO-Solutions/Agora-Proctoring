@@ -130,7 +130,7 @@ const Create = () => {
                 onSubmitEditing={() => createRoom()}
                 placeholder="Invigilator name"
               />
-              <View style={{maxHeight: 500, overflowY: 'scroll', marginTop: 20, padding: 20}}>
+              <View style={{maxHeight: 500,  marginTop: 20, padding: 20}}>
                 <Text style={style.heading2}>Students taking the exam:</Text>
                 {students.map((student, i) => (
                   <View key={i} style={{flexDirection: 'row', width: '100%'}}>

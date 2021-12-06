@@ -20,17 +20,14 @@ const MaxVideoView: React.FC<MaxViewInterface> = (props) => {
 
   return props.user.uid === 'local' ? (
     props.user.video ? (
-      <LocalView
-         
-      studentname={props.studentname}
-
+      <LocalView         
         style={{...styles.fullView, ...(maxViewStyles as object)}}
         renderMode={VideoRenderMode.Fit}
       />
     ) : Fallback ? (
       <Fallback />
     ) : (
-      <View style={{flex: 1, backgroundColor: '#000'}} />
+      <View style={{flex: 1, backgroundColor: '#ede'}} />
     )
   ) : (
     <>
@@ -48,7 +45,7 @@ const MaxVideoView: React.FC<MaxViewInterface> = (props) => {
           {Fallback ? (
             <Fallback />
           ) : (
-            <View style={{flex: 1, backgroundColor: '#000'}} />
+            <View style={{flex: 1, backgroundColor: '#efd'}} />
           )}
         </>
       )}

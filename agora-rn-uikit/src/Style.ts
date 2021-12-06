@@ -56,7 +56,7 @@ export default StyleSheet.create({
   },
   minOverlay: {
     ...(StyleSheet.absoluteFill as object),
-    backgroundColor: 'black',
+    backgroundColor: 'orange',
     opacity: 0.7,
   },
   minCloseBtn: {

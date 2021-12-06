@@ -57,12 +57,14 @@ const RtmConfigure = (props: any) => {
     if (login) {
       function processEvent(evt: string) {
         if (role === Role.Student) {
-          sendMessage(students[0] + ' - BrowserChangeAlert: ' + evt);
+          //sendMessage(students[0] + ' - Browser Alert: ' + evt);
+          sendMessage('Browser Alert: ' + evt);
         }
       }
       function facesDetected(evt: string) {
         if (role === Role.Student) {
-          sendMessage(students[0] + ' - Faces Detected count: ' + evt);
+        //  sendMessage(students[0] + ' - Faces Detected: ' + evt);
+        sendMessage('Faces Detected: ' + evt);
         }
       }
       if (window?.AgoraProctorUtils) {
