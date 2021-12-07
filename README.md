@@ -1,7 +1,7 @@
 # Agora-Proctoring
 To run the project locally:
-  clone this repo
-  cd Agora-Proctoring
+  clone this repo     
+  cd Agora-Proctoring     
 
 ## install pre required node modules
 npm install
