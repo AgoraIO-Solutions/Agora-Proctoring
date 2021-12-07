@@ -43,6 +43,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
   const {hasJoinedChannel} = useContext(RtcContext);
   const {deviceType, setDeviceType} = useContext(ProctorContext);
   const role = useRole();
+  // stream will be of type ILocalVideoTrack or IRemoteVideoTrack
   const stream: ILocalVideoTrack | IRemoteVideoTrack =
     props.uid === 0
       ? window.engine.localStream.video
@@ -61,14 +62,14 @@ const SurfaceView = (props: SurfaceViewInterface) => {
     ) {
       // setInterval(() => {
       // @ts-ignore
-      if (document.getElementById('0')?.children[0]?.children[0]) {
+      if (props.uid === 0 && document.getElementById('0')?.children[0]?.children[0]) {
         // set canvas and video elements
         
         window?.AgoraProctorUtils?.faceDetect(
           document.getElementById('canvas'),
           document.getElementById('0')?.children[0]?.children[0],
         );
-        
+      
       } else {
 /*
               if (stream?.play) {
@@ -81,7 +82,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
       }
       // }, 3000);
     }
-  });//, [hasJoinedChannel,props.uid, props.renderMode, stream]);
+  }, [hasJoinedChannel]);//, [hasJoinedChannel,props.uid, props.renderMode, stream]);
   //}, [hasJoinedChannel]);
 
   useEffect(

@@ -92,6 +92,9 @@ const GridVideo = (props: GridVideoProps) => {
     Dimensions.get('window').height,
     Dimensions.get('window').width > Dimensions.get('window').height,
   ]);
+
+  const [expandUID,setExpandUID]= useState(0);
+
   const isDesktop = dim[0] > dim[1] + 100;
   let {matrix, dims} = useMemo(
     // Whiteboard: Only iterate over n-1 elements when whiteboard not
@@ -179,28 +182,16 @@ const GridVideo = (props: GridVideoProps) => {
                       userList[u?.uid]?.name?.endsWith('Primary') && (
                         <View
                           style={{
-                            width: '100%',
-                            height: '100%',
+                            width:  (expandUID!=0) ? '0px' : '100%',
+                            height:  (expandUID!=0) ? '0px' : '100%',
                             borderWidth: 2,
                             borderColor: 'transparent',
                             borderStyle: 'solid',                            
-                          }}>
-                          <Text
-                            style={{
-                              position: 'absolute',
-                              padding: 5,
-                              fontWeight: '500',
-                              fontSize: 18,
-                              color: '#000',
-                              textShadowColor: '#000',
-                              textShadowRadius: 1,
-                            }}>
-                            
-                          </Text>
+                          }}>                       
                           <img
                             style={{
-                              height: isDesktop ? '100%' : '100%',
-                              width: isDesktop ? '100%' : '100%', 
+                              width:  (expandUID!=0 ) ? '0' : '100%',
+                              height:  (expandUID!=0 ) ? '0' : '100%',
                               margin: 'auto',
                               objectFit: 'contain' 
                             }}
@@ -212,16 +203,21 @@ const GridVideo = (props: GridVideoProps) => {
                   {users.map((u, i) =>
                     userList[u.uid]?.name?.split('-')[0] ===
                     students[ridx * dims.c + cidx] ? (
-                      <React.Fragment key={u.uid}>
+                      <React.Fragment key={u.uid} >
                         <View
+
+
                           style={{
-                            width: '100%',
-                            height: '100%',
+                            width:  (expandUID!=0 && u?.uid!=expandUID) ? '0' : '100%',
+                            height:  (expandUID!=0 && u?.uid!=expandUID) ? '0' : '100%',
                             borderWidth: 2,
                             borderColor: 'transparent',
-                            borderStyle: 'solid',
+                            borderStyle: 'solid',    
+                            position: u?.uid===expandUID ? 'absolute' : 'relative'                            
                           }}>
-                          <MaxVideoView
+
+                          
+                          <MaxVideoView                         
                             fallback={() => {
                               if (u.uid === 'local') {
                                 return FallbackLogo(userList[localUid]?.name);
@@ -230,6 +226,8 @@ const GridVideo = (props: GridVideoProps) => {
                               }
                             }}
                             user={u}
+                            setExpandUID={setExpandUID}
+                            expandUID={expandUID}
                             key={u.uid}
                           />
                         </View>
