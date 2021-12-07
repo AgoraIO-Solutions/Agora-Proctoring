@@ -1,5 +1,5 @@
 # Agora-Proctoring
-To run the project locally:
+To run the project locally:     
   clone this repo     
   cd Agora-Proctoring     
 
