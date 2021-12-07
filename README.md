@@ -1,11 +1,15 @@
 # Agora-Proctoring
+To run the project locally:     
+  clone this repo     
+  cd Agora-Proctoring     
 
-## Pre-requisites
-- NodeJS LTS
+## install pre required node modules
+npm install
 
-## Build
-To build a production website for web, Run:
-```
-npm run web:dist
-```
-The built project can then be found inside `./dist`
+## build and run
+npm run web
+
+
+After compiling it should open the create proctor session page in your web browser.
+
+
