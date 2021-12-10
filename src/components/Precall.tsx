@@ -77,17 +77,17 @@ const Precall = (props: any) => {
   });
 
   return (
-    // <ImageBackground
-    //   onLayout={onLayout}
-    //   style={style.full}
-    //   resizeMode={'cover'}>
     <View style={style.main} onLayout={onLayout}>
       <View style={style.nav}>
         <Logo />
         {error ? <Error error={error} showBack={true} /> : <></>}
         {/* <OpenInNativeButton /> */}
       </View>
+
       <View style={style.content}>
+
+      {window.innerWidth>window.innerHeight && (
+                <>
         <View style={style.leftContent}>
           <MaxUidConsumer>
             {(maxUsers) => (
@@ -95,35 +95,20 @@ const Precall = (props: any) => {
                 <MaxVideoView user={maxUsers[0]} key={maxUsers[0].uid} />
               </View>
             )}
-          </MaxUidConsumer>
+          </MaxUidConsumer>          
           <View style={style.precallControls}>
             <LocalUserContext>
               <View style={{ alignSelf: 'center' }}>
                 <LocalVideoMute />
-                {/* <Text
-                  style={{
-                    textAlign: 'center',
-                    marginTop: 5,
-                    color: $config.PRIMARY_COLOR,
-                  }}>
-                  Video
-                </Text> */}
               </View>
               <View style={{ alignSelf: 'center' }}>
                 <LocalAudioMute />
-                {/* <Text
-                  style={{
-                    textAlign: 'center',
-                    marginTop: 5,
-                    color: $config.PRIMARY_COLOR,
-                  }}>
-                  Audio
-                </Text> */}
               </View>
             </LocalUserContext>
           </View>
-
         </View>
+        </>
+      )}
 
         <View
           style={{
@@ -137,8 +122,8 @@ const Precall = (props: any) => {
             borderStyle: 'solid',
             borderColor: $config.PRIMARY_COLOR,
             height: '90%',
-            minHeight: 140,
-            minWidth: 180,
+            minHeight: 300,
+            minWidth: 400,
             alignSelf: 'center',
             justifyContent: 'center',
             marginBottom: '5%',
