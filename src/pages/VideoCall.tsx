@@ -256,7 +256,7 @@ const VideoCall: React.FC = () => {
   const callbacks = {
     EndCall: () =>
       setTimeout(() => {
-        history.push('/');
+        history.push('/goodbye');
       }, 0),
   };
   return (

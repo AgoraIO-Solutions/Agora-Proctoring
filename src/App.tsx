@@ -29,6 +29,7 @@ import Toast from '../react-native-toast-message';
 import ToastConfig from './subComponents/toastConfig';
 import shouldAuthenticate from './utils/shouldAuthenticate';
 import KeyboardManager from 'react-native-keyboard-manager';
+import GoodBye from './pages/GoodBye';
 
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
@@ -55,6 +56,9 @@ const App: React.FC = () => {
               <ColorConfigure>
                 <Navigation />
                 <Switch>
+                  <Route exact path={'/goodbye'}>
+                    <GoodBye />
+                  </Route>
                   <Route exact path={'/'}>
                     <Redirect to={'/create'} />
                   </Route>

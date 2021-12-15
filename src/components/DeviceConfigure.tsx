@@ -14,6 +14,7 @@ import RtcContext from '../../agora-rn-uikit/src/RtcContext';
 import DeviceContext from './DeviceContext';
 
 const DeviceConfigure: React.FC = (props: any) => {
+
   const [selectedCam, setSelectedCam] = useState('');
   const [selectedMic, setSelectedMic] = useState('');
   const [deviceList, setDeviceList] = useState([]);

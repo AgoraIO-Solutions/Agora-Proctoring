@@ -1,9 +1,10 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {RtcLocalView, RtcRemoteView, VideoRenderMode} from 'react-native-agora';
 import styles from './Style';
 import PropsContext from './PropsContext';
 import {UidInterface} from './RtcContext';
 import {View, Text, Image, Alert} from 'react-native';
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 const LocalView = RtcLocalView.SurfaceView;
 const RemoteView = RtcRemoteView.SurfaceView;
@@ -12,15 +13,21 @@ interface MaxViewInterface {
   user: UidInterface;
   expandUID: number;
   setExpandUID: any;
+  keyp: String | number;
   fallback?: React.ComponentType;
 }
 
 const MaxVideoView: React.FC<MaxViewInterface> = (props) => {
   const {styleProps} = useContext(PropsContext);
   const {maxViewStyles} = styleProps || {};
+  const fullScreenHandle = useFullScreenHandle();
+  const [FSPressed,setFSPressed]= useState(false);
+
+
+  const [VideoStreamType,setVideoStreamType]= useState(1);
   const Fallback = props.fallback;
  
-
+  console.log(props.keyp+"  VideoStreamType "+VideoStreamType);
   return props.user.uid === 'local' ? (
     props.user.video ? (
       <LocalView         
@@ -34,16 +41,38 @@ const MaxVideoView: React.FC<MaxViewInterface> = (props) => {
     )
   ) : (
     <>
+
       <div style={{flex: 1, display: props.user.video ? 'flex' : 'none'}}
-        onClick={() => {props.expandUID===props.user.uid ? props.setExpandUID(0) : props.setExpandUID(props.user.uid) }}
-      >
-        <RemoteView
+      // onClick={() => {fullScreenHandle.enter()}}      
+       onClick={() => {
+        setVideoStreamType(VideoStreamType+1);
+        if( props.expandUID===props.user.uid) 
+          {
+            if (fullScreenHandle.active || FSPressed) {
+              fullScreenHandle.exit()
+              setFSPressed(false);
+              props.setExpandUID(0);
+            }  else {
+              fullScreenHandle.enter();
+              setFSPressed(true);
+            }        
+          } 
+          else {
+            props.setExpandUID(props.user.uid)
+          }          
+         }}       
+      >    
+
+        <FullScreen handle={fullScreenHandle}>
+        <RemoteView        
           style={{...styles.fullView, ...(maxViewStyles as object)}}
           uid={props.user.uid as number}
-          renderMode={VideoRenderMode.Fit}
-          
+          renderMode={VideoRenderMode.Fit}          
         />
+        </FullScreen>   
+
       </div>
+    
       {props.user.video ? (
         <></>
       ) : (

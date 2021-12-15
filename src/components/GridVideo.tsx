@@ -22,6 +22,8 @@ import {
 import MinUidContext from '../../agora-rn-uikit/src/MinUidContext';
 import MaxUidContext from '../../agora-rn-uikit/src/MaxUidContext';
 import {MaxVideoView} from '../../agora-rn-uikit/Components';
+
+
 import chatContext from './ChatContext';
 import icons from '../assets/icons';
 import styles from './styles';
@@ -69,6 +71,7 @@ const GridVideo = (props: GridVideoProps) => {
   const min = useContext(MinUidContext);
   const role = useRole();
   const whiteboard = useContext(whiteboardContext);
+
   const whiteboardActive =
     role === Role.Teacher ? false : whiteboard.whiteboardActive;
   const wb: UidInterface = {
@@ -203,10 +206,9 @@ const GridVideo = (props: GridVideoProps) => {
                   {users.map((u, i) =>
                     userList[u.uid]?.name?.split('-')[0] ===
                     students[ridx * dims.c + cidx] ? (
+                   
                       <React.Fragment key={u.uid} >
                         <View
-
-
                           style={{
                             width:  (expandUID!=0 && u?.uid!=expandUID) ? '0' : '100%',
                             height:  (expandUID!=0 && u?.uid!=expandUID) ? '0' : '100%',
@@ -215,8 +217,7 @@ const GridVideo = (props: GridVideoProps) => {
                             borderStyle: 'solid',    
                             position: u?.uid===expandUID ? 'absolute' : 'relative'                            
                           }}>
-
-                          
+                  
                           <MaxVideoView                         
                             fallback={() => {
                               if (u.uid === 'local') {
@@ -229,9 +230,12 @@ const GridVideo = (props: GridVideoProps) => {
                             setExpandUID={setExpandUID}
                             expandUID={expandUID}
                             key={u.uid}
+                            keyp={u.uid}
+
                           />
                         </View>
                       </React.Fragment>
+        
                     ) : null,
                   )}
                 </View>
