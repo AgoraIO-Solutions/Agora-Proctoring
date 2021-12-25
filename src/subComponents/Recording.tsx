@@ -9,10 +9,10 @@
  information visit https://appbuilder.agora.io.
 *********************************************
 */
-import React, {useContext, useEffect, useRef} from 'react';
-import {Image, TouchableOpacity, StyleSheet, View, Text} from 'react-native';
+import React, { useContext, useEffect, useRef } from 'react';
+import { Image, TouchableOpacity, StyleSheet, View, Text } from 'react-native';
 import icons from '../assets/icons';
-import ChatContext, {controlMessageEnum} from '../components/ChatContext';
+import ChatContext, { controlMessageEnum } from '../components/ChatContext';
 import ColorContext from '../components/ColorContext';
 import PropsContext from '../../agora-rn-uikit/src/PropsContext';
 import Toast from '../../react-native-toast-message';
@@ -41,21 +41,37 @@ const stopRecordingQuery = async (data: string) => {
   return stop.json();
 };
 
+const queryRecordingQuery = async (data: string) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.append('data', data);
+  const query = await fetch(
+    `https://proctoring-recording.vercel.app/api/query?${urlParams.toString()}`,
+    {
+      method: 'GET',
+      credentials: 'same-origin',
+    },
+  );
+  return query.json();
+};
+
 /**
  * Component to start / stop Agora cloud recording.
  * Sends a control message to all users in the channel over RTM to indicate that
  * Cloud recording has started/stopped.
  */
 const Recording = (props: any) => {
-  const {rtcProps} = useContext(PropsContext);
-  const {primaryColor} = useContext(ColorContext);
+  const { rtcProps } = useContext(PropsContext);
+  const { primaryColor } = useContext(ColorContext);
   const setRecordingActive = props.setRecordingActive;
   const recordingActive = props.recordingActive;
-  const {sendControlMessage} = useContext(ChatContext);
+  //const setRecordedFileReady = props.setRecordedFileReady;
+  //const recordedFileReady = props.recordedFileReady;
+  const { sendControlMessage } = useContext(ChatContext);
   const dataRef = useRef('');
+
   useEffect(() => {
     if (recordingActive) {
-      Toast.show({text1: 'Recording Started', visibilityTime: 1000});
+      Toast.show({ text1: 'Recording Started', visibilityTime: 1000 });
     }
     // else if(!recordingActive)
     // Toast.show({text1: 'Recording Finished', visibilityTime: 1000})
@@ -73,6 +89,18 @@ const Recording = (props: any) => {
               sendControlMessage(controlMessageEnum.cloudRecordingActive);
               // set the local recording state to true to update the UI
               setRecordingActive(true);
+              setTimeout(() => queryRecordingQuery(dataRef.current)
+                .then((res) => {
+                  let fileName = Array(res.length).fill('null');
+                  for (var i in res) {
+                    var json = JSON.parse(res[i]);
+                    fileName[i] = json.serverResponse.fileList[0].fileName;
+                    console.log("filename .....", fileName);
+                  }
+                })
+                .catch((err) => {
+                  console.log(err);
+                }), 15000);
             })
             .catch((err) => {
               console.log(err);
@@ -93,7 +121,7 @@ const Recording = (props: any) => {
             });
         }
       }}>
-      <View style={[style.localButton, {borderColor: primaryColor}]}>
+      <View style={[style.localButton, { borderColor: primaryColor }]}>
         <Image
           source={{
             uri: recordingActive
@@ -102,7 +130,7 @@ const Recording = (props: any) => {
           }}
           style={[
             style.buttonIcon,
-            {tintColor: recordingActive ? '#FD0845' : primaryColor},
+            { tintColor: recordingActive ? '#FD0845' : primaryColor },
           ]}
           resizeMode={'contain'}
         />
@@ -115,7 +143,7 @@ const Recording = (props: any) => {
         }}>
         {recordingActive ? 'Recording' : 'Record'}
       </Text>
-    </TouchableOpacity>
+    </TouchableOpacity >
   );
 };
 
