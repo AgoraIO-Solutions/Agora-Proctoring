@@ -19,12 +19,10 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-// import {MinUidConsumer} from '../../agora-rn-uikit/src/MinUidContext';
-// import PropsContext from '../../agora-rn-uikit/src/PropsContext';
+
 import icons from '../assets/icons';
 import Settings from './Settings';
 import ColorContext from './ColorContext';
-import CopyJoinInfo from '../subComponents/CopyJoinInfo';
 import {SidePanelType} from '../subComponents/SidePanelEnum';
 import {navHolder} from '../../theme.json';
 import Layout from '../subComponents/LayoutEnum';
@@ -32,6 +30,8 @@ import ChatContext from '../components/ChatContext';
 import mobileAndTabletCheck from '../utils/mobileWebTest';
 import {Role} from '../../bridge/rtc/webNg/Types';
 import {useRole} from '../../src/pages/VideoCall';
+import {MaxVideoView} from '../../agora-rn-uikit/Components';
+import FallbackLogo from '../subComponents/FallbackLogo';
 
 const {participantIcon, gridLayoutIcon, pinnedLayoutIcon, recordingIcon} =
   icons;
@@ -41,8 +41,6 @@ const Navbar = (props: any) => {
   const {primaryColor} = useContext(ColorContext);
   const {messageStore} = useContext(ChatContext);
   const {
-    // participantsView,
-    // setParticipantsView,
     recordingActive,
     sidePanel,
     setSidePanel,
@@ -50,8 +48,6 @@ const Navbar = (props: any) => {
     setLayout,
     pendingMessageLength,
     setLastCheckedPublicState,
-    // setChatDisplayed,
-    // chatDisplayed,
     isHost,
     title,
   } = props;
@@ -67,7 +63,7 @@ const Navbar = (props: any) => {
   return (
     <View
       onLayout={onLayout}
-      style={[Platform.OS === 'web' ? style.navHolder : style.navHolderNative, {backgroundColor: $config.SECONDARY_FONT_COLOR + 80}, Platform.OS === 'web' ? {justifyContent: mobileAndTabletCheck() ? 'space-between' : 'flex-end'} : {}]}>
+      style={[Platform.OS === 'web' ? style.navHolder : style.navHolderNative,{height: 90}, {backgroundColor: $config.SECONDARY_FONT_COLOR + 80}, Platform.OS === 'web' ? {justifyContent: mobileAndTabletCheck() ? 'space-between' : 'flex-end'} : {}]}>
       {recordingActive && !mobileAndTabletCheck() ? (
         <View style={[style.recordingView, {backgroundColor: $config.SECONDARY_FONT_COLOR}]}>
           <Image source={{uri: icons.recordingActiveIcon}} style={{
@@ -88,7 +84,35 @@ const Navbar = (props: any) => {
             </Text>
         </View>
       ) : (
-        <></>
+   
+
+<React.Fragment  >
+<View
+  style={{
+    width:  '160px',
+    height:  '90px',
+    marginLeft: '10px',
+    left: '80px', 
+    borderWidth: 2,
+    borderColor: 'transparent',
+    borderStyle: 'solid',    
+  }}>
+
+  <MaxVideoView                         
+    fallback={() => {
+        return FallbackLogo("Proc");
+    }}
+    user={    {
+      uid: 'local',
+      audio: true,
+      video: true,
+      streamType: 'high',
+    }}
+
+    key={'local'}
+  />
+</View>
+</React.Fragment>
       )}
       <View
         style={{

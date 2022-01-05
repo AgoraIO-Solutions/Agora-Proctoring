@@ -96,28 +96,29 @@ const GridVideo = (props: GridVideoProps) => {
     Dimensions.get('window').width > Dimensions.get('window').height,
   ]);
 
-  const [expandUID,setExpandUID]= useState(0);
+  const [expandUID,setExpandUID]= useState("0");
+  const [expandUsername,setExpandUsername]= useState("");
 
   const isDesktop = dim[0] > dim[1] + 100;
   let {matrix, dims} = useMemo(
     // Whiteboard: Only iterate over n-1 elements when whiteboard not
     // active since last element is always whiteboard placeholder
     () =>
-      // layout(
-      //   whiteboardActive ? students.length : students.length - 1,
-      //   isDesktop,
-      // ),
       layout(students.length, isDesktop),
     [students.length, isDesktop, whiteboardActive],
   );
+
 
   return (
     <View
       style={[style.full, {paddingHorizontal: isDesktop ? 50 : 0}]}
       onLayout={onLayout}>
+
+
       {matrix.map((r, ridx) => (
         <View style={style.gridRow} key={ridx}>
           {r.map((c, cidx) => (
+            // student cells
             <View style={style.gridVideoContainerInner} key={cidx}>
               <Text style={{fontSize:16}}>
                 {students[ridx * dims.c + cidx].charAt(0).toUpperCase() + students[ridx * dims.c + cidx].slice(1) }
@@ -129,8 +130,9 @@ const GridVideo = (props: GridVideoProps) => {
                     overflowY: 'auto',
                     marginBottom: 10,
                   }}>
-
+                  
                   {users.map(
+                     // alert message table
                     (u) =>
                       userList[u.uid]?.name?.split('-')[0] ===
                       students[ridx * dims.c + cidx]
@@ -179,65 +181,79 @@ const GridVideo = (props: GridVideoProps) => {
                     // overflowX: 'scroll',
                   }}>
                   {users.map(
+                    // photo id
                     (u, i) =>
                     userList[u.uid]?.name?.split('-')[0] ===
                     students[ridx * dims.c + cidx] &&
                       userList[u?.uid]?.name?.endsWith('Primary') && (
                         <View
                           style={{
-                            width:  (expandUID!=0) ? '0px' : '100%',
-                            height:  (expandUID!=0) ? '0px' : '100%',
+                            width:  (expandUID!="0"  && userList[u?.uid]?.id!=expandUID && expandUsername===students[ridx * dims.c + cidx]) ? '0px' : '100%',
+                            height:  (expandUID!="0" && userList[u?.uid]?.id!=expandUID && expandUsername===students[ridx * dims.c + cidx]) ? '0px' : '100%',
                             borderWidth: 2,
                             borderColor: 'transparent',
-                            borderStyle: 'solid',                            
+                            borderStyle: 'solid',   
+                            position: userList[u?.uid]?.id===expandUID ? 'absolute' : 'relative'                            
                           }}>                       
                           <img
                             style={{
-                              width:  (expandUID!=0 ) ? '0' : '100%',
-                              height:  (expandUID!=0 ) ? '0' : '100%',
+                              width:  (expandUID!="0" && userList[u?.uid]?.id!=expandUID && expandUsername===students[ridx * dims.c + cidx]) ? '0' : '100%',
+                              height:  (expandUID!="0" && userList[u?.uid]?.id!=expandUID && expandUsername===students[ridx * dims.c + cidx]) ? '0' : '100%',
                               margin: 'auto',
                               objectFit: 'contain' 
                             }}
                             src={userList[u?.uid]?.id}
+
+                            onClick={() => {    
+                              // alert(expandUID);
+                               if(expandUID==userList[u?.uid]?.id) 
+                               {
+                                   setExpandUID("0");
+                                   setExpandUsername("");  
+                               } 
+                               else {
+                                 setExpandUID(userList[u?.uid]?.id)
+                                 setExpandUsername(students[ridx * dims.c + cidx]);                                    
+                               }   
+                              }}     
                           />
                         </View>
                       ),
                   )}
                   {users.map((u, i) =>
+                    // student video cells
                     userList[u.uid]?.name?.split('-')[0] ===
                     students[ridx * dims.c + cidx] ? (
                    
                       <React.Fragment key={u.uid} >
                         <View
                           style={{
-                            width:  (expandUID!=0 && u?.uid!=expandUID) ? '0' : '100%',
-                            height:  (expandUID!=0 && u?.uid!=expandUID) ? '0' : '100%',
+                            width:  (expandUID!="0" && u?.uid.toString()!=expandUID && expandUsername===students[ridx * dims.c + cidx]) ? '0' : '100%',
+                            height:  (expandUID!="0" && u?.uid.toString()!=expandUID && expandUsername===students[ridx * dims.c + cidx]) ? '0' : '100%',
                             borderWidth: 2,
                             borderColor: 'transparent',
                             borderStyle: 'solid',    
-                            position: u?.uid===expandUID ? 'absolute' : 'relative'                            
+                            position: u?.uid.toString()===expandUID ? 'absolute' : 'relative'                            
                           }}>
                   
                           <MaxVideoView                         
                             fallback={() => {
-                              if (u.uid === 'local') {
-                                return FallbackLogo(userList[localUid]?.name);
-                              } else {
                                 return FallbackLogo(userList[u?.uid]?.name);
-                              }
                             }}
                             user={u}
                             setExpandUID={setExpandUID}
                             expandUID={expandUID}
+                            username={students[ridx * dims.c + cidx]}
+                            setExpandUsername={setExpandUsername}
                             key={u.uid}
-                            keyp={u.uid}
-
                           />
                         </View>
                       </React.Fragment>
         
                     ) : null,
                   )}
+
+
                 </View>
               </View>
             </View>
@@ -245,7 +261,6 @@ const GridVideo = (props: GridVideoProps) => {
         </View>
       ))}
     </View>
-
   );
 };
 
@@ -258,7 +273,7 @@ const style = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     width: '100%',
-    paddingVertical: 10,
+    paddingVertical: 2,
   },
   gridVideoContainerInner: {
     borderColor: '#ddd',

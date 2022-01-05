@@ -66,7 +66,7 @@ const style = StyleSheet.create({
     height: 30,
     marginBottom: 10,
     borderRadius: 50,
-    paddingHorizontal: 15,
+    paddingHorizontal: 5,
     fontSize: 15,
     minHeight: 35,
   },

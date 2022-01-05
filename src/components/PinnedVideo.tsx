@@ -68,41 +68,7 @@ const PinnedVideo = () => {
       }}
       onLayout={onLayout}
     >
-      {isSidePinnedlayout && (
-        <Pressable
-          onPress={() => setCollapse(!collapse)}
-          style={{
-            position: 'absolute',
-            zIndex: 50,
-            marginTop: 5,
-            width: 35,
-            height: 35,
-            marginLeft: collapse ? 5 : '20.1%',
-            backgroundColor: $config.SECONDARY_FONT_COLOR + 'aa',
-            borderRadius: 50,
-            justifyContent: 'center',
-          }}
-        >
-          {/* <Image
-            source={{
-              uri: icons.micOff,
-            }}
-            style={[style.MicIcon]}
-            resizeMode={'contain'}
-          /> */}
-          <Text
-            style={{
-              alignSelf: 'center',
-              justifyContent: 'center',
-              color: $config.PRIMARY_COLOR,
-              fontWeight: '500',
-              fontSize: 20,
-            }}
-          >
-            {collapse ? '>' : '<'}
-          </Text>
-        </Pressable>
-      )}
+
       {!collapse && (
         <ScrollView
           horizontal={!isSidePinnedlayout}
@@ -142,13 +108,12 @@ const PinnedVideo = () => {
                         }
                         key={user.uid}
                         onPress={() => {
-                          if (!whiteboardActive)
-                            data.dispatch({type: 'SwapVideo', value: [user]});
+                       //   if (!whiteboardActive)
+                        //    data.dispatch({type: 'SwapVideo', value: [user]});
                         }}
                       >
                         <View style={style.flex1}>
                           <MaxVideoView
-                          studentname={userList[localUid]?.name}
                             fallback={() => {
                               if (user.uid === 'local') {
                                 return FallbackLogo(userList[localUid]?.name);
@@ -229,7 +194,6 @@ const PinnedVideo = () => {
                           >
                             <View style={style.flex1}>
                               <MaxVideoView
-                              bname="i3"
                                 fallback={() => {
                                   if (user.uid === 'local') {
                                     return FallbackLogo(

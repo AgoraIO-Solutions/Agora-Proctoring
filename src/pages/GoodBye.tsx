@@ -20,7 +20,7 @@ const GoodBye = () => {
         <Logo />
       </View>
       <View style={style.content} >
-      <Text style={style.headline}>Thank you for the taking the exam. Good luck!</Text>
+      <Text style={style.headline}>Thank you for taking the exam. Good luck!</Text>
       </View>
     </View>
   );

@@ -30,6 +30,7 @@ import ToastConfig from './subComponents/toastConfig';
 import shouldAuthenticate from './utils/shouldAuthenticate';
 import KeyboardManager from 'react-native-keyboard-manager';
 import GoodBye from './pages/GoodBye';
+import ProctorConfigure from './components/ProctorConfigure';
 
 if (Platform.OS === 'ios') {
   KeyboardManager.setEnable(true);
@@ -54,6 +55,7 @@ const App: React.FC = () => {
           <Router>
             <SessionProvider>
               <ColorConfigure>
+              <ProctorConfigure>
                 <Navigation />
                 <Switch>
                   <Route exact path={'/goodbye'}>
@@ -86,6 +88,7 @@ const App: React.FC = () => {
                     <VideoCall />
                   </Route>
                 </Switch>
+                </ProctorConfigure>
               </ColorConfigure>
             </SessionProvider>
           </Router>

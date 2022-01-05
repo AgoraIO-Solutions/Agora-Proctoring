@@ -309,6 +309,9 @@ export default class RtcEngine {
     }
   }
 
+  hi(){
+    alert(999);
+  }
   async joinChannel(
     token: string,
     channelName: string,

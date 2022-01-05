@@ -11,6 +11,9 @@
 */
 import React, {useState, useContext, useEffect} from 'react';
 import {View, StyleSheet, Text, Platform} from 'react-native';
+//import ProctorConfigure from '../components/ProctorConfigure';
+import ProctorContext from '../components/ProctorContext';
+
 
 import RtcConfigure from '../../agora-rn-uikit/src/RTCConfigure';
 import {PropsProvider} from '../../agora-rn-uikit/src/PropsContext';
@@ -26,18 +29,17 @@ import {useParams, useLocation, useHistory} from '../components/Router';
 import Chat from '../components/Chat';
 import RtmConfigure from '../components/RTMConfigure';
 import DeviceConfigure from '../components/DeviceConfigure';
-import ProctorConfigure from '../components/ProctorConfigure';
-// import Watermark from '../subComponents/Watermark';
-import StorageContext from '../components/StorageContext';
+
 import Logo from '../subComponents/Logo';
 import ChatContext from '../components/ChatContext';
-import ProctorContext from '../components/ProctorContext';
 import {SidePanelType} from '../subComponents/SidePanelEnum';
 import {videoView} from '../../theme.json';
 import Layout from '../subComponents/LayoutEnum';
 import Toast from '../../react-native-toast-message';
 import WhiteboardConfigure from '../components/WhiteboardConfigure';
 import {Role} from '../../bridge/rtc/webNg/Types';
+import {MaxVideoView} from '../../agora-rn-uikit/Components';
+import FallbackLogo from '../subComponents/FallbackLogo';
 
 const useChatNotification = (
   messageStore: string | any[],
@@ -101,43 +103,6 @@ const NotificationControl = ({children, chatDisplayed, setSidePanel}) => {
     0,
   );
   const pendingPrivateNotification = totalPrivateMessage - totalPrivateLastSeen;
-
-  // const oldMessageStore = useRef<messageStoreInterface[]>([]);
-  // useEffect(() => {
-  //   if (messageStore.length > oldMessageStore.current.length && messageStore[messageStore.length - 1].uid !== localUid) {
-  //     Toast.show({
-  //       text1: messageStore[messageStore.length - 1]?.msg.length > 50 ? messageStore[messageStore.length - 1]?.msg.slice(1, 50) + '...' : messageStore[messageStore.length - 1]?.msg.slice(1),
-  //       text2: userList[messageStore[messageStore.length - 1]?.uid] ? userList[messageStore[messageStore.length - 1]?.uid].name : 'User',
-  //       visibilityTime: 1000,
-  //       onPress: () => setSidePanel(SidePanelType.Chat),
-  //     });
-  //     oldMessageStore.current = messageStore;
-  //   }
-  // }, [messageStore, userList]);
-
-  // useEffect(() => {
-  //   if (
-  //     messageStore.length !== 0 &&
-  //     messageStore[messageStore.length - 1]?.uid !== localUid &&
-  //     role === Role.Teacher
-  //   ) {
-  //     Toast.show({
-  //       text1:
-  //         messageStore[messageStore.length - 1]?.msg.length > 50
-  //           ? messageStore[messageStore.length - 1]?.msg.slice(1, 50) + '...'
-  //           : messageStore[messageStore.length - 1]?.msg.slice(1),
-  //       text2: userList[messageStore[messageStore.length - 1]?.uid]
-  //         ? 'From: ' + userList[messageStore[messageStore.length - 1]?.uid].name
-  //         : '',
-  //       visibilityTime: 1000,
-  //       onPress: () => {
-  //         setSidePanel(SidePanelType.Chat);
-  //         setLastCheckedPublicState(messageStore.length);
-  //       },
-  //     });
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [messageStore]);
 
   return children({
     pendingPublicNotification,
@@ -206,8 +171,11 @@ export function useChannelInfo() {
   }
   return [params.get('teacher'), students] as [string, string[]];
 }
+
 const VideoCall: React.FC = () => {
   // const {store} = useContext(StorageContext);
+  const {deviceType, setDeviceType} = useContext(ProctorContext);
+
   const [teacher, students] = useChannelInfo();
   const [photoIDUrl, setPhotoIDUrl] = useState<string>('');
   const role = useRole();
@@ -217,6 +185,7 @@ const VideoCall: React.FC = () => {
   const [callActive, setCallActive] = useState($config.PRECALL ? false : true);
   const [recordingActive, setRecordingActive] = useState(false);
   const [queryComplete, setQueryComplete] = useState(true);
+  
   const [sidePanel, setSidePanel] = useState<SidePanelType>(SidePanelType.None);
   const [layout, sl] = useState(
     role === Role.Student ? Layout.Pinned : Layout.Grid,
@@ -271,7 +240,6 @@ const VideoCall: React.FC = () => {
             }}>
             <RtcConfigure callActive={callActive}>
               <WhiteboardConfigure>
-              <ProctorConfigure>
                 <DeviceConfigure>
                   <RtmConfigure
                     photoIDUrl={photoIDUrl}
@@ -323,15 +291,29 @@ const VideoCall: React.FC = () => {
                                   {backgroundColor: '#ffffff00'},
                                 ]}>
                                 {layout === Layout.Pinned ? (
-                                  <PinnedVideo />
+                                  deviceType==2 ? (
+                                    <MaxVideoView                         
+                                    fallback={() => {
+                                        return FallbackLogo("Proc");
+                                    }}
+                                    user={    {
+                                      uid: 'local',
+                                      audio: true,
+                                      video: true,
+                                      streamType: 'high',
+                                    }}
+                                  
+                                    key={'local'}
+                                  />
                                 ) : (
+                                  <PinnedVideo  />
+                                )) : (
                                   <GridVideo setLayout={setLayout} />
                                 )}
                                 {sidePanel === SidePanelType.Participants ? (
                                   <ParticipantsView
                                     isHost={isHost}
                                     username={username}
-                                    // setParticipantsView={setParticipantsView}
                                     setSidePanel={setSidePanel}
                                   />
                                 ) : (
@@ -416,13 +398,16 @@ const VideoCall: React.FC = () => {
                         }}
                         setCallActive={setCallActive}
                         queryComplete={queryComplete}
+                        deviceType={deviceType}
+                        setDeviceType={setDeviceType}
+                   
                       />
                     ) : (
                       <></>
                     )}
                   </RtmConfigure>
                 </DeviceConfigure>
-                </ProctorConfigure>
+                
               </WhiteboardConfigure>
             </RtcConfigure>
           </PropsProvider>

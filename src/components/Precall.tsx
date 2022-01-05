@@ -114,7 +114,7 @@ const Precall = (props: any) => {
           style={{
             flex: 1,
             backgroundColor: $config.SECONDARY_FONT_COLOR + '25',
-            marginLeft: 50,
+            marginLeft: window.innerWidth>window.innerHeight? 50 : 0,
             padding: 20,
             borderRadius: 10,
             alignItems: 'center',
@@ -139,7 +139,7 @@ const Precall = (props: any) => {
             <View
               style={{
                 flex: 1,
-                maxWidth: Platform.OS === 'web' ? '25vw' : 'auto',
+                maxWidth: Platform.OS === 'web' ? '50vw' : 'auto',
               }}>
               <SelectDevice />
             </View>
