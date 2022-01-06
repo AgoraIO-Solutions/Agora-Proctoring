@@ -1,6 +1,8 @@
 #!/bin/sh
 
 while :; do
-sudo npm run sa
-	      sleep 5
+echo "sudo npm run sa"
+sudo npm run sa &
+wait $!
+	      sleep 1
 done
