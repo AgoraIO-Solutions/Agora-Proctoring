@@ -10,7 +10,7 @@
 *********************************************
 */
 import RtmEngine from 'agora-react-native-rtm';
-import {createContext} from 'react';
+import { createContext } from 'react';
 
 export interface channelMessage {
   isLocal: boolean;
@@ -49,8 +49,9 @@ export enum controlMessageEnum {
   cloudRecordingUnactive = '7',
   whiteboardStarted = '8',
   whiteboardStoppped = '9',
+  cloudRecordingFileReady = '11',
+  cloudRecordingFileNotReady = '12',
 }
 
 const ChatContext = createContext((null as unknown) as chatContext);
-
 export default ChatContext;

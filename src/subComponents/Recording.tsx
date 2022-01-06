@@ -64,8 +64,10 @@ const Recording = (props: any) => {
   const { primaryColor } = useContext(ColorContext);
   const setRecordingActive = props.setRecordingActive;
   const recordingActive = props.recordingActive;
-  //const setRecordedFileReady = props.setRecordedFileReady;
-  //const recordedFileReady = props.recordedFileReady;
+  const setRecordingFileReady = props.setRecordingFileReady;
+  const recordingFileReady = props.recordingFileReady;
+  const setPlaybackSubUrl = props.setPlaybackSubUrl;
+  const playbackSubUrl = props.playbackSubUrl;
   const { sendControlMessage } = useContext(ChatContext);
   const dataRef = useRef('');
 
@@ -95,8 +97,11 @@ const Recording = (props: any) => {
                   for (var i in res) {
                     var json = JSON.parse(res[i]);
                     fileName[i] = json.serverResponse.fileList[0].fileName;
-                    console.log("filename .....", fileName);
+                    setPlaybackSubUrl((p) => ([...p, fileName[i]]));
+                    //console.log("playback URL:", fileName[i], playbackSubUrl);
                   }
+                  setRecordingFileReady(true);
+                  sendControlMessage(controlMessageEnum.cloudRecordingFileReady);
                 })
                 .catch((err) => {
                   console.log(err);
@@ -115,6 +120,10 @@ const Recording = (props: any) => {
               sendControlMessage(controlMessageEnum.cloudRecordingUnactive);
               // set the local recording state to false to update the UI
               setRecordingActive(false);
+              // send a control message to everbody in the channel indicating that cloud recording does not have a file to play.
+              sendControlMessage(controlMessageEnum.cloudRecordingFileNotReady);
+              // set the local recording file ready state to false
+              //setRecordingFileReady(false);
             })
             .catch((err) => {
               console.log(err);
