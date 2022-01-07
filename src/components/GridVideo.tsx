@@ -41,7 +41,6 @@ import { Role } from '../../bridge/rtc/webNg/Types';
 import ChatContext from './ChatContext';
 import RecPlayer from '../subComponents/RecPlayer';
 import ReactPlayer from 'react-player';
-import cors from "../utils/cors.js";
 
 const layout = (len: number, isDesktop: boolean = true) => {
   const rows = Math.round(Math.sqrt(len));
@@ -109,6 +108,12 @@ const GridVideo = (props: GridVideoProps) => {
   const [expandUsername, setExpandUsername] = useState("");
   const [playbackAction, setplaybackAction] = useState([]);
 
+  useEffect(() => {
+    const initialValue = new Array(students.length).fill(false);
+    setplaybackAction(initialValue);
+  }, [])
+
+
   const isDesktop = dim[0] > dim[1] + 100;
   let { matrix, dims } = useMemo(
     // Whiteboard: Only iterate over n-1 elements when whiteboard not
@@ -117,7 +122,6 @@ const GridVideo = (props: GridVideoProps) => {
       layout(students.length, isDesktop),
     [students.length, isDesktop, whiteboardActive],
   );
-
 
   return (
     <View
@@ -173,8 +177,9 @@ const GridVideo = (props: GridVideoProps) => {
                                 <button
                                   disabled={!recordingFileReady}
                                   onClick={() => {
-                                    console.log("play1", playbackSubUrl);
-                                    //setplaybackAction([i] = true);
+                                    console.log("play1", playbackSubUrl, playbackAction);
+                                    playbackAction[ridx * dims.c + cidx] = true;
+                                    setplaybackAction(playbackAction);
                                   }}
                                 >Playback
                                 </button>
@@ -203,7 +208,7 @@ const GridVideo = (props: GridVideoProps) => {
                     // photo id
                     (u, i) =>
                       userList[u.uid]?.name?.split('-')[0] ===
-                      students[ridx * dims.c + cidx] && //playbackAction[i] &&
+                      students[ridx * dims.c + cidx] && playbackAction[ridx * dims.c + cidx] &&
                       userList[u?.uid]?.name?.endsWith('Primary') && (
                         <View
                           style={{
@@ -215,7 +220,6 @@ const GridVideo = (props: GridVideoProps) => {
                             position: userList[u?.uid]?.id === expandUID ? 'absolute' : 'relative'
                           }}>
                           < ReactPlayer
-                            //  url='https://agora-proctoring.s3.us-west-1.amazonaws.com/directory1/directory2/a45fdcb96342f51c27fa91804084a3ee_videolayout1.m3u8'
                             url={playbackUrl}
                           />
                         </View>
