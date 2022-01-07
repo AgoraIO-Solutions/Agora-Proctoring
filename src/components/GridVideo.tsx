@@ -107,13 +107,12 @@ const GridVideo = (props: GridVideoProps) => {
   const [expandUID, setExpandUID] = useState("0");
   const [expandUsername, setExpandUsername] = useState("");
   const [playbackAction, setplaybackAction] = useState([]);
-
   useEffect(() => {
     const initialValue = new Array(students.length).fill(false);
     setplaybackAction(initialValue);
   }, [])
 
-
+  const [playbackFullUrl, setPlaybackFullUrl] = useState<string[]>([]);
   const isDesktop = dim[0] > dim[1] + 100;
   let { matrix, dims } = useMemo(
     // Whiteboard: Only iterate over n-1 elements when whiteboard not
@@ -180,6 +179,14 @@ const GridVideo = (props: GridVideoProps) => {
                                     console.log("play1", playbackSubUrl, playbackAction);
                                     playbackAction[ridx * dims.c + cidx] = true;
                                     setplaybackAction(playbackAction);
+                                    for (var j in playbackSubUrl) {
+                                      if (playbackSubUrl[j].includes(students[ridx * dims.c + cidx])) {
+                                        playbackFullUrl[ridx * dims.c + cidx] = playbackBaseUrl.concat(playbackSubUrl[j]);
+                                        setPlaybackFullUrl(playbackFullUrl);
+                                        break;
+                                      }
+                                    }
+                                    //console.log("playback::::", playbackSubUrl, playbackAction, playbackFullUrl);
                                   }}
                                 >Playback
                                 </button>
@@ -219,7 +226,11 @@ const GridVideo = (props: GridVideoProps) => {
                             borderStyle: 'solid',
                             position: userList[u?.uid]?.id === expandUID ? 'absolute' : 'relative'
                           }}>
+                          <Text style={{ flex: 3 }}>
+                            {playbackFullUrl[ridx * dims.c + cidx]}
+                          </Text>
                           < ReactPlayer
+                            //url={playbackFullUrl[ridx * dims.c + cidx]}
                             url={playbackUrl}
                           />
                         </View>
