@@ -14,7 +14,6 @@ import {View, StyleSheet, Text, Platform} from 'react-native';
 //import ProctorConfigure from '../components/ProctorConfigure';
 import ProctorContext from '../components/ProctorContext';
 
-
 import RtcConfigure from '../../agora-rn-uikit/src/RTCConfigure';
 import {PropsProvider} from '../../agora-rn-uikit/src/PropsContext';
 import Navbar from '../components/Navbar';
@@ -290,7 +289,7 @@ const VideoCall: React.FC = () => {
                                   style.videoView,
                                   {backgroundColor: '#ffffff00'},
                                 ]}>
-                                {layout === Layout.Pinned ? (
+                                {role === Role.Student ? (
                                   deviceType==2 ? (
                                     <MaxVideoView                         
                                     fallback={() => {
@@ -308,7 +307,7 @@ const VideoCall: React.FC = () => {
                                 ) : (
                                   <PinnedVideo  />
                                 )) : (
-                                  <GridVideo setLayout={setLayout} />
+                                  <GridVideo  layoutAlerts={layout} setLayout={setLayout} />
                                 )}
                                 {sidePanel === SidePanelType.Participants ? (
                                   <ParticipantsView

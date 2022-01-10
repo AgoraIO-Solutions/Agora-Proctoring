@@ -20,6 +20,8 @@ import {backOff} from 'exponential-backoff';
 import {whiteboardContext} from './WhiteboardConfigure';
 import {Role} from '../../bridge/rtc/webNg/Types';
 import {useRole, useChannelInfo} from '../../src/pages/VideoCall';
+import { number, string } from 'yargs';
+import ProctorContext from './ProctorContext';
 
 export enum mType {
   Control = '0',
@@ -38,6 +40,9 @@ const RtmConfigure = (props: any) => {
     useContext(RtcContext);
   const [messageStore, setMessageStore] = useState<messageStoreInterface[]>([]);
   const [privateMessageStore, setPrivateMessageStore] = useState({});
+  //const [userAlertCounts, setUserAlertCount] = useState(new Map<string, number | undefined>([["0",0]])); // 
+  const [userAlertCounts, setUserAlertCount] = useState(new Map<string, number | undefined>()); // 
+  const [userNames, setUserNames] = useState(new Map<string, string | undefined>()); // 
   const [teacher, students] = useChannelInfo();
   const {whiteboardActive,  setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom} =
     useContext(whiteboardContext);
@@ -46,7 +51,36 @@ const RtmConfigure = (props: any) => {
   let engine = useRef<RtmEngine>(null!);
   const role = useRole();
   let localUid = useRef<string>('');
-  const addMessageToStore = (uid: string, text: string, ts: string) => {
+ 
+
+  const clearAlertCount = () => {
+    //setUserAlertCount(state => (new Map<string, number | undefined>()));
+    //setUserAlertCount(new Map<string, string | undefined>());
+    //setUserAlertCount(prev => (new Map<string, number | undefined>()));
+    userAlertCounts.clear();
+    //setUserAlertCount(prev => (prev.clear(); return prev;));
+  }
+
+ const addMessageToStore = (uid: string, text: string, ts: string) => {
+    var iname="na";
+    var name=userNames.get(""+uid);
+    if (name!==undefined) {
+      iname=name.split('-')[0];
+    } 
+    
+    var current=userAlertCounts.get(iname)      
+    if (current==undefined) {
+      current=0;
+    }
+    current++;
+ 
+    console.log("userAlertCounts 634 ",userAlertCounts);
+    console.log("userNames 634 ",userNames);
+    console.log("iname 633 ",iname);
+    console.log("uid 633 ",uid);    
+    console.log("current 633 ",current); 
+    setUserAlertCount(state => (state.set(iname,current)));
+  
     setMessageStore((m: messageStoreInterface[]) => {
       return [...m, {ts: ts, uid: uid, msg: text}];
     });
@@ -142,6 +176,13 @@ const RtmConfigure = (props: any) => {
           console.log('[user attributes]:', {attr});
           // let arr = new Int32Array(1);
           // arr[0] = parseInt(data.uid);
+         // setUserNames(state => (state.set(data.uid, attr?.attributes?.name || 'User')));
+         //nameMap[data.uid]=attr?.attributes?.name || 'User';
+
+         
+         console.log("adding name"+data.uid+" "+ attr?.attributes?.name || 'User');
+         setUserNames(state => (state.set(data.uid,attr?.attributes?.name || 'User')));
+
           setUserList((prevState) => {
             return {
               ...prevState,
@@ -157,27 +198,23 @@ const RtmConfigure = (props: any) => {
               },
             };
           });
+
+          console.log("userList name ",userList);
+          console.log("userList userListP ",userListP);
         } catch (e) {
           console.error(`Could not retrieve name of ${data.uid}`, e);
         }
       }
       getname();
+
+      console.log("userList 699 ",userList, Object.keys(userList).length);
     });
     engine.current.on('channelMemberLeft', (data: any) => {
       console.log('user left', data);
-      // Chat of left user becomes undefined. So don't cleanup
-      //
-      // let arr = new Int32Array(1);
-      // arr[0] = parseInt(data.uid);
-      // setUserList((prevState) => {
-      //   const uid: number = Platform.OS === 'android' ? arr[0] : data.uid;
-      //   const screenuid: number = prevState[uid].screenUid;
-      //   const {[uid]: _user, [screenuid]: _screen, ...newState} = prevState;
-      //   return newState;
-      // });
     });
     engine.current.on('messageReceived', (evt: any) => {
       let {text} = evt;
+      console.log("userList 5 ",userList);
       // console.log('messageReceived: ', evt);
       if (text[0] === mType.Control) {
         console.log('Control: ', text);
@@ -216,9 +253,6 @@ const RtmConfigure = (props: any) => {
     });
     engine.current.on('channelMessageReceived', (evt) => {
       let {uid, channelId, text, ts} = evt;
-      // if (uid < 0) {
-      //   uid = uid + parseInt(0xFFFFFFFF) + 1;
-      // }
       let arr = new Int32Array(1);
       arr[0] = parseInt(uid);
       Platform.OS ? (uid = arr[0]) : {};
@@ -305,8 +339,8 @@ const RtmConfigure = (props: any) => {
           try {
             const attr = await backoffAttributes;
             console.log('[user attributes]:', {attr});
-            // let arr = new Int32Array(1);
-            // arr[0] = parseInt(data.uid);
+            setUserNames(state => (state.set(member.uid,attr?.attributes?.name || 'User')));
+
             setUserList((prevState) => {
               console.log('User ATTRIB:' + attr.attributes.whiteboardRoom);
               if (attr?.attributes?.whiteboardRoom === 'active') {
@@ -400,6 +434,7 @@ const RtmConfigure = (props: any) => {
       text: mType.Control + '' + msg,
     });
   };
+
   const end = async () => {
     if (engine.current) {
     callActive
@@ -434,6 +469,8 @@ const RtmConfigure = (props: any) => {
         engine: engine.current,
         localUid: localUid.current,
         userList: userList,
+        userAlertCounts: userAlertCounts,
+        clearAlertCount: clearAlertCount,
       }}>
       {login ? props.children : <></>}
     </ChatContext.Provider>

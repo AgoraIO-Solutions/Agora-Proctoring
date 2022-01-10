@@ -60,6 +60,8 @@ const Navbar = (props: any) => {
     setDim([e.nativeEvent.layout.width, e.nativeEvent.layout.height]);
   };
   const isDesktop = dim[0] > 1224;
+  console.log(pendingMessageLength);
+  
   return (
     <View
       onLayout={onLayout}
@@ -192,7 +194,7 @@ const Navbar = (props: any) => {
                         ? setSidePanel(SidePanelType.None)
                         : setSidePanel(SidePanelType.Chat);
                     }}>
-                    {sidePanel !== SidePanelType.Chat &&
+                    { sidePanel !== SidePanelType.Chat &&
                     pendingMessageLength !== 0 ? (
                       <View style={style.chatNotification}>
                         <Text style={{color: $config.SECONDARY_FONT_COLOR}}>

@@ -11,6 +11,7 @@
 */
 import RtmEngine from 'agora-react-native-rtm';
 import {createContext} from 'react';
+import { VoiceBeautifierPreset } from 'react-native-agora';
 
 export interface channelMessage {
   isLocal: boolean;
@@ -36,6 +37,8 @@ interface chatContext {
   engine: RtmEngine;
   localUid: string;
   userList: any;
+  userAlertCounts: any;
+  setUserAlertCount: (state: any) => void;
   // peersRTM: Array<string>;
 }
 

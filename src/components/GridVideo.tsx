@@ -23,8 +23,6 @@ import MinUidContext from '../../agora-rn-uikit/src/MinUidContext';
 import MaxUidContext from '../../agora-rn-uikit/src/MaxUidContext';
 import {MaxVideoView} from '../../agora-rn-uikit/Components';
 
-
-import chatContext from './ChatContext';
 import icons from '../assets/icons';
 import styles from './styles';
 import ColorContext from './ColorContext';
@@ -58,15 +56,14 @@ const layout = (len: number, isDesktop: boolean = true) => {
   };
 };
 
-// const isDesktop = Platform.OS === 'web';
-
 interface GridVideoProps {
   setLayout: React.Dispatch<React.SetStateAction<Layout>>;
+  layoutAlerts: any;
 }
 
 const GridVideo = (props: GridVideoProps) => {
   const {dispatch} = useContext(RtcContext);
-  const {messageStore} = useContext(ChatContext);
+  const {messageStore,userAlertCounts,userList,clearAlertCount} = useContext(ChatContext);
   const max = useContext(MaxUidContext);
   const min = useContext(MinUidContext);
   const role = useRole();
@@ -82,7 +79,7 @@ const GridVideo = (props: GridVideoProps) => {
   };
 
   const {primaryColor} = useContext(ColorContext);
-  const {userList, localUid} = useContext(chatContext);
+  //const {userList, localUid} = useContext(chatContext);
   // Whiteboard: Add an extra user with uid as whiteboard to intercept
   // later and replace with whiteboardView
   const users = [...max, ...min, wb];
@@ -99,6 +96,8 @@ const GridVideo = (props: GridVideoProps) => {
   const [expandUID,setExpandUID]= useState("0");
   const [expandUsername,setExpandUsername]= useState("");
 
+  const [showAlertTable,setShowAlertTable]= useState(false);
+
   const isDesktop = dim[0] > dim[1] + 100;
   let {matrix, dims} = useMemo(
     // Whiteboard: Only iterate over n-1 elements when whiteboard not
@@ -108,7 +107,11 @@ const GridVideo = (props: GridVideoProps) => {
     [students.length, isDesktop, whiteboardActive],
   );
 
-
+  if (props.layoutAlerts===Layout.Pinned) {
+    console.log(" layoutAlerts "+props.layoutAlerts);
+    clearAlertCount();
+  }
+  
   return (
     <View
       style={[style.full, {paddingHorizontal: isDesktop ? 50 : 0}]}
@@ -120,10 +123,19 @@ const GridVideo = (props: GridVideoProps) => {
           {r.map((c, cidx) => (
             // student cells
             <View style={style.gridVideoContainerInner} key={cidx}>
-              <Text style={{fontSize:16}}>
+              { userAlertCounts.get(students[ridx * dims.c + cidx])>0 ? (
+              <Text style={{fontSize:16, fontWeight:'bold', color:'#aa0000' }}>
+                {students[ridx * dims.c + cidx].charAt(0).toUpperCase() + students[ridx * dims.c + cidx].slice(1) }
+     &nbsp;
+                ({userAlertCounts.get(students[ridx * dims.c + cidx])})
+              </Text>
+              ) : (
+                <Text style={{fontSize:16}}>
                 {students[ridx * dims.c + cidx].charAt(0).toUpperCase() + students[ridx * dims.c + cidx].slice(1) }
               </Text>
+              )}
               <View style={{flex: 1}}>
+                {props.layoutAlerts==Layout.Pinned  ? (
                 <View
                   style={{
                     flex: 0.5,
@@ -138,7 +150,7 @@ const GridVideo = (props: GridVideoProps) => {
                       students[ridx * dims.c + cidx]
                         ? messageStore.slice(0).reverse()
                             // .filter((m: any) => m.uid === u.uid)
-                            .map((m: any, i) =>
+                            .map((m: any, i: React.Key | null | undefined) =>
                               m.uid === u.uid ||
                               m.uid + parseInt(0xffffffff) + 1 === u.uid ? (
                                 <View style={{flexDirection: 'row'}} key={i}>
@@ -155,20 +167,25 @@ const GridVideo = (props: GridVideoProps) => {
                                   <Text
                                     style={{flex: 1, cursor: 'pointer'}}
                                     onPress={() => {
-                                      console.log(m.ts);
+                                      //console.log(m.ts);
                                     }}>
                                     Action
                                   </Text>
                                   {/* <Text style={{flex: 1}}>{m.uid}</Text> */}
                                 </View>
                               ) : (
-                                console.log(m.uid, u.uid)
+                                console.log(u.uid+" message count "+ userAlertCounts.get(u.uid))
+                                //console.log("userAlertCounts", userAlertCounts) 
+                                //console.log("userList2 ",userList)
                               ),
                             )
                         : null,
                     // : (<Text>{s} {userList[u.uid]?.name}</Text>)
                   )}
                 </View>
+                ) : (
+                  <></>
+                )}
                 <View
                   style={{
                     display: 'grid',
@@ -278,7 +295,7 @@ const style = StyleSheet.create({
   gridVideoContainerInner: {
     borderColor: '#ddd',
     marginHorizontal: 2,
-    // backgroundColor: '#ff00ff55',
+     //backgroundColor: '#ff00ff',
     borderWidth: 2,
     // width: '100%',
     // borderRadius: 15,
