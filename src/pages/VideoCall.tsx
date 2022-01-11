@@ -9,14 +9,14 @@
  information visit https://appbuilder.agora.io.
 *********************************************
 */
-import React, {useState, useContext, useEffect} from 'react';
-import {View, StyleSheet, Text, Platform} from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, StyleSheet, Text, Platform } from 'react-native';
 //import ProctorConfigure from '../components/ProctorConfigure';
 import ProctorContext from '../components/ProctorContext';
 
 
 import RtcConfigure from '../../agora-rn-uikit/src/RTCConfigure';
-import {PropsProvider} from '../../agora-rn-uikit/src/PropsContext';
+import { PropsProvider } from '../../agora-rn-uikit/src/PropsContext';
 import Navbar from '../components/Navbar';
 import Precall from '../components/Precall';
 import ParticipantsView from '../components/ParticipantsView';
@@ -25,20 +25,20 @@ import PinnedVideo from '../components/PinnedVideo';
 import Controls from '../components/Controls';
 import GridVideo from '../components/GridVideo';
 import styles from '../components/styles';
-import {useParams, useLocation, useHistory} from '../components/Router';
+import { useParams, useLocation, useHistory } from '../components/Router';
 import Chat from '../components/Chat';
 import RtmConfigure from '../components/RTMConfigure';
 import DeviceConfigure from '../components/DeviceConfigure';
 
 import Logo from '../subComponents/Logo';
 import ChatContext from '../components/ChatContext';
-import {SidePanelType} from '../subComponents/SidePanelEnum';
-import {videoView} from '../../theme.json';
+import { SidePanelType } from '../subComponents/SidePanelEnum';
+import { videoView } from '../../theme.json';
 import Layout from '../subComponents/LayoutEnum';
 import Toast from '../../react-native-toast-message';
 import WhiteboardConfigure from '../components/WhiteboardConfigure';
-import {Role} from '../../bridge/rtc/webNg/Types';
-import {MaxVideoView} from '../../agora-rn-uikit/Components';
+import { Role } from '../../bridge/rtc/webNg/Types';
+import { MaxVideoView } from '../../agora-rn-uikit/Components';
 import FallbackLogo from '../subComponents/FallbackLogo';
 
 const useChatNotification = (
@@ -55,9 +55,9 @@ const useChatNotification = (
     }
   }, [messageStore]);
 
-  const setPrivateMessageLastSeen = ({userId, lastSeenCount}) => {
+  const setPrivateMessageLastSeen = ({ userId, lastSeenCount }) => {
     setLastCheckedPrivateState((prevState) => {
-      return {...prevState, [userId]: lastSeenCount || 0};
+      return { ...prevState, [userId]: lastSeenCount || 0 };
     });
   };
   return [
@@ -69,9 +69,9 @@ const useChatNotification = (
   ];
 };
 
-const NotificationControl = ({children, chatDisplayed, setSidePanel}) => {
+const NotificationControl = ({ children, chatDisplayed, setSidePanel }) => {
   const role = useRole();
-  const {messageStore, privateMessageStore, userList, localUid} =
+  const { messageStore, privateMessageStore, userList, localUid } =
     useContext(ChatContext);
   const [
     lastCheckedPublicState,
@@ -90,7 +90,7 @@ const NotificationControl = ({children, chatDisplayed, setSidePanel}) => {
         },
         0,
       );
-      return {...acc, [curItem]: individualPrivateMessageCount};
+      return { ...acc, [curItem]: individualPrivateMessageCount };
     },
     {},
   );
@@ -143,20 +143,20 @@ enum RnEncryptionEnum {
 }
 
 export function useRole() {
-  const {phrase} = useParams<{phrase: string}>();
+  const { phrase } = useParams<{ phrase: string }>();
   return React.useMemo(
     () =>
       phrase === 'proctor'
         ? Role.Teacher
         : phrase === 'exam'
-        ? Role.Student
-        : Role.Unknown,
+          ? Role.Student
+          : Role.Unknown,
     [phrase],
   );
 }
 
 function useQuery() {
-  const {search} = useLocation();
+  const { search } = useLocation();
   return React.useMemo(() => new URLSearchParams(search), [search]);
 }
 
@@ -174,7 +174,7 @@ export function useChannelInfo() {
 
 const VideoCall: React.FC = () => {
   // const {store} = useContext(StorageContext);
-  const {deviceType, setDeviceType} = useContext(ProctorContext);
+  const { deviceType, setDeviceType } = useContext(ProctorContext);
 
   const [teacher, students] = useChannelInfo();
   const [photoIDUrl, setPhotoIDUrl] = useState<string>('');
@@ -265,38 +265,38 @@ const VideoCall: React.FC = () => {
                             setPrivateMessageLastSeen,
                           }) => (
                             <>
-                        
-                              { role === Role.Teacher ? (
-                              <Navbar
-                                sidePanel={sidePanel}
-                                setSidePanel={setSidePanel}
-                                layout={layout}
-                                setLayout={setLayout}
-                                recordingActive={recordingActive}
-                                setRecordingActive={setRecordingActive}
-                                isHost={isHost}
-                                username={username}
-                                title={title}
-                                pendingMessageLength={
-                                  pendingPublicNotification +
-                                  pendingPrivateNotification
-                                }
-                                setLastCheckedPublicState={
-                                  setLastCheckedPublicState
-                                }
-                              />
-                              ): (
+
+                              {role === Role.Teacher ? (
+                                <Navbar
+                                  sidePanel={sidePanel}
+                                  setSidePanel={setSidePanel}
+                                  layout={layout}
+                                  setLayout={setLayout}
+                                  recordingActive={recordingActive}
+                                  setRecordingActive={setRecordingActive}
+                                  isHost={isHost}
+                                  username={username}
+                                  title={title}
+                                  pendingMessageLength={
+                                    pendingPublicNotification +
+                                    pendingPrivateNotification
+                                  }
+                                  setLastCheckedPublicState={
+                                    setLastCheckedPublicState
+                                  }
+                                />
+                              ) : (
                                 <></>
                               )}
                               <View
                                 style={[
                                   style.videoView,
-                                  {backgroundColor: '#ffffff00'},
+                                  { backgroundColor: '#ffffff00' },
                                 ]}>
                                 {role === Role.Student ? (
-                                  deviceType==2 ? (
-                                    <MaxVideoView                         
-                                    fallback={() => {
+                                  deviceType == 2 ? (
+                                    <MaxVideoView
+                                      fallback={() => {
                                         return FallbackLogo("Proc");
                                       }}
                                       user={{
@@ -312,7 +312,7 @@ const VideoCall: React.FC = () => {
                                   )) : (
                                   <GridVideo
                                     setLayout={setLayout}
-                                    layoutAlerts={layout} 
+                                    layoutAlerts={layout}
                                     recordingFileReady={recordingFileReady}
                                     playbackSubUrl={playbackSubUrl}
                                   />
@@ -364,13 +364,17 @@ const VideoCall: React.FC = () => {
                                 )}
                               </View>
                               {Platform.OS !== 'web' &&
-                              sidePanel === SidePanelType.Chat ? (
+                                sidePanel === SidePanelType.Chat ? (
                                 <></>
                               ) : (
                                 <Controls
                                   setLayout={sl}
                                   recordingActive={recordingActive}
                                   setRecordingActive={setRecordingActive}
+                                  recordingFileReady={recordingFileReady}
+                                  setRecordingFileReady={setRecordingFileReady}
+                                  playbackSubUrl={playbackSubUrl}
+                                  setPlaybackSubUrl={setPlaybackSubUrl}
                                   // chatDisplayed={chatDisplayed}
                                   // setChatDisplayed={setChatDisplayed}
                                   isHost={isHost}
@@ -408,14 +412,14 @@ const VideoCall: React.FC = () => {
                         queryComplete={queryComplete}
                         deviceType={deviceType}
                         setDeviceType={setDeviceType}
-                   
+
                       />
                     ) : (
                       <></>
                     )}
                   </RtmConfigure>
                 </DeviceConfigure>
-                
+
               </WhiteboardConfigure>
             </RtcConfigure>
           </PropsProvider>
@@ -472,7 +476,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 30,
   },
-  loaderText: {fontWeight: '500', color: $config.PRIMARY_FONT_COLOR},
+  loaderText: { fontWeight: '500', color: $config.PRIMARY_FONT_COLOR },
 });
 
 export default VideoCall;
