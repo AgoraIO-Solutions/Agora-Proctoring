@@ -189,7 +189,7 @@ const VideoCall: React.FC = () => {
   const [playbackSubUrl, setPlaybackSubUrl] = useState<string[]>([]);
 
   const [sidePanel, setSidePanel] = useState<SidePanelType>(SidePanelType.None);
-  
+
   const [layout, sl] = useState(
     role === Role.Student ? Layout.Pinned : Layout.Grid,
   );
@@ -298,7 +298,6 @@ const VideoCall: React.FC = () => {
                                     <MaxVideoView                         
                                     fallback={() => {
                                         return FallbackLogo("Proc");
-
                                       }}
                                       user={{
                                         uid: 'local',
@@ -306,7 +305,6 @@ const VideoCall: React.FC = () => {
                                         video: true,
                                         streamType: 'high',
                                       }}
-
                                       key={'local'}
                                     />
                                   ) : (

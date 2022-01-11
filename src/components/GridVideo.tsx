@@ -123,7 +123,7 @@ const GridVideo = (props: GridVideoProps) => {
     [students.length, isDesktop, whiteboardActive],
   );
 
-  if (props.layoutAlerts===Layout.Pinned) {
+  if (props.layoutAlerts!=Layout.Pinned) {
     console.log(" layoutAlerts "+props.layoutAlerts);
     clearAlertCount();
   }
@@ -150,7 +150,7 @@ const GridVideo = (props: GridVideoProps) => {
               </Text>
               )}
               <View style={{flex: 1}}>
-                {props.layoutAlerts==Layout.Pinned  ? (
+                {props.layoutAlerts!=Layout.Pinned  ? (
 
                 <View
                   style={{
