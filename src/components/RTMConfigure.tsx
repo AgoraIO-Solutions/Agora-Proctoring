@@ -169,14 +169,14 @@ const RtmConfigure = (props: any) => {
       async function getname() {
         try {
           const attr = await backoffAttributes;
-          console.log('[user attributes]:', { attr });
+         // console.log('[user attributes]:', { attr });
           // let arr = new Int32Array(1);
           // arr[0] = parseInt(data.uid);
          // setUserNames(state => (state.set(data.uid, attr?.attributes?.name || 'User')));
          //nameMap[data.uid]=attr?.attributes?.name || 'User';
 
          
-         console.log("adding name"+data.uid+" "+ attr?.attributes?.name || 'User');
+         //console.log("adding name"+data.uid+" "+ attr?.attributes?.name || 'User');
          setUserNames(state => (state.set(data.uid,attr?.attributes?.name || 'User')));
 
           setUserList((prevState) => {
@@ -195,15 +195,13 @@ const RtmConfigure = (props: any) => {
             };
           });
 
-          console.log("userList name ",userList);
-          console.log("userList userListP ",userListP);
         } catch (e) {
           console.error(`Could not retrieve name of ${data.uid}`, e);
         }
       }
       getname();
 
-      console.log("userList 699 ",userList, Object.keys(userList).length);
+     // console.log("userList 699 ",userList, Object.keys(userList).length);
     });
     engine.current.on('channelMemberLeft', (data: any) => {
       console.log('user left', data);
@@ -338,11 +336,11 @@ const RtmConfigure = (props: any) => {
           try {
             const attr = await backoffAttributes;
 
-            console.log('[user attributes]:', {attr});
+            //console.log('[user attributes]:', {attr});
             setUserNames(state => (state.set(member.uid,attr?.attributes?.name || 'User')));
 
             setUserList((prevState) => {
-              console.log('User ATTRIB:' + attr.attributes.whiteboardRoom);
+            //  console.log('User ATTRIB:' + attr.attributes.whiteboardRoom);
               if (attr?.attributes?.whiteboardRoom === 'active') {
                 console.log(
                   'WHITERTM:' +

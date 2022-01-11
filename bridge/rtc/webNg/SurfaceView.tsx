@@ -9,15 +9,15 @@
  information visit https://appbuilder.agora.io.
 *********************************************
 */
-import {RtcContext} from '../../../agora-rn-uikit/Contexts';
-import {ILocalVideoTrack, IRemoteVideoTrack} from 'agora-rtc-sdk-ng';
-import React, {useContext, useEffect} from 'react';
-import {StyleProp, StyleSheet, ViewProps, ViewStyle} from 'react-native';
-import {VideoMirrorMode, VideoRenderMode} from 'react-native-agora';
-import {useRole} from '../../../src/pages/VideoCall';
+import { RtcContext } from '../../../agora-rn-uikit/Contexts';
+import { ILocalVideoTrack, IRemoteVideoTrack } from 'agora-rtc-sdk-ng';
+import React, { useContext, useEffect } from 'react';
+import { StyleProp, StyleSheet, ViewProps, ViewStyle } from 'react-native';
+import { VideoMirrorMode, VideoRenderMode } from 'react-native-agora';
+import { useRole } from '../../../src/pages/VideoCall';
 import ProctorContext from '../../../src/components/ProctorContext';
 
-import {Role} from './Types';
+import { Role } from './Types';
 
 export interface RtcSurfaceViewProps extends ViewProps {
   zOrderMediaOverlay?: boolean;
@@ -35,68 +35,81 @@ export interface StyleProps {
 
 interface SurfaceViewInterface
   extends RtcSurfaceViewProps,
-    RtcUidProps,
-    StyleProps {}
+  RtcUidProps,
+  StyleProps { }
 
 const SurfaceView = (props: SurfaceViewInterface) => {
   //   console.log('Surface View props', props);
-  const {hasJoinedChannel} = useContext(RtcContext);
-  const {deviceType, setDeviceType} = useContext(ProctorContext);
+  const { hasJoinedChannel } = useContext(RtcContext);
+  const { deviceType, setDeviceType } = useContext(ProctorContext);
   const role = useRole();
   // stream will be of type ILocalVideoTrack or IRemoteVideoTrack
   const stream: ILocalVideoTrack | IRemoteVideoTrack =
     props.uid === 0
       ? window.engine.localStream.video
       : props.uid === 1
-      ? window.engine.screenStream.video
-      : window.engine.remoteStreams.get(props.uid)?.video;
+        ? window.engine.screenStream.video
+        : window.engine.remoteStreams.get(props.uid)?.video;
 
 
-      //console.log("deviceType "+deviceType);
+  //console.warn(" render 1 ");
+
 
   useEffect(() => {
+    console.log(" useEffect 1 ");
     if (
-      deviceType==1 &&
+      deviceType == 1 &&
       role === Role.Student &&
       window?.AgoraProctorUtils
     ) {
-      // setInterval(() => {
-      // @ts-ignore
+
+      console.log(" useEffect 1b ");
       if (props.uid === 0 && document.getElementById('0')?.children[0]?.children[0]) {
         // set canvas and video elements
-        
+
+        console.log(" useEffect 1c ", document.getElementById('canvas'), document.getElementById('0')?.children[0]?.children[0]);
         window?.AgoraProctorUtils?.faceDetect(
           document.getElementById('canvas'),
           document.getElementById('0')?.children[0]?.children[0],
         );
-      
+
       } else {
-/*
-              if (stream?.play) {
-        if (props.renderMode === 2) {
-          stream.play(String(props.uid), {fit: 'contain'});
-        } else {
-          stream.play(String(props.uid));
-        }
-      }*/
+        console.log(" useEffect scheduling interval ", stream);
+        setInterval(() => {
+          // @ts-ignore
+          console.log(" useEffect 1b ");
+          if (props.uid === 0 && document.getElementById('0')?.children[0]?.children[0]) {
+            // set canvas and video elements
+
+            console.log(" useEffect 1c ", document.getElementById('canvas'), document.getElementById('0')?.children[0]?.children[0]);
+            window?.AgoraProctorUtils?.faceDetect(
+              document.getElementById('canvas'),
+              document.getElementById('0')?.children[0]?.children[0],
+            );
+          } else {
+            console.log(" useEffect no video element ", stream);
+          }
+        }, 2000);
       }
-      // }, 3000);
     }
-  }, [hasJoinedChannel]);//, [hasJoinedChannel,props.uid, props.renderMode, stream]);
+  }, [hasJoinedChannel, props.uid, props.renderMode, stream]);//, [hasJoinedChannel,props.uid, props.renderMode, stream]);
   //}, [hasJoinedChannel]);
 
   useEffect(
     function () {
+      console.log(" useEffect 2 ");
       if (stream?.play) {
         if (props.renderMode === 2) {
-          stream.play(String(props.uid), {fit: 'contain'});
+          console.log(" useEffect 2a ");
+          stream.play(String(props.uid), { fit: 'contain' });
         } else {
+          console.log(" useEffect 2b ");
           stream.play(String(props.uid));
         }
       }
       return () => {
-        console.log(`unmounting stream ${props.uid}`, stream);
-        stream && stream.stop();
+          console.log(`stop stream ${props.uid}`, stream);
+          stream && stream.stop();
       };
     },
     [props.uid, props.renderMode, stream],
@@ -114,21 +127,19 @@ const SurfaceView = (props: SurfaceViewInterface) => {
           backgroundColor: 'transparent',
           display:
             //props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && role !== Role.Student 
-            props.uid === 0  &&  hasJoinedChannel  && role !== Role.Teacher && deviceType==1 
+            props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && deviceType == 1
               ? 'none'
               : 'block',
-      }}
+        }}
       />
       <canvas
         id={props.uid === 0 ? "canvas" : ''}
         style={{
-          // position: 'absolute',
           zIndex: -1,
           borderRadius: 15,
           flex: 1,
           display:
-            //props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && role !== Role.Student 
-            props.uid === 0  &&  hasJoinedChannel && role !== Role.Teacher && deviceType==1 
+            props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && deviceType == 1
               ? 'block'
               : 'none',
         }}
@@ -137,7 +148,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
       />
     </>
   ) : (
-    <div style={{...style.full, backgroundColor: 'orange'}} />
+    <div style={{ ...style.full, backgroundColor: 'orange' }} />
   );
 };
 
