@@ -310,7 +310,11 @@ const VideoCall: React.FC = () => {
                                   ) : (
                                     <PinnedVideo />
                                   )) : (
-                                  <GridVideo setLayout={setLayout} />
+                                  <GridVideo
+                                    setLayout={setLayout}
+                                    recordingFileReady={recordingFileReady}
+                                    playbackSubUrl={playbackSubUrl}
+                                  />
                                 )}
                                 {sidePanel === SidePanelType.Participants ? (
                                   <ParticipantsView
@@ -321,94 +325,40 @@ const VideoCall: React.FC = () => {
                                 ) : (
                                   <></>
                                 )}
-                                <View
-                                  style={[
-                                    style.videoView,
-                                    { backgroundColor: '#ffffff00' },
-                                  ]}>
-                                  {layout === Layout.Pinned ? (
-                                    <PinnedVideo />
-                                  ) : (
-                                    <GridVideo
-                                      setLayout={setLayout}
-                                      recordingFileReady={recordingFileReady}
-                                      playbackSubUrl={playbackSubUrl}
-                                    />
-                                  )}
-                                  {sidePanel === SidePanelType.Participants ? (
-                                    <ParticipantsView
-                                      isHost={isHost}
-                                      username={username}
-                                      // setParticipantsView={setParticipantsView}
-                                      setSidePanel={setSidePanel}
+                                {sidePanel === SidePanelType.Chat ? (
+                                  $config.CHAT & role === Role.Teacher ? (
+                                    <Chat
+                                      privateMessageCountMap={
+                                        privateMessageCountMap
+                                      }
+                                      pendingPublicNotification={
+                                        pendingPublicNotification
+                                      }
+                                      pendingPrivateNotification={
+                                        pendingPrivateNotification
+                                      }
+                                      setPrivateMessageLastSeen={
+                                        setPrivateMessageLastSeen
+                                      }
+                                      lastCheckedPrivateState={
+                                        lastCheckedPrivateState
+                                      }
                                     />
                                   ) : (
                                     <></>
-                                  )}
-                                  {sidePanel === SidePanelType.Chat ? (
-                                    $config.CHAT & role === Role.Teacher ? (
-                                      <Chat
-                                        privateMessageCountMap={
-                                          privateMessageCountMap
-                                        }
-                                        pendingPublicNotification={
-                                          pendingPublicNotification
-                                        }
-                                        pendingPrivateNotification={
-                                          pendingPrivateNotification
-                                        }
-                                        setPrivateMessageLastSeen={
-                                          setPrivateMessageLastSeen
-                                        }
-                                        lastCheckedPrivateState={
-                                          lastCheckedPrivateState
-                                        }
-                                      />
-                                    ) : (
-                                      <></>
-                                    )
-                                  ) : (
-                                    <></>
-                                  )}
-                                  {sidePanel === SidePanelType.Settings ? (
-                                    <SettingsView
-                                      isHost={isHost}
-                                      username={username}
-                                      // setParticipantsView={setParticipantsView}
-                                      setSidePanel={setSidePanel}
-                                    />
-                                  ) : (
-                                    <></>
-                                  )}
-                                </View>
-                                {Platform.OS !== 'web' &&
-                                  sidePanel === SidePanelType.Chat ? (
-                                  <></>
+                                  )
                                 ) : (
-                                  <Controls
-                                    setLayout={sl}
-                                    recordingActive={recordingActive}
-                                    setRecordingActive={setRecordingActive}
-                                    recordingFileReady={recordingFileReady}
-                                    setRecordingFileReady={setRecordingFileReady}
-                                    playbackSubUrl={playbackSubUrl}
-                                    setPlaybackSubUrl={setPlaybackSubUrl}
-                                    //chatDisplayed={chatDisplayed}
-                                    // setChatDisplayed={setChatDisplayed}
+                                  <></>
+                                )}
+                                {sidePanel === SidePanelType.Settings ? (
+                                  <SettingsView
                                     isHost={isHost}
                                     username={username}
-                                    // participantsView={participantsView}
                                     // setParticipantsView={setParticipantsView}
-                                    sidePanel={sidePanel}
                                     setSidePanel={setSidePanel}
-                                    pendingMessageLength={
-                                      pendingPublicNotification +
-                                      pendingPrivateNotification
-                                    }
-                                    setLastCheckedPublicState={
-                                      setLastCheckedPublicState
-                                    }
                                   />
+                                ) : (
+                                  <></>
                                 )}
                               </View>
                               {Platform.OS !== 'web' &&
