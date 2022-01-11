@@ -9,8 +9,8 @@
  information visit https://appbuilder.agora.io.
 *********************************************
 */
-import React, {useState, useContext, useEffect} from 'react';
-import {View, Dimensions, Platform, StyleSheet, Text} from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { View, Dimensions, Platform, StyleSheet, Text } from 'react-native';
 import LocalUserContext from '../../agora-rn-uikit/src/LocalUserContext';
 import {
   LocalAudioMute,
@@ -24,11 +24,11 @@ import ScreenshareButton from '../subComponents/ScreenshareButton';
 // import ColorContext from './ColorContext';
 // import ChatContext from '../components/ChatContext';
 // import {SidePanelType} from '../subComponents/SidePanelEnum';
-import {controlsHolder} from '../../theme.json';
+import { controlsHolder } from '../../theme.json';
 import mobileAndTabletCheck from '../utils/mobileWebTest';
 import WhiteboardButton from '../subComponents/WhiteboardButton';
-import {useRole} from '../../src/pages/VideoCall';
-import {Role} from '../../bridge/rtc/webNg/Types';
+import { useRole } from '../../src/pages/VideoCall';
+import { Role } from '../../bridge/rtc/webNg/Types';
 
 const Controls = (props: any) => {
   const role = useRole();
@@ -49,6 +49,10 @@ const Controls = (props: any) => {
     // setParticipantsView,
     setRecordingActive,
     recordingActive,
+    setRecordingFileReady,
+    recordingFileReady,
+    playbackSubUrl,
+    setPlaybackSubUrl,
     // setChatDisplayed,
     // chatDisplayed,
     // sidePanel,
@@ -72,7 +76,7 @@ const Controls = (props: any) => {
         ]}
         onLayout={onLayout}>
         {role === Role.Teacher && (
-          <View style={{alignSelf: 'center'}}>
+          <View style={{ alignSelf: 'center' }}>
             <LocalAudioMute />
             {/* <Text
             style={{
@@ -85,7 +89,7 @@ const Controls = (props: any) => {
           </View>
         )}
         {role === Role.Teacher && (
-          <View style={{alignSelf: 'center'}}>
+          <View style={{ alignSelf: 'center' }}>
             <LocalVideoMute />
             {/* <Text
             style={{
@@ -98,7 +102,7 @@ const Controls = (props: any) => {
           </View>
         )}
         {mobileAndTabletCheck() ? (
-          <View style={{alignSelf: 'center'}}>
+          <View style={{ alignSelf: 'center' }}>
             <SwitchCamera />
             {/* <Text
             style={{
@@ -113,15 +117,15 @@ const Controls = (props: any) => {
           <></>
         )}
         {!mobileAndTabletCheck() && isHost && role === Role.Teacher ? (
-          <View style={{alignSelf: 'center'}}>
+          <View style={{ alignSelf: 'center' }}>
             <WhiteboardButton setLayout={setLayout} />
           </View>
         ) : (
           <></>
         )}
-          {$config.SCREEN_SHARING && username?.indexOf("-Primary")>0 ? (
+        {$config.SCREEN_SHARING && username?.indexOf("-Primary") > 0 ? (
           !mobileAndTabletCheck() ? (
-            <View style={{alignSelf: 'center'}}>
+            <View style={{ alignSelf: 'center' }}>
               <ScreenshareButton
                 screenshareActive={screenshareActive}
                 setScreenshareActive={setScreenshareActive}
@@ -146,10 +150,14 @@ const Controls = (props: any) => {
         )}
         {isHost ? (
           $config.CLOUD_RECORDING && role === Role.Teacher ? (
-            <View style={{alignSelf: 'center'}}>
+            <View style={{ alignSelf: 'center' }}>
               <Recording
                 recordingActive={recordingActive}
                 setRecordingActive={setRecordingActive}
+                recordingFileReady={recordingFileReady}
+                setRecordingFileReady={setRecordingFileReady}
+                playbackSubUrl={playbackSubUrl}
+                setPlaybackSubUrl={setPlaybackSubUrl}
               />
               {/* <Text
                 style={{
@@ -211,7 +219,7 @@ const Controls = (props: any) => {
             opacity: 0.8,
           }}
         />:<></>} */}
-        <View style={{alignSelf: 'center'}}>
+        <View style={{ alignSelf: 'center' }}>
           <Endcall />
           {/* <Text style={{textAlign: 'center', marginTop: 5, color: '#FD0845'}}>
             Hang Up

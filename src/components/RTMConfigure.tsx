@@ -9,10 +9,10 @@
  information visit https://appbuilder.agora.io.
 *********************************************
 */
-import React, {useState, useContext, useEffect, useRef} from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import RtmEngine from 'agora-react-native-rtm';
 import PropsContext from '../../agora-rn-uikit/src/PropsContext';
-import ChatContext, {controlMessageEnum} from './ChatContext';
+import ChatContext, { controlMessageEnum } from './ChatContext';
 import RtcContext from '../../agora-rn-uikit/src/RtcContext';
 import {messageStoreInterface} from './ChatContext';
 import {Platform} from 'react-native';
@@ -20,8 +20,6 @@ import {backOff} from 'exponential-backoff';
 import {whiteboardContext} from './WhiteboardConfigure';
 import {Role} from '../../bridge/rtc/webNg/Types';
 import {useRole, useChannelInfo} from '../../src/pages/VideoCall';
-import { number, string } from 'yargs';
-import ProctorContext from './ProctorContext';
 
 export enum mType {
   Control = '0',
@@ -34,9 +32,9 @@ export enum UserType {
 }
 
 const RtmConfigure = (props: any) => {
-  const {setRecordingActive, callActive, name, photoIDUrl} = props;
-  const {rtcProps} = useContext(PropsContext);
-  const {dispatch, uidRef, hasJoinedChannel, RtcEngine} =
+  const { setRecordingActive, callActive, name, photoIDUrl, setRecordingFileReady } = props;
+  const { rtcProps } = useContext(PropsContext);
+  const { dispatch, uidRef, hasJoinedChannel, RtcEngine } =
     useContext(RtcContext);
   const [messageStore, setMessageStore] = useState<messageStoreInterface[]>([]);
   const [privateMessageStore, setPrivateMessageStore] = useState({});
@@ -44,7 +42,7 @@ const RtmConfigure = (props: any) => {
   const [userAlertCounts, setUserAlertCount] = useState(new Map<string, number | undefined>()); // 
   const [userNames, setUserNames] = useState(new Map<string, string | undefined>()); // 
   const [teacher, students] = useChannelInfo();
-  const {whiteboardActive,  setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom} =
+  const { whiteboardActive, setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom } =
     useContext(whiteboardContext);
   const [login, setLogin] = useState<boolean>(false);
   const [userList, setUserList] = useState({});
@@ -54,11 +52,8 @@ const RtmConfigure = (props: any) => {
  
 
   const clearAlertCount = () => {
-    //setUserAlertCount(state => (new Map<string, number | undefined>()));
-    //setUserAlertCount(new Map<string, string | undefined>());
-    //setUserAlertCount(prev => (new Map<string, number | undefined>()));
     userAlertCounts.clear();
-    //setUserAlertCount(prev => (prev.clear(); return prev;));
+
   }
 
  const addMessageToStore = (uid: string, text: string, ts: string) => {
@@ -73,16 +68,17 @@ const RtmConfigure = (props: any) => {
       current=0;
     }
     current++;
- 
+ /*
     console.log("userAlertCounts 634 ",userAlertCounts);
     console.log("userNames 634 ",userNames);
     console.log("iname 633 ",iname);
     console.log("uid 633 ",uid);    
     console.log("current 633 ",current); 
+   */
     setUserAlertCount(state => (state.set(iname,current)));
   
     setMessageStore((m: messageStoreInterface[]) => {
-      return [...m, {ts: ts, uid: uid, msg: text}];
+      return [...m, { ts: ts, uid: uid, msg: text }];
     });
   };
 
@@ -97,8 +93,8 @@ const RtmConfigure = (props: any) => {
       }
       function facesDetected(evt: string) {
         if (role === Role.Student) {
-        //  sendMessage(students[0] + ' - Faces Detected: ' + evt);
-        sendMessage('Faces Detected: ' + evt);
+          //  sendMessage(students[0] + ' - Faces Detected: ' + evt);
+          sendMessage('Faces Detected: ' + evt);
         }
       }
       if (window?.AgoraProctorUtils) {
@@ -122,17 +118,17 @@ const RtmConfigure = (props: any) => {
     local: boolean,
   ) => {
     setPrivateMessageStore((state: any) => {
-      let newState = {...state};
+      let newState = { ...state };
       newState[uid] !== undefined
         ? (newState[uid] = [
-            ...newState[uid],
-            {ts: ts, uid: local ? localUid.current : uid, msg: text},
-          ])
+          ...newState[uid],
+          { ts: ts, uid: local ? localUid.current : uid, msg: text },
+        ])
         : (newState = {
-            ...newState,
-            [uid]: [{ts: ts, uid: local ? localUid.current : uid, msg: text}],
-          });
-      return {...newState};
+          ...newState,
+          [uid]: [{ ts: ts, uid: local ? localUid.current : uid, msg: text }],
+        });
+      return { ...newState };
     });
     // console.log(privateMessageStore);
   };
@@ -173,7 +169,7 @@ const RtmConfigure = (props: any) => {
       async function getname() {
         try {
           const attr = await backoffAttributes;
-          console.log('[user attributes]:', {attr});
+          console.log('[user attributes]:', { attr });
           // let arr = new Int32Array(1);
           // arr[0] = parseInt(data.uid);
          // setUserNames(state => (state.set(data.uid, attr?.attributes?.name || 'User')));
@@ -213,8 +209,9 @@ const RtmConfigure = (props: any) => {
       console.log('user left', data);
     });
     engine.current.on('messageReceived', (evt: any) => {
+
       let {text} = evt;
-      console.log("userList 5 ",userList);
+
       // console.log('messageReceived: ', evt);
       if (text[0] === mType.Control) {
         console.log('Control: ', text);
@@ -252,7 +249,9 @@ const RtmConfigure = (props: any) => {
       }
     });
     engine.current.on('channelMessageReceived', (evt) => {
+
       let {uid, channelId, text, ts} = evt;
+
       let arr = new Int32Array(1);
       arr[0] = parseInt(uid);
       Platform.OS ? (uid = arr[0]) : {};
@@ -301,9 +300,9 @@ const RtmConfigure = (props: any) => {
       // token: rtcProps.rtm,
     });
     await engine.current.setLocalUserAttributes([
-      {key: 'name', value: name || 'User'},
-      {key: 'id', value: photoIDUrl ? photoIDUrl : 'empty'},
-      {key: 'screenUid', value: String(uidRef.current + 1)},
+      { key: 'name', value: name || 'User' },
+      { key: 'id', value: photoIDUrl ? photoIDUrl : 'empty' },
+      { key: 'screenUid', value: String(uidRef.current + 1) },
     ]);
     await engine.current.joinChannel(RtcEngine.teacher);
     engine.current
@@ -338,6 +337,7 @@ const RtmConfigure = (props: any) => {
           );
           try {
             const attr = await backoffAttributes;
+
             console.log('[user attributes]:', {attr});
             setUserNames(state => (state.set(member.uid,attr?.attributes?.name || 'User')));
 
@@ -346,8 +346,8 @@ const RtmConfigure = (props: any) => {
               if (attr?.attributes?.whiteboardRoom === 'active') {
                 console.log(
                   'WHITERTM:' +
-                    attr.attributes.whiteboardRoom +
-                    attr.attributes.name,
+                  attr.attributes.whiteboardRoom +
+                  attr.attributes.name,
                 );
                 joinWhiteboardRoom();
               }
@@ -404,22 +404,23 @@ const RtmConfigure = (props: any) => {
       addMessageToPrivateStore(uid, mType.Normal + msg, ts, true);
     }
   };
+
   const sendControlMessage = async (msg: string) => {
     if (engine.current) {
-    await (engine.current as RtmEngine).sendMessageByChannelId(
-      RtcEngine.teacher,
-      mType.Control + msg,
-    );
+      await (engine.current as RtmEngine).sendMessageByChannelId(
+        RtcEngine.teacher,
+        mType.Control + msg,
+      );
     }
   };
 
   // Whiteboard: RTM Method to add the whiteboard state to existing local user attributes
   const updateWbUserAttribute = async (whiteboardState: string) => {
     (engine.current as RtmEngine).setLocalUserAttributes([
-      {key: 'name', value: name || 'User'},
-      {key: 'id', value: photoIDUrl ? photoIDUrl : 'empty'},
-      {key: 'screenUid', value: String(uidRef.current + 1)},
-      {key: 'whiteboardRoom', value: whiteboardState},
+      { key: 'name', value: name || 'User' },
+      { key: 'id', value: photoIDUrl ? photoIDUrl : 'empty' },
+      { key: 'screenUid', value: String(uidRef.current + 1) },
+      { key: 'whiteboardRoom', value: whiteboardState },
     ]);
   };
 
@@ -437,12 +438,12 @@ const RtmConfigure = (props: any) => {
 
   const end = async () => {
     if (engine.current) {
-    callActive
-      ? (await (engine.current as RtmEngine).logout(),
-        await (engine.current as RtmEngine).destroyClient(),
-        // setLogin(false),
-        console.log('RTM cleanup done'))
-      : {};
+      callActive
+        ? (await (engine.current as RtmEngine).logout(),
+          await (engine.current as RtmEngine).destroyClient(),
+          // setLogin(false),
+          console.log('RTM cleanup done'))
+        : {};
     }
   };
 
