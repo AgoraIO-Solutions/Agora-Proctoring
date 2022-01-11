@@ -184,9 +184,12 @@ const VideoCall: React.FC = () => {
   );
   const [callActive, setCallActive] = useState($config.PRECALL ? false : true);
   const [recordingActive, setRecordingActive] = useState(false);
+  const [recordingFileReady, setRecordingFileReady] = useState(false);
   const [queryComplete, setQueryComplete] = useState(true);
-  
+  const [playbackSubUrl, setPlaybackSubUrl] = useState<string[]>([]);
+
   const [sidePanel, setSidePanel] = useState<SidePanelType>(SidePanelType.None);
+  
   const [layout, sl] = useState(
     role === Role.Student ? Layout.Pinned : Layout.Grid,
   );
@@ -295,20 +298,27 @@ const VideoCall: React.FC = () => {
                                     <MaxVideoView                         
                                     fallback={() => {
                                         return FallbackLogo("Proc");
-                                    }}
-                                    user={    {
-                                      uid: 'local',
-                                      audio: true,
-                                      video: true,
-                                      streamType: 'high',
-                                    }}
-                                  
-                                    key={'local'}
+
+                                      }}
+                                      user={{
+                                        uid: 'local',
+                                        audio: true,
+                                        video: true,
+                                        streamType: 'high',
+                                      }}
+
+                                      key={'local'}
+                                    />
+                                  ) : (
+                                    <PinnedVideo />
+                                  )) : (
+                                  <GridVideo
+                                    setLayout={setLayout}
+                                    layoutAlerts={layout} 
+                                    recordingFileReady={recordingFileReady}
+                                    playbackSubUrl={playbackSubUrl}
                                   />
-                                ) : (
-                                  <PinnedVideo  />
-                                )) : (
-                                  <GridVideo  layoutAlerts={layout} setLayout={setLayout} />
+
                                 )}
                                 {sidePanel === SidePanelType.Participants ? (
                                   <ParticipantsView
