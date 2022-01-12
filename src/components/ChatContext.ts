@@ -38,7 +38,7 @@ interface chatContext {
   localUid: string;
   userList: any;
   userAlertCounts: any;
-  setUserAlertCount: (state: any) => void;
+  clearAlertCount: () => void;
   // peersRTM: Array<string>;
 }
 

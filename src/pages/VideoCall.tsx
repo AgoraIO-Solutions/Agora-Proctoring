@@ -200,11 +200,6 @@ const VideoCall: React.FC = () => {
   };
 
   const history = useHistory();
-  // const {phrase} = useParams();
-
-  // console.log('[teacher, students]', [teacher, students]);
-  // console.log('[params]', params);
-  // console.log('[Role]', Role[role]);
 
   const [errorMessage, setErrorMessage] = useState(null);
   let isHost = true; //change to false by default after testing
@@ -231,6 +226,15 @@ const VideoCall: React.FC = () => {
         history.push('/goodbye');
       }, 0),
   };
+
+  //http://localhost:9000/exam?teacher=Ben&loadtest=true&student=ssss1
+  if (window.location.search.indexOf("loadtest")>0 && !callActive && deviceType!=2) {
+    setCallActive(true);
+    setDeviceType(2);
+  }
+
+ // alert(window.location.search);
+ // alert(new URLSearchParams(window.location.search));
   return (
     <>
       {queryComplete || !callActive ? (
@@ -419,7 +423,6 @@ const VideoCall: React.FC = () => {
                     )}
                   </RtmConfigure>
                 </DeviceConfigure>
-
               </WhiteboardConfigure>
             </RtcConfigure>
           </PropsProvider>

@@ -32,13 +32,11 @@ import RtcContext, {
   DispatchType,
   UidInterface,
 } from '../../agora-rn-uikit/src/RtcContext';
-import WhiteboardView from './WhiteboardView';
+import RecordingPlayer from './RecordingPlayer';
 import { whiteboardContext } from './WhiteboardConfigure';
 import { useChannelInfo, useRole } from '../pages/VideoCall';
 import { Role } from '../../bridge/rtc/webNg/Types';
 import ChatContext from './ChatContext';
-import RecPlayer from '../subComponents/RecPlayer';
-import ReactPlayer from 'react-player';
 
 const layout = (len: number, isDesktop: boolean = true) => {
   const rows = Math.round(Math.sqrt(len));
@@ -127,8 +125,15 @@ const GridVideo = (props: GridVideoProps) => {
     console.log(" layoutAlerts "+props.layoutAlerts);
     clearAlertCount();
   }
-  
+  const [isRecordingOpen, setIsRecordingOpen] = useState(false);
+
   return (
+    <React.Fragment>
+      <RecordingPlayer
+        isRecordingOpen={isRecordingOpen}
+        setIsRecordingOpen={setIsRecordingOpen}
+      />
+
     <View
       style={[style.full, { paddingHorizontal: isDesktop ? 10 : 0 }]}
       onLayout={onLayout}>
@@ -180,17 +185,12 @@ const GridVideo = (props: GridVideoProps) => {
                                 <Text style={{ flex: 3 }}>
                                   {m.msg.slice(1)}
                                 </Text>
-                                <Text
-                                  style={{ flex: 1, cursor: 'pointer' }}
-                                  onPress={() => {
-                                    console.log(m.ts);
-                                  }}>
-                                  Action
-                                </Text>
                                 {/* <Text style={{flex: 1}}>{m.uid}</Text> */}
                                 <button
                                   disabled={!recordingFileReady}
                                   onClick={() => {
+                                    setIsRecordingOpen(true);
+                                    /*
                                     console.log("play1", playbackSubUrl, playbackAction);
                                     playbackAction[ridx * dims.c + cidx] = true;
                                     setplaybackAction(playbackAction);
@@ -200,10 +200,10 @@ const GridVideo = (props: GridVideoProps) => {
                                         setPlaybackFullUrl(playbackFullUrl);
                                         break;
                                       }
-                                    }
+                                    }*/
                                     //console.log("playback::::", playbackSubUrl, playbackAction, playbackFullUrl);
                                   }}
-                                >Playback
+                                > {">"} 
                                 </button>
                               </View>
                             ) : (
@@ -228,36 +228,13 @@ const GridVideo = (props: GridVideoProps) => {
                     // overflowX: 'scroll',
                   }}>
 
-                  {users.map(
+                  {users.map( 
                     // photo id
-                    (u, i) =>
-                      userList[u.uid]?.name?.split('-')[0] ===
-                      students[ridx * dims.c + cidx] && playbackAction[ridx * dims.c + cidx] &&
-                      userList[u?.uid]?.name?.endsWith('Primary') && (
-                        <View
-                          style={{
-                            width: (expandUID != "0" && userList[u?.uid]?.id != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0px' : '100%',
-                            height: (expandUID != "0" && userList[u?.uid]?.id != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0px' : '100%',
-                            borderWidth: 1,
-                            borderColor: 'transparent',
-                            borderStyle: 'solid',
-                            position: userList[u?.uid]?.id === expandUID ? 'absolute' : 'relative'
-                          }}>
-                          <Text style={{ flex: 3 }}>
-                            {playbackFullUrl[ridx * dims.c + cidx]}
-                          </Text>
-                          < ReactPlayer
-                            //url={playbackFullUrl[ridx * dims.c + cidx]}
-                            url={playbackUrl}
-                          />
-                        </View>
-                      ),
-                  )}
-                  {users.map(
                     (u, i) =>
                       userList[u.uid]?.name?.split('-')[0] ===
                       students[ridx * dims.c + cidx] &&
                       userList[u?.uid]?.name?.endsWith('Primary') && (
+                        <React.Fragment key={userList[u?.uid]?.id} >
                         <View
                           style={{
                             width: (expandUID != "0" && userList[u?.uid]?.id != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0px' : '100%',
@@ -289,13 +266,14 @@ const GridVideo = (props: GridVideoProps) => {
                             }}
                           />
                         </View>
+                        </React.Fragment>
                       ),
                   )}
+
                   {users.map((u, i) =>
                     // student video cells
                     userList[u.uid]?.name?.split('-')[0] ===
                       students[ridx * dims.c + cidx] ? (
-
                       <React.Fragment key={u.uid} >
                         <View
                           style={{
@@ -331,6 +309,7 @@ const GridVideo = (props: GridVideoProps) => {
         </View>
       ))}
     </View>
+    </React.Fragment>
   );
 };
 
