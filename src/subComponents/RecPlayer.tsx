@@ -9,29 +9,63 @@
  information visit https://appbuilder.agora.io.
 *********************************************
 */
-import React, { Props, useContext, useEffect, useRef } from 'react';
-import { Image, TouchableOpacity, StyleSheet, View, Text } from 'react-native';
-import icons from '../assets/icons';
-import ChatContext, { controlMessageEnum } from '../components/ChatContext';
-import ColorContext from '../components/ColorContext';
-import PropsContext from '../../agora-rn-uikit/src/PropsContext';
-import Toast from '../../react-native-toast-message';
+import React, { props, useContext, useEffect, useRef, useState } from 'react';
+import { TouchableOpacity, StyleSheet, View, Text } from 'react-native';
 import ReactPlayer from 'react-player';
 
-const Recplayer = (props: any) => {
+const RecPlayer = (props: any) => {
 
-  const playUrl = props.playUrl
-  console.log("time:", props.playUrl)
+  const playUrl = props.playbackUrl;
+  const [playing, setPlaying] = useState<boolean>(true);
+
+  const handleEnded = () => {
+    console.log('onEnded');
+    setPlaying(false);
+  }
+
+  console.log("djalfjdlajf:", props.isRecordingOpen)
   return (
     <View
+      style={{
+        width: '640px',
+        height: '368px',
+        borderWidth: 0,
+        paddingTop: 18,
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+        borderStyle: 'solid',
+        position: 'absolute',
+        top: '10%',
+        left: '30%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        zIndex: 1000,
+        display: props.isRecordingOpen ? 'flex' : 'none'
+      }}
     >
-      <Text>Playingback</Text>
-      <ReactPlayer controls url={playUrl} />
-
+      <button
+        style={{
+          marginLeft: "auto",
+          backgroundColor: 'black',
+          color: 'white',
+        }}
+        onClick={() => {
+          props.setIsRecordingOpen(false);
+          handleEnded();
+        }}
+      > {"X"}
+      </button>
+      <ReactPlayer
+        width='100%'
+        heith='100%'
+        controls
+        url={playUrl}
+        playing={playing}
+      />
     </View>
-  )
+  );
 }
 
-export default Recplayer;
+export default RecPlayer;
 
 //      <ReactPlayer controls url='https://www.youtube.com/watch?v=9boMnm5X9ak' />

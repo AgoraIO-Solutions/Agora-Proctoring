@@ -32,11 +32,12 @@ import RtcContext, {
   DispatchType,
   UidInterface,
 } from '../../agora-rn-uikit/src/RtcContext';
-import RecordingPlayer from './RecordingPlayer';
 import { whiteboardContext } from './WhiteboardConfigure';
 import { useChannelInfo, useRole } from '../pages/VideoCall';
 import { Role } from '../../bridge/rtc/webNg/Types';
 import ChatContext from './ChatContext';
+import RecPlayer from '../subComponents/RecPlayer';
+import { boolean } from 'yargs';
 
 const layout = (len: number, isDesktop: boolean = true) => {
   const rows = Math.round(Math.sqrt(len));
@@ -64,8 +65,8 @@ interface GridVideoProps {
 }
 
 const GridVideo = (props: GridVideoProps) => {
-  const {dispatch} = useContext(RtcContext);
-  const {messageStore,userAlertCounts,userList,clearAlertCount} = useContext(ChatContext);
+  const { dispatch } = useContext(RtcContext);
+  const { messageStore, userAlertCounts, userList, clearAlertCount } = useContext(ChatContext);
 
   const max = useContext(MaxUidContext);
   const min = useContext(MinUidContext);
@@ -82,10 +83,12 @@ const GridVideo = (props: GridVideoProps) => {
     streamType: 'high',
   };
 
-  const playbackUrl = 'https://www.youtube.com/watch?v=9boMnm5X9ak'
+  //const playbackUrl = 'https://www.youtube.com/watch?v=9boMnm5X9ak'
+  const playbackUrl = 'https://www.youtube.com/watch?v=AQAgpVUg5_s'
   const playbackBaseUrl = 'https://agora-proctoring.s3.us-west-1.amazonaws.com/';
   const playbackSubUrl = props.playbackSubUrl;
-  const {primaryColor} = useContext(ColorContext);
+  const { primaryColor } = useContext(ColorContext);
+  const [currentPlaybackUrl, setCurrentPlaybackUrl] = useState('');
 
   // Whiteboard: Add an extra user with uid as whiteboard to intercept
   // later and replace with whiteboardView
@@ -103,15 +106,14 @@ const GridVideo = (props: GridVideoProps) => {
 
   const [expandUID, setExpandUID] = useState("0");
   const [expandUsername, setExpandUsername] = useState("");
-  const [playbackAction, setplaybackAction] = useState([]);
+  const [playbackAction, setplaybackAction] = useState<boolean>([]);
   useEffect(() => {
     const initialValue = new Array(students.length).fill(false);
     setplaybackAction(initialValue);
   }, [])
 
-  const [showAlertTable,setShowAlertTable]= useState(false);
+  const [showAlertTable, setShowAlertTable] = useState(false);
   const [playbackFullUrl, setPlaybackFullUrl] = useState<string[]>([]);
-
   const isDesktop = dim[0] > dim[1] + 100;
   let { matrix, dims } = useMemo(
     // Whiteboard: Only iterate over n-1 elements when whiteboard not
@@ -121,194 +123,193 @@ const GridVideo = (props: GridVideoProps) => {
     [students.length, isDesktop, whiteboardActive],
   );
 
-  if (props.layoutAlerts!=Layout.Pinned) {
-    console.log(" layoutAlerts "+props.layoutAlerts);
+  if (props.layoutAlerts != Layout.Pinned) {
+    console.log(" layoutAlerts " + props.layoutAlerts);
     clearAlertCount();
   }
   const [isRecordingOpen, setIsRecordingOpen] = useState(false);
 
   return (
     <React.Fragment>
-      <RecordingPlayer
+      <RecPlayer
         isRecordingOpen={isRecordingOpen}
         setIsRecordingOpen={setIsRecordingOpen}
+        playbackUrl={currentPlaybackUrl}
       />
 
-    <View
-      style={[style.full, { paddingHorizontal: isDesktop ? 10 : 0 }]}
-      onLayout={onLayout}>
+      <View
+        style={[style.full, { paddingHorizontal: isDesktop ? 10 : 0 }]}
+        onLayout={onLayout}>
 
-      {matrix.map((r, ridx) => (
-        <View style={style.gridRow} key={ridx}>
-          {r.map((c, cidx) => (
-            // student cells
-            <View style={style.gridVideoContainerInner} key={cidx}>
-              { userAlertCounts.get(students[ridx * dims.c + cidx])>0 ? (
-              <Text style={{fontSize:16, fontWeight:'bold', color:'#aa0000' }}>
-                {students[ridx * dims.c + cidx].charAt(0).toUpperCase() + students[ridx * dims.c + cidx].slice(1) }
-     &nbsp;
-                ({userAlertCounts.get(students[ridx * dims.c + cidx])})
-              </Text>
-              ) : (
-                <Text style={{fontSize:16}}>
-                {students[ridx * dims.c + cidx].charAt(0).toUpperCase() + students[ridx * dims.c + cidx].slice(1) }
-              </Text>
-              )}
-              <View style={{flex: 1}}>
-                {props.layoutAlerts!=Layout.Pinned  ? (
-
-                <View
-                  style={{
-                    flex: 0.5,
-                    overflowY: 'auto',
-                    marginBottom: 10,
-                  }}>
-
-                  {users.map(
-                    // alert message table
-                    (u) =>
-                      userList[u.uid]?.name?.split('-')[0] ===
-                        students[ridx * dims.c + cidx]
-                        ? messageStore.slice(0).reverse()
-                          // .filter((m: any) => m.uid === u.uid)
-                          .map((m: any, i) =>
-                            m.uid === u.uid ||
-                              m.uid + parseInt(0xffffffff) + 1 === u.uid ? (
-                              <View style={{ flexDirection: 'row' }} key={i}>
-                                <Text style={{ flex: 1 }}>
-                                  {new Date(m.ts).getHours()}:
-                                  {new Date(m.ts).getMinutes()}:
-                                  {('0' + new Date(m.ts).getSeconds()).slice(
-                                    -2,
-                                  )}
-                                </Text>
-                                <Text style={{ flex: 3 }}>
-                                  {m.msg.slice(1)}
-                                </Text>
-                                {/* <Text style={{flex: 1}}>{m.uid}</Text> */}
-                                <button
-                                  disabled={!recordingFileReady}
-                                  onClick={() => {
-                                    setIsRecordingOpen(true);
-                                    /*
-                                    console.log("play1", playbackSubUrl, playbackAction);
-                                    playbackAction[ridx * dims.c + cidx] = true;
-                                    setplaybackAction(playbackAction);
-                                    for (var j in playbackSubUrl) {
-                                      if (playbackSubUrl[j].includes(students[ridx * dims.c + cidx])) {
-                                        playbackFullUrl[ridx * dims.c + cidx] = playbackBaseUrl.concat(playbackSubUrl[j]);
-                                        setPlaybackFullUrl(playbackFullUrl);
-                                        break;
-                                      }
-                                    }*/
-                                    //console.log("playback::::", playbackSubUrl, playbackAction, playbackFullUrl);
-                                  }}
-                                > {">"} 
-                                </button>
-                              </View>
-                            ) : (
-                              console.log(m.uid, u.uid)
-                            ),
-                          )
-                        : null,
-                  )}
-                </View>
+        {matrix.map((r, ridx) => (
+          <View style={style.gridRow} key={ridx}>
+            {r.map((c, cidx) => (
+              // student cells
+              <View style={style.gridVideoContainerInner} key={cidx}>
+                {userAlertCounts.get(students[ridx * dims.c + cidx]) > 0 ? (
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#aa0000' }}>
+                    {students[ridx * dims.c + cidx].charAt(0).toUpperCase() + students[ridx * dims.c + cidx].slice(1)}
+                    &nbsp;
+                    ({userAlertCounts.get(students[ridx * dims.c + cidx])})
+                  </Text>
                 ) : (
-                  <></>
+                  <Text style={{ fontSize: 16 }}>
+                    {students[ridx * dims.c + cidx].charAt(0).toUpperCase() + students[ridx * dims.c + cidx].slice(1)}
+                  </Text>
                 )}
-                <View
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: `1fr 1fr`,
-                    gridTemplateRows: `1fr 1fr`,
-                    flex: 1,
-                    gridGrap: 2,
-                    // flex: 1,
-                    // flexDirection: 'row',
-                    // overflowX: 'scroll',
-                  }}>
+                <View style={{ flex: 1 }}>
+                  {props.layoutAlerts != Layout.Pinned ? (
 
-                  {users.map( 
-                    // photo id
-                    (u, i) =>
+                    <View
+                      style={{
+                        flex: 0.5,
+                        overflowY: 'auto',
+                        marginBottom: 10,
+                      }}>
+
+                      {users.map(
+                        // alert message table
+                        (u) =>
+                          userList[u.uid]?.name?.split('-')[0] ===
+                            students[ridx * dims.c + cidx]
+                            ? messageStore.slice(0).reverse()
+                              // .filter((m: any) => m.uid === u.uid)
+                              .map((m: any, i) =>
+                                m.uid === u.uid ||
+                                  m.uid + parseInt(0xffffffff) + 1 === u.uid ? (
+                                  <View style={{ flexDirection: 'row' }} key={i}>
+                                    <Text style={{ flex: 1 }}>
+                                      {new Date(m.ts).getHours()}:
+                                      {new Date(m.ts).getMinutes()}:
+                                      {('0' + new Date(m.ts).getSeconds()).slice(
+                                        -2,
+                                      )}
+                                    </Text>
+                                    <Text style={{ flex: 3 }}>
+                                      {m.msg.slice(1)}
+                                    </Text>
+                                    {/* <Text style={{flex: 1}}>{m.uid}</Text> */}
+                                    <button
+                                      disabled={!recordingFileReady}
+                                      onClick={() => {
+                                        setIsRecordingOpen(true);
+
+                                        console.log("play1", playbackSubUrl, playbackAction);
+                                        //playbackAction[ridx * dims.c + cidx] = true;
+                                        //setplaybackAction(playbackAction);
+                                        for (var j in playbackSubUrl) {
+                                          if (playbackSubUrl[j].includes(students[ridx * dims.c + cidx])) {
+                                            playbackFullUrl[ridx * dims.c + cidx] = playbackBaseUrl.concat(playbackSubUrl[j]);
+                                            setPlaybackFullUrl(playbackFullUrl);
+                                            break;
+                                          }
+                                        }
+                                        setCurrentPlaybackUrl(playbackFullUrl[ridx * dims.c + cidx])
+                                      }}
+                                    > {">"}
+                                    </button>
+                                  </View>
+                                ) : (
+                                  console.log(m.uid, u.uid)
+                                ),
+                              )
+                            : null,
+                      )}
+                    </View>
+                  ) : (
+                    <></>
+                  )}
+                  <View
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: `1fr 1fr`,
+                      gridTemplateRows: `1fr 1fr`,
+                      flex: 1,
+                      gridGrap: 2,
+                      // flex: 1,
+                      // flexDirection: 'row',
+                      // overflowX: 'scroll',
+                    }}>
+
+                    {users.map(
+                      // photo id
+                      (u, i) =>
+                        userList[u.uid]?.name?.split('-')[0] ===
+                        students[ridx * dims.c + cidx] &&
+                        userList[u?.uid]?.name?.endsWith('Primary') && (
+                          <React.Fragment key={userList[u?.uid]?.id} >
+                            <View
+                              style={{
+                                width: (expandUID != "0" && userList[u?.uid]?.id != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0px' : '100%',
+                                height: (expandUID != "0" && userList[u?.uid]?.id != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0px' : '100%',
+                                borderWidth: 1,
+                                borderColor: 'transparent',
+                                borderStyle: 'solid',
+                                position: userList[u?.uid]?.id === expandUID ? 'absolute' : 'relative'
+                              }}>
+                              <img
+                                style={{
+                                  width: (expandUID != "0" && userList[u?.uid]?.id != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0' : '100%',
+                                  height: (expandUID != "0" && userList[u?.uid]?.id != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0' : '100%',
+                                  margin: 'auto',
+                                  objectFit: 'contain'
+                                }}
+                                src={userList[u?.uid]?.id}
+
+                                onClick={() => {
+                                  // alert(expandUID);
+                                  if (expandUID == userList[u?.uid]?.id) {
+                                    setExpandUID("0");
+                                    setExpandUsername("");
+                                  }
+                                  else {
+                                    setExpandUID(userList[u?.uid]?.id)
+                                    setExpandUsername(students[ridx * dims.c + cidx]);
+                                  }
+                                }}
+                              />
+                            </View>
+                          </React.Fragment>
+                        ),
+                    )}
+
+                    {users.map((u, i) =>
+                      // student video cells
                       userList[u.uid]?.name?.split('-')[0] ===
-                      students[ridx * dims.c + cidx] &&
-                      userList[u?.uid]?.name?.endsWith('Primary') && (
-                        <React.Fragment key={userList[u?.uid]?.id} >
-                        <View
-                          style={{
-                            width: (expandUID != "0" && userList[u?.uid]?.id != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0px' : '100%',
-                            height: (expandUID != "0" && userList[u?.uid]?.id != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0px' : '100%',
-                            borderWidth: 1,
-                            borderColor: 'transparent',
-                            borderStyle: 'solid',
-                            position: userList[u?.uid]?.id === expandUID ? 'absolute' : 'relative'
-                          }}>
-                          <img
+                        students[ridx * dims.c + cidx] ? (
+                        <React.Fragment key={u.uid} >
+                          <View
                             style={{
-                              width: (expandUID != "0" && userList[u?.uid]?.id != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0' : '100%',
-                              height: (expandUID != "0" && userList[u?.uid]?.id != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0' : '100%',
-                              margin: 'auto',
-                              objectFit: 'contain'
-                            }}
-                            src={userList[u?.uid]?.id}
+                              width: (expandUID != "0" && u?.uid.toString() != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0' : '100%',
+                              height: (expandUID != "0" && u?.uid.toString() != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0' : '100%',
+                              borderWidth: 1,
+                              borderColor: 'transparent',
+                              borderStyle: 'solid',
+                              position: u?.uid.toString() === expandUID ? 'absolute' : 'relative'
+                            }}>
 
-                            onClick={() => {
-                              // alert(expandUID);
-                              if (expandUID == userList[u?.uid]?.id) {
-                                setExpandUID("0");
-                                setExpandUsername("");
-                              }
-                              else {
-                                setExpandUID(userList[u?.uid]?.id)
-                                setExpandUsername(students[ridx * dims.c + cidx]);
-                              }
-                            }}
-                          />
-                        </View>
+                            <MaxVideoView
+                              fallback={() => {
+                                return FallbackLogo(userList[u?.uid]?.name);
+                              }}
+                              user={u}
+                              setExpandUID={setExpandUID}
+                              expandUID={expandUID}
+                              username={students[ridx * dims.c + cidx]}
+                              setExpandUsername={setExpandUsername}
+                              key={u.uid}
+                            />
+                          </View>
                         </React.Fragment>
-                      ),
-                  )}
-
-                  {users.map((u, i) =>
-                    // student video cells
-                    userList[u.uid]?.name?.split('-')[0] ===
-                      students[ridx * dims.c + cidx] ? (
-                      <React.Fragment key={u.uid} >
-                        <View
-                          style={{
-                            width: (expandUID != "0" && u?.uid.toString() != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0' : '100%',
-                            height: (expandUID != "0" && u?.uid.toString() != expandUID && expandUsername === students[ridx * dims.c + cidx]) ? '0' : '100%',
-                            borderWidth: 1,
-                            borderColor: 'transparent',
-                            borderStyle: 'solid',
-                            position: u?.uid.toString() === expandUID ? 'absolute' : 'relative'
-                          }}>
-
-                          <MaxVideoView
-                            fallback={() => {
-                              return FallbackLogo(userList[u?.uid]?.name);
-                            }}
-                            user={u}
-                            setExpandUID={setExpandUID}
-                            expandUID={expandUID}
-                            username={students[ridx * dims.c + cidx]}
-                            setExpandUsername={setExpandUsername}
-                            key={u.uid}
-                          />
-                        </View>
-                      </React.Fragment>
-                    ) : null,
-                  )}
-
-
+                      ) : null,
+                    )}
+                  </View>
                 </View>
               </View>
-            </View>
-          ))}
-        </View>
-      ))}
-    </View>
+            ))}
+          </View>
+        ))}
+      </View>
     </React.Fragment>
   );
 };
@@ -327,7 +328,7 @@ const style = StyleSheet.create({
   gridVideoContainerInner: {
     borderColor: '#ddd',
     marginHorizontal: 2,
-     //backgroundColor: '#ff00ff',
+    //backgroundColor: '#ff00ff',
     borderWidth: 1,
     // width: '100%',
     // borderRadius: 15,
