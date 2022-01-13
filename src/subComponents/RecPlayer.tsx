@@ -14,16 +14,13 @@ import { TouchableOpacity, StyleSheet, View, Text } from 'react-native';
 import ReactPlayer from 'react-player';
 
 const RecPlayer = (props: any) => {
-
   const playUrl = props.playbackUrl;
-  const [playing, setPlaying] = useState<boolean>(true);
+  const playing = props.playing;
 
-  const handleEnded = () => {
-    console.log('onEnded');
-    setPlaying(false);
+  if (!props.playbackAction) {
+    return null;
   }
 
-  console.log("djalfjdlajf:", props.isRecordingOpen)
   return (
     <View
       style={{
@@ -40,7 +37,7 @@ const RecPlayer = (props: any) => {
         marginLeft: 'auto',
         marginRight: 'auto',
         zIndex: 1000,
-        display: props.isRecordingOpen ? 'flex' : 'none'
+        display: 'flex'
       }}
     >
       <button
@@ -50,17 +47,17 @@ const RecPlayer = (props: any) => {
           color: 'white',
         }}
         onClick={() => {
-          props.setIsRecordingOpen(false);
-          handleEnded();
+          props.setplaybackAction(false);
+          props.setPlaying(false);
         }}
       > {"X"}
       </button>
       <ReactPlayer
         width='100%'
         heith='100%'
+        playing={playing}
         controls
         url={playUrl}
-        playing={playing}
       />
     </View>
   );

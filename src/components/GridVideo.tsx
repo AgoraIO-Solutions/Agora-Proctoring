@@ -84,7 +84,7 @@ const GridVideo = (props: GridVideoProps) => {
   };
 
   //const playbackUrl = 'https://www.youtube.com/watch?v=9boMnm5X9ak'
-  const playbackUrl = 'https://www.youtube.com/watch?v=AQAgpVUg5_s'
+  //const playbackUrl = 'https://www.youtube.com/watch?v=AQAgpVUg5_s'
   const playbackBaseUrl = 'https://agora-proctoring.s3.us-west-1.amazonaws.com/';
   const playbackSubUrl = props.playbackSubUrl;
   const { primaryColor } = useContext(ColorContext);
@@ -106,11 +106,8 @@ const GridVideo = (props: GridVideoProps) => {
 
   const [expandUID, setExpandUID] = useState("0");
   const [expandUsername, setExpandUsername] = useState("");
-  const [playbackAction, setplaybackAction] = useState<boolean>([]);
-  useEffect(() => {
-    const initialValue = new Array(students.length).fill(false);
-    setplaybackAction(initialValue);
-  }, [])
+  const [playbackAction, setplaybackAction] = useState(false);
+  const [playing, setPlaying] = useState(true);
 
   const [showAlertTable, setShowAlertTable] = useState(false);
   const [playbackFullUrl, setPlaybackFullUrl] = useState<string[]>([]);
@@ -127,13 +124,14 @@ const GridVideo = (props: GridVideoProps) => {
     console.log(" layoutAlerts " + props.layoutAlerts);
     clearAlertCount();
   }
-  const [isRecordingOpen, setIsRecordingOpen] = useState(false);
 
   return (
     <React.Fragment>
       <RecPlayer
-        isRecordingOpen={isRecordingOpen}
-        setIsRecordingOpen={setIsRecordingOpen}
+        playbackAction={playbackAction}
+        setplaybackAction={setplaybackAction}
+        playing={playing}
+        setPlaying={setPlaying}
         playbackUrl={currentPlaybackUrl}
       />
 
@@ -192,11 +190,8 @@ const GridVideo = (props: GridVideoProps) => {
                                     <button
                                       disabled={!recordingFileReady}
                                       onClick={() => {
-                                        setIsRecordingOpen(true);
-
-                                        console.log("play1", playbackSubUrl, playbackAction);
-                                        //playbackAction[ridx * dims.c + cidx] = true;
-                                        //setplaybackAction(playbackAction);
+                                        setplaybackAction(true);
+                                        setPlaying(true)
                                         for (var j in playbackSubUrl) {
                                           if (playbackSubUrl[j].includes(students[ridx * dims.c + cidx])) {
                                             playbackFullUrl[ridx * dims.c + cidx] = playbackBaseUrl.concat(playbackSubUrl[j]);
