@@ -45,7 +45,7 @@ const Precall = (props: any) => {
   const { whiteboardActive, setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom } =
     useContext(whiteboardContext);
 
-  const {deviceType, setDeviceType} = useContext(ProctorContext);
+  const {deviceType, setDeviceType, setLoadTester} = useContext(ProctorContext);
 
   const { setCallActive, queryComplete, username, setUsername, error, setPhotoIDUrl } = props;
 
@@ -58,6 +58,28 @@ const Precall = (props: any) => {
     setDim([e.nativeEvent.layout.width, e.nativeEvent.layout.height]);
   };
   const role = useRole();
+
+
+  //http://localhost:9000/exam?teacher=Ben&loadtest=true&student=ssss1
+  if (window.location.search.indexOf("loadtest2")>0) {
+    
+    //setSnapped(true);
+    //setPhotoIDUrl('/src/assets/photoid.png');     
+    setDeviceType(2);
+    setUsername('Secondary');
+    setCallActive(true);
+  }
+
+  if (window.location.search.indexOf("loadtest1")>0) {  
+    //setSnapped(true);
+    setPhotoIDUrl('/src/assets/photoid.png');     
+    setUsername('Primary');    
+    setDeviceType(1);
+    setLoadTester(true);
+    setCallActive(true);
+  }
+
+
 
   useEffect(() => {
 

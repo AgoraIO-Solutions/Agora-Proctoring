@@ -15,13 +15,16 @@ import ProctorContext from './ProctorContext';
 
   const ProctorConfigure: React.FC = (props: any) => {
     const [deviceType, setDeviceType] = useState(0);
+    const [loadTester, setLoadTester] = useState(false);
 
 
     return (
       <ProctorContext.Provider
         value={{
             deviceType,
-            setDeviceType
+            setDeviceType,
+            loadTester,
+            setLoadTester
 
         }}>
         {true ? props.children : <></>}

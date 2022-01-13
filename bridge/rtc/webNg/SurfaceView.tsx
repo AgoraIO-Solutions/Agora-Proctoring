@@ -41,7 +41,7 @@ interface SurfaceViewInterface
 const SurfaceView = (props: SurfaceViewInterface) => {
   //   console.log('Surface View props', props);
   const { hasJoinedChannel } = useContext(RtcContext);
-  const { deviceType, setDeviceType } = useContext(ProctorContext);
+  const { deviceType, loadTester} = useContext(ProctorContext);
   const role = useRole();
   // stream will be of type ILocalVideoTrack or IRemoteVideoTrack
   const stream: ILocalVideoTrack | IRemoteVideoTrack =
@@ -58,30 +58,23 @@ const SurfaceView = (props: SurfaceViewInterface) => {
   useEffect(() => {
     console.log(" useEffect 1 ");
     if (
-      deviceType == 1 &&
+      deviceType == 1 && !loadTester &&
       role === Role.Student &&
       window?.AgoraProctorUtils
     ) {
 
-      console.log(" useEffect 1b ");
       if (props.uid === 0 && document.getElementById('0')?.children[0]?.children[0]) {
         // set canvas and video elements
-
-        console.log(" useEffect 1c ", document.getElementById('canvas'), document.getElementById('0')?.children[0]?.children[0]);
         window?.AgoraProctorUtils?.faceDetect(
           document.getElementById('canvas'),
           document.getElementById('0')?.children[0]?.children[0],
         );
 
-      } else {
-        console.log(" useEffect scheduling interval ", stream);
+      } else {        
         setInterval(() => {
           // @ts-ignore
-          console.log(" useEffect 1b ");
           if (props.uid === 0 && document.getElementById('0')?.children[0]?.children[0]) {
             // set canvas and video elements
-
-            console.log(" useEffect 1c ", document.getElementById('canvas'), document.getElementById('0')?.children[0]?.children[0]);
             window?.AgoraProctorUtils?.faceDetect(
               document.getElementById('canvas'),
               document.getElementById('0')?.children[0]?.children[0],
@@ -97,18 +90,14 @@ const SurfaceView = (props: SurfaceViewInterface) => {
 
   useEffect(
     function () {
-      console.log(" useEffect 2 ");
       if (stream?.play) {
         if (props.renderMode === 2) {
-          console.log(" useEffect 2a ");
           stream.play(String(props.uid), { fit: 'contain' });
         } else {
-          console.log(" useEffect 2b ");
           stream.play(String(props.uid));
         }
       }
       return () => {
-          console.log(`stop stream ${props.uid}`, stream);
           stream && stream.stop();
       };
     },
@@ -127,7 +116,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
           backgroundColor: 'transparent',
           display:
             //props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && role !== Role.Student 
-            props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && deviceType == 1
+            props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && !loadTester && deviceType == 1 
               ? 'none'
               : 'block',
         }}
@@ -139,7 +128,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
           borderRadius: 15,
           flex: 1,
           display:
-            props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && deviceType == 1
+            props.uid === 0 && hasJoinedChannel && role !== Role.Teacher && !loadTester && deviceType == 1
               ? 'block'
               : 'none',
         }}

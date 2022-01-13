@@ -228,11 +228,14 @@ const VideoCall: React.FC = () => {
   };
 
   //http://localhost:9000/exam?teacher=Ben&loadtest=true&student=ssss1
+  /*
   if (window.location.search.indexOf("loadtest")>0 && !callActive && deviceType!=2) {
     setCallActive(true);
     setDeviceType(2);
+    //setSnapped(true);
+    //setPhotoIDUrl(result); /src/assets/photoid.png
   }
-
+*/
  // alert(window.location.search);
  // alert(new URLSearchParams(window.location.search));
   return (

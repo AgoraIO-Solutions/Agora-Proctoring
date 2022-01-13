@@ -15,6 +15,8 @@ import {createContext} from 'react';
 interface ProctorContext {
   deviceType: any;
   setDeviceType: (device: any) => void;
+  loadTester: any;
+  setLoadTester: (device: any) => void;
 }
 
 const ProctorContext = createContext((null as unknown) as ProctorContext);

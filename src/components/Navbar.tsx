@@ -86,7 +86,8 @@ const Navbar = (props: any) => {
             </Text>
         </View>
       ) : (
-   
+        <></>
+        )}
 
 <React.Fragment  >
 <View
@@ -115,7 +116,7 @@ const Navbar = (props: any) => {
   />
 </View>
 </React.Fragment>
-      )}
+  
       <View
         style={{
           width: '50%',
