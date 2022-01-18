@@ -71,7 +71,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
         );
 
       } else {        
-        setTimeout(() => {
+        setInterval(() => {
           // @ts-ignore
           if (props.uid === 0 && document.getElementById('0')?.children[0]?.children[0]) {
             // set canvas and video elements
@@ -82,7 +82,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
           } else {
             console.log(" useEffect no video element ", stream);
           }
-        }, 2000);
+        }, 1000);
       }
     }
   }, [hasJoinedChannel, props.uid, props.renderMode, stream]);//, [hasJoinedChannel,props.uid, props.renderMode, stream]);

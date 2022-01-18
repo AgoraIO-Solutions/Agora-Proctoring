@@ -127,10 +127,12 @@ const GridVideo = (props: GridVideoProps) => {
     clearAlertCount();
   }
 
-  var cols=3;
+  var cols=2;
 
-  if (students.length  < 10) {
-    cols=3;
+  if (students.length  < 5) {
+    cols=2;
+  } else if (students.length < 10) {
+    cols= 3;
   } else if (students.length < 15) {
     cols= 4;
   } else if (students.length < 25) {
