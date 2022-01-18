@@ -71,7 +71,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
         );
 
       } else {        
-        setInterval(() => {
+        setTimeout(() => {
           // @ts-ignore
           if (props.uid === 0 && document.getElementById('0')?.children[0]?.children[0]) {
             // set canvas and video elements

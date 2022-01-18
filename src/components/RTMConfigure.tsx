@@ -42,6 +42,8 @@ const RtmConfigure = (props: any) => {
   const [userAlertCounts, setUserAlertCount] = useState(new Map<string, number | undefined>()); // 
   const [userNames, setUserNames] = useState(new Map<string, string | undefined>()); // 
   const [teacher, students] = useChannelInfo();
+  
+  const [userAlertsCount, setUserAlertsCount] = useState(0); // 
   const { whiteboardActive, setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom } =
     useContext(whiteboardContext);
   const [login, setLogin] = useState<boolean>(false);
@@ -53,7 +55,7 @@ const RtmConfigure = (props: any) => {
 
   const clearAlertCount = () => {
     userAlertCounts.clear();
-
+    //setUserAlertsCount(0);
   }
 
  const addMessageToStore = (uid: string, text: string, ts: string) => {
@@ -76,6 +78,7 @@ const RtmConfigure = (props: any) => {
     console.log("current 633 ",current); 
    */
     setUserAlertCount(state => (state.set(iname,current)));
+    setUserAlertsCount(userAlertsCount+1);
   
     setMessageStore((m: messageStoreInterface[]) => {
       return [...m, { ts: ts, uid: uid, msg: text }];
@@ -88,7 +91,7 @@ const RtmConfigure = (props: any) => {
       function processEvent(evt: string) {
         if (role === Role.Student) {
           //sendMessage(students[0] + ' - Browser Alert: ' + evt);
-          sendMessage('Browser Alert: ' + evt);
+          sendMessage(evt);
         }
       }
       function facesDetected(evt: string) {
@@ -98,6 +101,7 @@ const RtmConfigure = (props: any) => {
         }
       }
       if (window?.AgoraProctorUtils) {
+       
         window.AgoraProctorUtils.init();
         window.AgoraProctorUtilEvents.on(
           AgoraProctorUtils.BrowserChangeAlert,
@@ -107,6 +111,8 @@ const RtmConfigure = (props: any) => {
           AgoraProctorUtils.FaceDetected,
           facesDetected,
         );
+
+        
       }
     }
   }, [login]);
@@ -470,6 +476,7 @@ const RtmConfigure = (props: any) => {
         userList: userList,
         userAlertCounts: userAlertCounts,
         clearAlertCount: clearAlertCount,
+        userAlertsCount: userAlertsCount,
       }}>
       {login ? props.children : <></>}
     </ChatContext.Provider>

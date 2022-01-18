@@ -72,7 +72,7 @@ const Precall = (props: any) => {
 
   if (window.location.search.indexOf("loadtest1")>0) {  
     //setSnapped(true);
-    setPhotoIDUrl('/src/assets/photoid.png');     
+    setPhotoIDUrl('/src/assets/photoid.png?r'+Math.random());     
     setUsername('Primary');    
     setDeviceType(1);
     setLoadTester(true);

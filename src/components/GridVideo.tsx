@@ -38,6 +38,8 @@ import { Role } from '../../bridge/rtc/webNg/Types';
 import ChatContext from './ChatContext';
 import RecPlayer from '../subComponents/RecPlayer';
 import { boolean } from 'yargs';
+import { Color } from 'react-native-agora';
+import { responsePathAsArray } from 'graphql';
 
 const layout = (len: number, isDesktop: boolean = true) => {
   const rows = Math.round(Math.sqrt(len));
@@ -66,7 +68,7 @@ interface GridVideoProps {
 
 const GridVideo = (props: GridVideoProps) => {
   const { dispatch } = useContext(RtcContext);
-  const { messageStore, userAlertCounts, userList, clearAlertCount } = useContext(ChatContext);
+  const { messageStore, userAlertCounts, userAlertsCount, userList, clearAlertCount } = useContext(ChatContext);
 
   const max = useContext(MaxUidContext);
   const min = useContext(MinUidContext);
@@ -125,6 +127,26 @@ const GridVideo = (props: GridVideoProps) => {
     clearAlertCount();
   }
 
+  var cols=3;
+
+  if (students.length  < 10) {
+    cols=3;
+  } else if (students.length < 15) {
+    cols= 4;
+  } else if (students.length < 25) {
+    cols= 5;
+  } else if (students.length < 36) {
+    cols= 6;
+  } else if (students.length < 49) {
+    cols= 7;
+  } else if (students.length < 64) {
+    cols= 8;
+  } else if (students.length < 81) {
+    cols= 9;
+  } else {
+    cols= 10;
+  }
+
   return (
     <React.Fragment>
       <RecPlayer
@@ -136,27 +158,28 @@ const GridVideo = (props: GridVideoProps) => {
       />
 
       <View
-        style={[style.full, { paddingHorizontal: isDesktop ? 10 : 0 }]}
+        style={[style.full,  {gridTemplateColumns:  "1fr ".repeat(cols) , paddingHorizontal: isDesktop ? 4 : 0 }]}
         onLayout={onLayout}>
 
         {matrix.map((r, ridx) => (
-          <View style={style.gridRow} key={ridx}>
-            {r.map((c, cidx) => (
-              // student cells
+          //student cells
+            r.map((c, cidx) => (
+              <View style={style.gridCell} key={ridx}>
+
               <View style={style.gridVideoContainerInner} key={cidx}>
                 {userAlertCounts.get(students[ridx * dims.c + cidx]) > 0 ? (
-                  <Text style={{ fontSize: 16, fontWeight: 'bold', color: '#aa0000' }}>
+                  <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#aa0000' }}>
                     {students[ridx * dims.c + cidx].charAt(0).toUpperCase() + students[ridx * dims.c + cidx].slice(1)}
                     &nbsp;
                     ({userAlertCounts.get(students[ridx * dims.c + cidx])})
                   </Text>
                 ) : (
-                  <Text style={{ fontSize: 16 }}>
+                  <Text style={{ fontSize: 14 }}>
                     {students[ridx * dims.c + cidx].charAt(0).toUpperCase() + students[ridx * dims.c + cidx].slice(1)}
                   </Text>
                 )}
                 <View style={{ flex: 1 }}>
-                  {props.layoutAlerts != Layout.Pinned ? (
+                  {props.layoutAlerts != Layout.Pinned && userAlertsCount > 0 ? (
 
                     <View
                       style={{
@@ -176,9 +199,11 @@ const GridVideo = (props: GridVideoProps) => {
                                 m.uid === u.uid ||
                                   m.uid + parseInt(0xffffffff) + 1 === u.uid ? (
                                   <View style={{ flexDirection: 'row' }} key={i}>
-                                    <Text style={{ flex: 1 }}>
+                                    <Text style={{ flex: 1, fontSize: 13, fontVariant: ['tabular-nums']}}>
                                       {new Date(m.ts).getHours()}:
-                                      {new Date(m.ts).getMinutes()}:
+                                      {('0' + new Date(m.ts).getMinutes()).slice(
+                                        -2,
+                                      )}:
                                       {('0' + new Date(m.ts).getSeconds()).slice(
                                         -2,
                                       )}
@@ -220,10 +245,7 @@ const GridVideo = (props: GridVideoProps) => {
                       gridTemplateColumns: `1fr 1fr`,
                       gridTemplateRows: `1fr 1fr`,
                       flex: 1,
-                      gridGrap: 2,
-                      // flex: 1,
-                      // flexDirection: 'row',
-                      // overflowX: 'scroll',
+                      gridGrap: 1,
                     }}>
 
                     {users.map(
@@ -301,8 +323,8 @@ const GridVideo = (props: GridVideoProps) => {
                   </View>
                 </View>
               </View>
-            ))}
-          </View>
+              </View>
+          ))
         ))}
       </View>
     </React.Fragment>
@@ -311,8 +333,15 @@ const GridVideo = (props: GridVideoProps) => {
 
 const style = StyleSheet.create({
   full: {
-    flex: 1,
-    // padding: 20,
+    display: 'grid',   
+    gridAutoRows:  'auto',
+    width: '100%',
+  },
+  gridCell: {
+    height: '100%',
+    width: '100%',
+    minHeight: '120px',
+    paddingVertical: 2,
   },
   gridRow: {
     flex: 1,
@@ -323,14 +352,10 @@ const style = StyleSheet.create({
   gridVideoContainerInner: {
     borderColor: '#ddd',
     marginHorizontal: 2,
-    //backgroundColor: '#ff00ff',
     borderWidth: 1,
-    // width: '100%',
-    // borderRadius: 15,
     flex: 1,
     overflow: 'hidden',
-    // margin: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: 2,
   },
   MicBackdrop: {
     width: 20,

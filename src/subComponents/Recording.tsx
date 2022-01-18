@@ -16,6 +16,7 @@ import ChatContext, { controlMessageEnum } from '../components/ChatContext';
 import ColorContext from '../components/ColorContext';
 import PropsContext from '../../agora-rn-uikit/src/PropsContext';
 import Toast from '../../react-native-toast-message';
+import {whiteboardContext} from '../components/WhiteboardConfigure';
 
 const startRecordingQuery = async () => {
   const start = await fetch(
@@ -68,8 +69,12 @@ const Recording = (props: any) => {
   const recordingFileReady = props.recordingFileReady;
   const setPlaybackSubUrl = props.setPlaybackSubUrl;
   const playbackSubUrl = props.playbackSubUrl;
-  const { sendControlMessage } = useContext(ChatContext);
   const dataRef = useRef('');
+  
+  const {whiteboardActive,  setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom} =
+  useContext(whiteboardContext);
+  const {engine, sendControlMessage, updateWbUserAttribute} =
+  useContext(ChatContext);
 
   useEffect(() => {
     if (recordingActive) {
@@ -83,6 +88,7 @@ const Recording = (props: any) => {
     <TouchableOpacity
       onPress={() => {
         if (!recordingActive) {
+          setRecordingActive(true);
           // If recording is not going on, start the recording by executing the graphql query
           startRecordingQuery()
             .then((res) => {
@@ -90,7 +96,7 @@ const Recording = (props: any) => {
               dataRef.current = JSON.stringify(res);
               sendControlMessage(controlMessageEnum.cloudRecordingActive);
               // set the local recording state to true to update the UI
-              setRecordingActive(true);
+
               setTimeout(() => queryRecordingQuery(dataRef.current)
                 .then((res) => {
                   let fileName = Array(res.length).fill('null');
@@ -110,8 +116,15 @@ const Recording = (props: any) => {
             .catch((err) => {
               console.log(err);
             });
+
+            // start exam
+            joinWhiteboardRoom();
+            sendControlMessage(controlMessageEnum.whiteboardStarted+whiteboardURLState);
+            updateWbUserAttribute('active');
+
         } else {
           // If recording is already going on, stop the recording by executing the graphql query.
+          setRecordingActive(false);
           stopRecordingQuery(dataRef.current)
             .then((res) => {
               console.log('stopped recording:', res);
@@ -119,7 +132,7 @@ const Recording = (props: any) => {
               // send a control message to everbody in the channel indicating that cloud recording is now inactive.
               sendControlMessage(controlMessageEnum.cloudRecordingUnactive);
               // set the local recording state to false to update the UI
-              setRecordingActive(false);
+
               // send a control message to everbody in the channel indicating that cloud recording does not have a file to play.
               sendControlMessage(controlMessageEnum.cloudRecordingFileNotReady);
               // set the local recording file ready state to false
@@ -128,6 +141,11 @@ const Recording = (props: any) => {
             .catch((err) => {
               console.log(err);
             });
+
+            // stop exam
+            leaveWhiteboardRoom();
+            sendControlMessage(controlMessageEnum.whiteboardStoppped);
+            updateWbUserAttribute('inactive');
         }
       }}>
       <View style={[style.localButton, { borderColor: primaryColor }]}>
@@ -150,7 +168,7 @@ const Recording = (props: any) => {
           marginTop: 5,
           color: recordingActive ? '#FD0845' : $config.PRIMARY_COLOR,
         }}>
-        {recordingActive ? 'Recording' : 'Record'}
+        {recordingActive ? 'Stop Exam' : 'Start Exam'}
       </Text>
     </TouchableOpacity >
   );

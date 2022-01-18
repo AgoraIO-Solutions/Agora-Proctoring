@@ -20,6 +20,7 @@ import {SidePanelType} from '../subComponents/SidePanelEnum';
 const Settings = (props: any) => {
   const {primaryColor} = useContext(ColorContext);
   const {isHost, sidePanel, setSidePanel} = props;
+  //alert("Settings");
 
   return (
     <>

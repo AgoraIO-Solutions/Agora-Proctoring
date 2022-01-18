@@ -116,7 +116,7 @@ const Controls = (props: any) => {
         ) : (
           <></>
         )}
-        {!mobileAndTabletCheck() && isHost && role === Role.Teacher ? (
+        {!mobileAndTabletCheck() && 1==2 && isHost && role === Role.Teacher ? (
           <View style={{ alignSelf: 'center' }}>
             <WhiteboardButton setLayout={setLayout} />
           </View>
