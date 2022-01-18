@@ -14,7 +14,6 @@ import { View, StyleSheet, Text, Platform } from 'react-native';
 //import ProctorConfigure from '../components/ProctorConfigure';
 import ProctorContext from '../components/ProctorContext';
 
-
 import RtcConfigure from '../../agora-rn-uikit/src/RTCConfigure';
 import { PropsProvider } from '../../agora-rn-uikit/src/PropsContext';
 import Navbar from '../components/Navbar';

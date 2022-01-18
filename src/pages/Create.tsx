@@ -114,9 +114,7 @@ const Create = () => {
     // <KeyboardAvoidingView behavior={'height'} style={style.main}>
     <View style={style.main}>
       <View style={style.nav}>
-        <Logo />
-        {/* {error ? <Error error={error} /> : <></>} */}
-        {/* <OpenInNativeButton /> */}
+      <Logo />
       </View>
       {!roomCreated ? (
         <View style={style.content} onLayout={onLayout}>
