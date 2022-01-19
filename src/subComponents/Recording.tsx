@@ -78,7 +78,7 @@ const Recording = (props: any) => {
 
   useEffect(() => {
     if (recordingActive) {
-      Toast.show({ text1: 'Recording Started', visibilityTime: 1000 });
+      Toast.show({ text1: 'Recording & Exam Started', visibilityTime: 1600 });
     }
     // else if(!recordingActive)
     // Toast.show({text1: 'Recording Finished', visibilityTime: 1000})

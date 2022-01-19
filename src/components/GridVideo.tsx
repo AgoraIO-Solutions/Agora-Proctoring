@@ -166,9 +166,9 @@ const GridVideo = (props: GridVideoProps) => {
         {matrix.map((r, ridx) => (
           //student cells
             r.map((c, cidx) => (
-              <View style={style.gridCell} key={ridx}>
+              <View style={style.gridCell} key={""+ridx+cidx}>
 
-              <View style={style.gridVideoContainerInner} key={cidx}>
+              <View style={style.gridVideoContainerInner} key={""+ridx+cidx}>
                 {userAlertCounts.get(students[ridx * dims.c + cidx]) > 0 ? (
                   <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#aa0000' }}>
                     {students[ridx * dims.c + cidx].charAt(0).toUpperCase() + students[ridx * dims.c + cidx].slice(1)}
@@ -337,6 +337,7 @@ const style = StyleSheet.create({
   full: {
     display: 'grid',   
     gridAutoRows:  'auto',
+    flex: 1,
     width: '100%',
   },
   gridCell: {

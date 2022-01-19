@@ -519,7 +519,16 @@ export default class RtcEngine {
   }
 
   async enableDualStreamMode(enable: boolean) {
-    return this.client[enable ? 'enableDualStream' : 'disableDualStream']();
+   // return this.client[enable ? 'enableDualStream' : 'disableDualStream']();
+
+    this.client[enable ? 'enableDualStream' : 'disableDualStream']().then(() => {
+      console.log("Enable Dual stream success!");
+    }).catch(err => {
+      console.error(err);
+    })
+    return this.client.setLowStreamParameter({ bitrate: 200, framerate: 24, height: 180, width: 320 });
+ 
+
     // enable
     //   ? this.client.enableDualStream(
     //       () => {
