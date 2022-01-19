@@ -6,6 +6,7 @@ rm -rf ~/Agora-Proctoring/.git
 cd ~/Agora-Proctoring
 npm install
 #rm ~/Agora-Proctoring/pack*
+cd ~/Agora-Proctoring
 cd ~/Agora-Proctoring/sh
 ./run.sh
 
