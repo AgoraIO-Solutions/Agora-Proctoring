@@ -8,3 +8,4 @@ npm install
 #rm ~/Agora-Proctoring/pack*
 cd ~/Agora-Proctoring/sh
 ./run.sh
+
