@@ -95,6 +95,8 @@ module.exports = {
               // Adds support for class properties
               ['transform-define', configVars],
               '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-proposal-optional-chaining',
+              '@babel/plugin-proposal-nullish-coalescing-operator',
               isDevelopment && require.resolve('react-refresh/babel'),
             ].filter(Boolean),
           },
