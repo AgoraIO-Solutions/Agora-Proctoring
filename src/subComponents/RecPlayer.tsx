@@ -16,6 +16,7 @@ import ReactPlayer from 'react-player';
 const RecPlayer = (props: any) => {
   const playUrl = props.playbackUrl;
   const playing = props.playing;
+  const elapsed = props.elapse;
 
   if (!props.playbackAction) {
     return null;
@@ -40,6 +41,10 @@ const RecPlayer = (props: any) => {
         display: 'flex'
       }}
     >
+      <Text
+        style={{ marginRight: "auto" }}>
+        {props.elapsed}
+      </Text>
       <button
         style={{
           marginLeft: "auto",

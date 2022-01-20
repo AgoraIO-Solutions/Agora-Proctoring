@@ -53,6 +53,8 @@ const Controls = (props: any) => {
     recordingFileReady,
     playbackSubUrl,
     setPlaybackSubUrl,
+    recordingStartTime,
+    setRecordingStartTime,
     // setChatDisplayed,
     // chatDisplayed,
     // sidePanel,
@@ -158,6 +160,8 @@ const Controls = (props: any) => {
                 setRecordingFileReady={setRecordingFileReady}
                 playbackSubUrl={playbackSubUrl}
                 setPlaybackSubUrl={setPlaybackSubUrl}
+                recordingStartTime={recordingStartTime}
+                setRecordingStartTime={setRecordingStartTime}
               />
               {/* <Text
                 style={{
