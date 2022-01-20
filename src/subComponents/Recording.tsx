@@ -16,7 +16,7 @@ import ChatContext, { controlMessageEnum } from '../components/ChatContext';
 import ColorContext from '../components/ColorContext';
 import PropsContext from '../../agora-rn-uikit/src/PropsContext';
 import Toast from '../../react-native-toast-message';
-import {whiteboardContext} from '../components/WhiteboardConfigure';
+import { whiteboardContext } from '../components/WhiteboardConfigure';
 
 const startRecordingQuery = async () => {
   const start = await fetch(
@@ -67,14 +67,16 @@ const Recording = (props: any) => {
   const recordingActive = props.recordingActive;
   const setRecordingFileReady = props.setRecordingFileReady;
   const recordingFileReady = props.recordingFileReady;
+  const recordingStartTime = props.recordingStartTime;
+  const setRecordingStartTime = props.setRecordingStartTime;
   const setPlaybackSubUrl = props.setPlaybackSubUrl;
   const playbackSubUrl = props.playbackSubUrl;
   const dataRef = useRef('');
-  
-  const {whiteboardActive,  setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom} =
-  useContext(whiteboardContext);
-  const {engine, sendControlMessage, updateWbUserAttribute} =
-  useContext(ChatContext);
+
+  const { whiteboardActive, setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom } =
+    useContext(whiteboardContext);
+  const { engine, sendControlMessage, updateWbUserAttribute } =
+    useContext(ChatContext);
 
   useEffect(() => {
     if (recordingActive) {
@@ -96,7 +98,8 @@ const Recording = (props: any) => {
               dataRef.current = JSON.stringify(res);
               sendControlMessage(controlMessageEnum.cloudRecordingActive);
               // set the local recording state to true to update the UI
-
+              setRecordingActive(true);
+              setRecordingStartTime(Date.now());
               setTimeout(() => queryRecordingQuery(dataRef.current)
                 .then((res) => {
                   let fileName = Array(res.length).fill('null');
@@ -117,10 +120,10 @@ const Recording = (props: any) => {
               console.log(err);
             });
 
-            // start exam
-            joinWhiteboardRoom();
-            sendControlMessage(controlMessageEnum.whiteboardStarted+whiteboardURLState);
-            updateWbUserAttribute('active');
+          // start exam
+          joinWhiteboardRoom();
+          sendControlMessage(controlMessageEnum.whiteboardStarted + whiteboardURLState);
+          updateWbUserAttribute('active');
 
         } else {
           // If recording is already going on, stop the recording by executing the graphql query.
@@ -142,10 +145,10 @@ const Recording = (props: any) => {
               console.log(err);
             });
 
-            // stop exam
-            leaveWhiteboardRoom();
-            sendControlMessage(controlMessageEnum.whiteboardStoppped);
-            updateWbUserAttribute('inactive');
+          // stop exam
+          leaveWhiteboardRoom();
+          sendControlMessage(controlMessageEnum.whiteboardStoppped);
+          updateWbUserAttribute('inactive');
         }
       }}>
       <View style={[style.localButton, { borderColor: primaryColor }]}>

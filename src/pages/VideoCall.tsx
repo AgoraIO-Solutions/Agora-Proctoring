@@ -184,6 +184,7 @@ const VideoCall: React.FC = () => {
   const [callActive, setCallActive] = useState($config.PRECALL ? false : true);
   const [recordingActive, setRecordingActive] = useState(false);
   const [recordingFileReady, setRecordingFileReady] = useState(false);
+  const [recordingStartTime, setRecordingStartTime] = useState(0);
   const [queryComplete, setQueryComplete] = useState(true);
   const [playbackSubUrl, setPlaybackSubUrl] = useState<string[]>([]);
 
@@ -235,8 +236,8 @@ const VideoCall: React.FC = () => {
     //setPhotoIDUrl(result); /src/assets/photoid.png
   }
 */
- // alert(window.location.search);
- // alert(new URLSearchParams(window.location.search));
+  // alert(window.location.search);
+  // alert(new URLSearchParams(window.location.search));
   return (
     <>
       {queryComplete || !callActive ? (
@@ -321,6 +322,7 @@ const VideoCall: React.FC = () => {
                                     layoutAlerts={layout}
                                     recordingFileReady={recordingFileReady}
                                     playbackSubUrl={playbackSubUrl}
+                                    recordingStartTime={recordingStartTime}
                                   />
 
                                 )}
@@ -379,6 +381,8 @@ const VideoCall: React.FC = () => {
                                   setRecordingActive={setRecordingActive}
                                   recordingFileReady={recordingFileReady}
                                   setRecordingFileReady={setRecordingFileReady}
+                                  recordingStartTime={recordingStartTime}
+                                  setRecordingStartTime={setRecordingStartTime}
                                   playbackSubUrl={playbackSubUrl}
                                   setPlaybackSubUrl={setPlaybackSubUrl}
                                   // chatDisplayed={chatDisplayed}

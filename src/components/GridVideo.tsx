@@ -64,6 +64,7 @@ interface GridVideoProps {
   layoutAlerts: any;
   playbackSubUrl: string[];
   recordingFileReady: boolean;
+  recordingStartTime: any;
 }
 
 const GridVideo = (props: GridVideoProps) => {
@@ -75,6 +76,7 @@ const GridVideo = (props: GridVideoProps) => {
   const role = useRole();
   const whiteboard = useContext(whiteboardContext);
   const recordingFileReady = props.recordingFileReady;
+  const recordingStartTime = props.recordingStartTime;
 
   const whiteboardActive =
     role === Role.Teacher ? false : whiteboard.whiteboardActive;
@@ -91,6 +93,7 @@ const GridVideo = (props: GridVideoProps) => {
   const playbackSubUrl = props.playbackSubUrl;
   const { primaryColor } = useContext(ColorContext);
   const [currentPlaybackUrl, setCurrentPlaybackUrl] = useState('');
+  const [elapsed, setElapsed] = useState('');
 
   // Whiteboard: Add an extra user with uid as whiteboard to intercept
   // later and replace with whiteboardView
@@ -127,26 +130,26 @@ const GridVideo = (props: GridVideoProps) => {
     clearAlertCount();
   }
 
-  var cols=2;
+  var cols = 2;
 
-  if (students.length  < 5) {
-    cols=2;
+  if (students.length < 5) {
+    cols = 2;
   } else if (students.length < 10) {
-    cols= 3;
+    cols = 3;
   } else if (students.length < 15) {
-    cols= 4;
+    cols = 4;
   } else if (students.length < 25) {
-    cols= 5;
+    cols = 5;
   } else if (students.length < 36) {
-    cols= 6;
+    cols = 6;
   } else if (students.length < 49) {
-    cols= 7;
+    cols = 7;
   } else if (students.length < 64) {
-    cols= 8;
+    cols = 8;
   } else if (students.length < 81) {
-    cols= 9;
+    cols = 9;
   } else {
-    cols= 10;
+    cols = 10;
   }
 
   return (
@@ -157,18 +160,19 @@ const GridVideo = (props: GridVideoProps) => {
         playing={playing}
         setPlaying={setPlaying}
         playbackUrl={currentPlaybackUrl}
+        elapsed={elapsed}
       />
 
       <View
-        style={[style.full,  {gridTemplateColumns:  "1fr ".repeat(cols) , paddingHorizontal: isDesktop ? 4 : 0 }]}
+        style={[style.full, { gridTemplateColumns: "1fr ".repeat(cols), paddingHorizontal: isDesktop ? 4 : 0 }]}
         onLayout={onLayout}>
 
         {matrix.map((r, ridx) => (
           //student cells
-            r.map((c, cidx) => (
-              <View style={style.gridCell} key={""+ridx+cidx}>
+          r.map((c, cidx) => (
+            <View style={style.gridCell} key={"" + ridx + cidx}>
 
-              <View style={style.gridVideoContainerInner} key={""+ridx+cidx}>
+              <View style={style.gridVideoContainerInner} key={"" + ridx + cidx}>
                 {userAlertCounts.get(students[ridx * dims.c + cidx]) > 0 ? (
                   <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#aa0000' }}>
                     {students[ridx * dims.c + cidx].charAt(0).toUpperCase() + students[ridx * dims.c + cidx].slice(1)}
@@ -201,7 +205,7 @@ const GridVideo = (props: GridVideoProps) => {
                                 m.uid === u.uid ||
                                   m.uid + parseInt(0xffffffff) + 1 === u.uid ? (
                                   <View style={{ flexDirection: 'row' }} key={i}>
-                                    <Text style={{ flex: 1, fontSize: 13, fontVariant: ['tabular-nums']}}>
+                                    <Text style={{ flex: 1, fontSize: 13, fontVariant: ['tabular-nums'] }}>
                                       {new Date(m.ts).getHours()}:
                                       {('0' + new Date(m.ts).getMinutes()).slice(
                                         -2,
@@ -216,10 +220,18 @@ const GridVideo = (props: GridVideoProps) => {
                                     </Text>
                                     {/* <Text style={{flex: 1}}>{m.uid}</Text> */}
                                     <button
-                                      disabled={!recordingFileReady}
+                                      disabled={!recordingFileReady || (m.ts < recordingStartTime)}
                                       onClick={() => {
+                                        const recStart = new Date(recordingStartTime);
+                                        const alertTime = new Date(m.ts);
+                                        const timeDiff = alertTime.getTime() - recStart.getTime();
+                                        const timeDiffInH = Math.floor(timeDiff / 60 / 60 / 1000);
+                                        const timeDiffInM = Math.floor((timeDiff - timeDiffInH * 60 * 60 * 1000) / 60 / 1000);
+                                        const timeDiffInS = Math.floor((timeDiff - timeDiffInH * 60 * 60 * 1000 - timeDiffInM * 60 * 1000) / 1000);
+                                        const instString = timeDiffInH.toString() + ":" + timeDiffInM.toString() + ":" + timeDiffInS.toString();
+                                        setElapsed(instString);
                                         setplaybackAction(true);
-                                        setPlaying(true)
+                                        setPlaying(true);
                                         for (var j in playbackSubUrl) {
                                           if (playbackSubUrl[j].includes(students[ridx * dims.c + cidx])) {
                                             playbackFullUrl[ridx * dims.c + cidx] = playbackBaseUrl.concat(playbackSubUrl[j]);
@@ -227,7 +239,7 @@ const GridVideo = (props: GridVideoProps) => {
                                             break;
                                           }
                                         }
-                                        setCurrentPlaybackUrl(playbackFullUrl[ridx * dims.c + cidx])
+                                        setCurrentPlaybackUrl(playbackFullUrl[ridx * dims.c + cidx]);
                                       }}
                                     > {">"}
                                     </button>
@@ -326,18 +338,18 @@ const GridVideo = (props: GridVideoProps) => {
                   </View>
                 </View>
               </View>
-              </View>
+            </View>
           ))
         ))}
       </View>
-    </React.Fragment>
+    </React.Fragment >
   );
 };
 
 const style = StyleSheet.create({
   full: {
-    display: 'grid',   
-    gridAutoRows:  'auto',
+    display: 'grid',
+    gridAutoRows: 'auto',
     flex: 1,
     width: '100%',
   },
