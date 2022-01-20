@@ -77,7 +77,7 @@ const Controls = (props: any) => {
           },
         ]}
         onLayout={onLayout}>
-        {role === Role.Teacher && (
+        {1==1 && (
           <View style={{ alignSelf: 'center' }}>
             <LocalAudioMute />
             {/* <Text
