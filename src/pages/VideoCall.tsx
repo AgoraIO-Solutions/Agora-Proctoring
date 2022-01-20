@@ -469,6 +469,7 @@ const style = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     overflow: 'hidden',
+    maxHeight: '100vh'
   },
   videoView: videoView,
   loader: {

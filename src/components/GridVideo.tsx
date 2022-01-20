@@ -123,7 +123,7 @@ const GridVideo = (props: GridVideoProps) => {
   );
 
   if (props.layoutAlerts != Layout.Pinned) {
-    console.log(" layoutAlerts " + props.layoutAlerts);
+    //console.log(" layoutAlerts " + props.layoutAlerts);
     clearAlertCount();
   }
 
@@ -209,6 +209,7 @@ const GridVideo = (props: GridVideoProps) => {
                                       {('0' + new Date(m.ts).getSeconds()).slice(
                                         -2,
                                       )}
+                                      &nbsp;
                                     </Text>
                                     <Text style={{ flex: 3 }}>
                                       {m.msg.slice(1)}

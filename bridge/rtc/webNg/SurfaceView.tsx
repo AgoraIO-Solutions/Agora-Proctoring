@@ -56,7 +56,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
 
 
   useEffect(() => {
-    console.log(" useEffect 1 ");
+  //  console.log(" useEffect 1 ");
     if (
       deviceType == 1 && !loadTester &&
       role === Role.Student &&

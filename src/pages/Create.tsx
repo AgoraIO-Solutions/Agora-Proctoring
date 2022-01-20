@@ -250,7 +250,7 @@ const style = StyleSheet.create({
     justifyContent: 'space-evenly',
     marginBottom: '6%',
     marginTop: '3%',
-    minHeight: 350,
+    minHeight: 500,
     // marginRight: '5%',
     marginHorizontal: 'auto',
   },
@@ -281,7 +281,7 @@ const style = StyleSheet.create({
     width: '100%',
     alignSelf: 'flex-start',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    ijustifyContent: 'space-evenly',
   },
   // textInput: textInput,
   checkboxHolder: {

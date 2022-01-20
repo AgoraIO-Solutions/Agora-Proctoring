@@ -259,6 +259,9 @@ export default class RtcEngine {
       // localVideo.setEncoderConfiguration(this.videoProfile);
       this.localStream.audio = localAudio;
       this.localStream.video = localVideo;
+      if (this.role === Role.Student && window.AgoraProctorUtils ) {
+        window.AgoraProctorUtils.startVoiceActivityDetection(localAudio);
+      }
     } catch (e) {
       throw e;
     }
