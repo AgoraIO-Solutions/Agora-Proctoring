@@ -42,8 +42,8 @@ function LocalAudioMute() {
 
 const styles = StyleSheet.create({
   icon: {
-    width: 24,
-    height: 24,
+    width: 19,
+    height: 19,
     tintColor: $config.PRIMARY_COLOR,
   },
 });

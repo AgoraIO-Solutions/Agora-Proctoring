@@ -47,8 +47,8 @@ const style = StyleSheet.create({
     backgroundColor: $config.SECONDARY_FONT_COLOR,
   },
   buttonIconEnd: {
-    width: 30,
-    height: 25,
+    width: 25,
+    height: 20,
     // marginLeft: 3,
     tintColor: '#f86051',
   },

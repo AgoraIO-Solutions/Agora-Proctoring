@@ -74,7 +74,7 @@ export default function setupListeners(
       }
       
       if (window.deviceType!=2) {
-        alert("subscribe "+mediaType+" "+window.deviceType);  
+        //alert("subscribe "+mediaType+" "+window.deviceType);  
         await client.subscribe(user, mediaType);
       }
     }

@@ -42,8 +42,8 @@ function LocalVideoMute() {
 
 const styles = StyleSheet.create({
   icon: {
-    width: 25,
-    height: 22,
+    width: 20,
+    height: 17,
     marginHorizontal: 3,
     tintColor: $config.PRIMARY_COLOR,
   },

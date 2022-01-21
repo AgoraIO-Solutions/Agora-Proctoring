@@ -164,7 +164,7 @@ const style = StyleSheet.create({
     backgroundColor: $config.SECONDARY_FONT_COLOR,
   },
   heading: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '700',
     textAlign: 'center',
     color: $config.PRIMARY_FONT_COLOR,
@@ -182,7 +182,7 @@ const style = StyleSheet.create({
   },
   participantText: {
     flex: 1,
-    fontSize: Platform.OS === 'web' ? 18 : 16,
+    fontSize: Platform.OS === 'web' ? 14 : 12,
     fontWeight: '500',
     flexDirection: 'row',
     color: $config.PRIMARY_FONT_COLOR,
