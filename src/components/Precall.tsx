@@ -37,11 +37,12 @@ import { useRole } from '../pages/VideoCall';
 import { Role } from '../../bridge/rtc/webNg/Types';
 import { whiteboardContext } from './WhiteboardConfigure';
 import ProctorContext from '../components/ProctorContext';
-
+import RtcContext, {DispatchType} from '../../agora-rn-uikit/src/RtcContext';
 
 const Precall = (props: any) => {
   const { primaryColor } = useContext(ColorContext);
   const [snapped, setSnapped] = useState(false);
+  const {dispatch} = useContext(RtcContext);
   const { whiteboardActive, setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom } =
     useContext(whiteboardContext);
 
@@ -66,6 +67,7 @@ const Precall = (props: any) => {
     //setSnapped(true);
     //setPhotoIDUrl('/src/assets/photoid.png');     
     setDeviceType(2);
+    window.deviceType=2;
     setUsername('Secondary');
     setCallActive(true);
   }
@@ -75,6 +77,7 @@ const Precall = (props: any) => {
     setPhotoIDUrl('/src/assets/photoid.png?r'+Math.random());     
     setUsername('Primary');    
     setDeviceType(1);
+    window.deviceType=1;
     setLoadTester(true);
     setCallActive(true);
   }
@@ -232,6 +235,7 @@ const Precall = (props: any) => {
                     onPress={() => {            
                       setUsername('Primary');    
                       setDeviceType(1);
+                      window.deviceType=1;
                     }}
                     text={'My Main Computer'}
                   />
@@ -251,6 +255,12 @@ const Precall = (props: any) => {
                     onPress={() => {            
                       setUsername('Secondary');     
                       setDeviceType(2);
+                      window.deviceType=2;
+                      // mute mic 
+                      (dispatch as DispatchType<'LocalMuteAudio'>)({
+                        type: 'LocalMuteAudio',
+                        value: [true],
+                      });
                     }}
                     text={'Additional Device'}
                   />

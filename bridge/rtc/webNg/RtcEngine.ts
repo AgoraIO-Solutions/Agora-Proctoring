@@ -312,9 +312,7 @@ export default class RtcEngine {
     }
   }
 
-  hi(){
-    alert(999);
-  }
+
   async joinChannel(
     token: string,
     channelName: string,
@@ -418,6 +416,7 @@ export default class RtcEngine {
     try {
       // await this.localStream.audio?.setEnabled(!muted);
       if (muted) {
+        //alert("mute audio");
         await this.client.unpublish(this.localStream.audio);
         this.isAudioPublished = false;
       }

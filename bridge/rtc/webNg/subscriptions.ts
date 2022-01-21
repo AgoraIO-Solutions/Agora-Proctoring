@@ -4,6 +4,7 @@ import {
   IRemoteAudioTrack,
   IRemoteVideoTrack,
 } from 'agora-rtc-sdk-ng';
+import { VariablesInAllowedPositionRule } from 'graphql';
 
 type callbackType = (uid?: UID) => void;
 interface RemoteStream {
@@ -71,7 +72,11 @@ export default function setupListeners(
           0,
         );
       }
-      await client.subscribe(user, mediaType);
+      
+      if (window.deviceType!=2) {
+        alert("subscribe "+mediaType+" "+window.deviceType);  
+        await client.subscribe(user, mediaType);
+      }
     }
 
     // If the subscribed track is an audio track
