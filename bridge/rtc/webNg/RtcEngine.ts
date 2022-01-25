@@ -528,7 +528,7 @@ export default class RtcEngine {
     }).catch(err => {
       console.error(err);
     })
-    return this.client.setLowStreamParameter({ bitrate: 200, framerate: 24, height: 180, width: 320 });
+    return this.client.setLowStreamParameter({ bitrate: 150, framerate: 24, height: 180, width: 320 });
 
 
     // enable
