@@ -207,10 +207,10 @@ const VideoCall: React.FC = () => {
   let rtcProps = {
     appId: $config.APP_ID,
     channel: role === Role.Teacher ? teacher : `${teacher}_${students[0]}`,
-    uid: null,
+    uid: role === Role.Teacher ? 123 : (deviceType === 1) ? 1000 : 1002,
     token: null,
     rtm: null,
-    screenShareUid: null,
+    screenShareUid: role === Role.Teacher ? 124 : 1001,
     screenShareToken: null,
     profile: $config.PROFILE,
     dual: true,
