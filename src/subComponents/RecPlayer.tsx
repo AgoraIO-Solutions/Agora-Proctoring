@@ -25,8 +25,8 @@ const RecPlayer = (props: any) => {
   return (
     <View
       style={{
-        width: '896px',
-        height: '816px',
+        width: '448px',
+        height: '408px',
         borderWidth: 0,
         paddingTop: 18,
         backgroundColor: 'transparent',
@@ -34,7 +34,7 @@ const RecPlayer = (props: any) => {
         borderStyle: 'solid',
         position: 'absolute',
         top: '0%',
-        left: '20%',
+        left: '38%',
         marginLeft: 'auto',
         marginRight: 'auto',
         zIndex: 1000,
@@ -58,8 +58,8 @@ const RecPlayer = (props: any) => {
       > {"X"}
       </button>
       <ReactPlayer
-        width='896px'
-        height='1216px'
+        width='100%'
+        height='100%'
         playing={playing}
         controls
         url={playUrl}
