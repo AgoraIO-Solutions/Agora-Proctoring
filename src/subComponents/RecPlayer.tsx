@@ -25,16 +25,16 @@ const RecPlayer = (props: any) => {
   return (
     <View
       style={{
-        width: '640px',
-        height: '368px',
+        width: '896px',
+        height: '816px',
         borderWidth: 0,
         paddingTop: 18,
         backgroundColor: 'transparent',
         borderColor: 'transparent',
         borderStyle: 'solid',
         position: 'absolute',
-        top: '10%',
-        left: '30%',
+        top: '0%',
+        left: '20%',
         marginLeft: 'auto',
         marginRight: 'auto',
         zIndex: 1000,
@@ -42,8 +42,8 @@ const RecPlayer = (props: any) => {
       }}
     >
       <Text
-        style={{ marginRight: "auto" }}>
-        {props.elapsed}
+        style={{ marginRight: "auto", backgroundColor: "black", padding: 2, color: 'white' }}>
+        Alert offset into recording: {props.elapsed}
       </Text>
       <button
         style={{
@@ -58,8 +58,8 @@ const RecPlayer = (props: any) => {
       > {"X"}
       </button>
       <ReactPlayer
-        width='100%'
-        heith='100%'
+        width='896px'
+        height='1216px'
         playing={playing}
         controls
         url={playUrl}
