@@ -28,8 +28,8 @@ import type {
   RtcEngineEvents,
   Subscription,
 } from 'react-native-agora/lib/typescript/src/common/RtcEvents';
-import {VideoProfile} from '../quality';
-import {Role} from './Types';
+import { VideoProfile } from '../quality';
+import { Role } from './Types';
 import setupListeners from './subscriptions';
 
 interface MediaDeviceInfo {
@@ -254,12 +254,12 @@ export default class RtcEngine {
       let [localAudio, localVideo] =
         await AgoraRTC.createMicrophoneAndCameraTracks(
           {},
-          {encoderConfig: this.videoProfile},
+          { encoderConfig: this.videoProfile },
         );
       // localVideo.setEncoderConfiguration(this.videoProfile);
       this.localStream.audio = localAudio;
       this.localStream.video = localVideo;
-      if (this.role === Role.Student && window.AgoraProctorUtils ) {
+      if (this.role === Role.Student && window.AgoraProctorUtils) {
         window.AgoraProctorUtils.startVoiceActivityDetection(localAudio);
       }
     } catch (e) {
@@ -336,7 +336,7 @@ export default class RtcEngine {
           this.appId,
           `${this.teacher}_${student}`,
           null,
-          null,
+          optionalUid || null,
         ) as Promise<UID>;
       });
     } else {
@@ -356,7 +356,7 @@ export default class RtcEngine {
           this.appId,
           this.teacher,
           null,
-          null,
+          optionalUid || null,
         ) as Promise<UID>,
       ];
     }
@@ -521,7 +521,7 @@ export default class RtcEngine {
   }
 
   async enableDualStreamMode(enable: boolean) {
-   // return this.client[enable ? 'enableDualStream' : 'disableDualStream']();
+    // return this.client[enable ? 'enableDualStream' : 'disableDualStream']();
 
     this.client[enable ? 'enableDualStream' : 'disableDualStream']().then(() => {
       console.log("Enable Dual stream success!");
@@ -529,7 +529,7 @@ export default class RtcEngine {
       console.error(err);
     })
     return this.client.setLowStreamParameter({ bitrate: 200, framerate: 24, height: 180, width: 320 });
- 
+
 
     // enable
     //   ? this.client.enableDualStream(
