@@ -39,7 +39,7 @@ const {participantIcon, gridLayoutIcon, pinnedLayoutIcon, recordingIcon} =
 const Navbar = (props: any) => {
   const role = useRole();
   const {primaryColor} = useContext(ColorContext);
-  const {messageStore} = useContext(ChatContext);
+  const { messageStore, clearAlertCount } = useContext(ChatContext);
   const {
     recordingActive,
     sidePanel,
@@ -60,7 +60,7 @@ const Navbar = (props: any) => {
     setDim([e.nativeEvent.layout.width, e.nativeEvent.layout.height]);
   };
   const isDesktop = dim[0] > 1224;
-  console.log(pendingMessageLength);
+  console.log("pendingMessageLength "+  pendingMessageLength);
   
   return (
     <View
@@ -248,6 +248,7 @@ const Navbar = (props: any) => {
                   setLayout((l: Layout) =>
                     l === Layout.Pinned ? Layout.Grid : Layout.Pinned,
                   );
+                 // clearAlertCount();
                 }}>
                 <Image
                   // source={{uri: layout ? gridLayoutIcon : pinnedLayoutIcon}}

@@ -38,12 +38,12 @@ const RtmConfigure = (props: any) => {
     useContext(RtcContext);
   const [messageStore, setMessageStore] = useState<messageStoreInterface[]>([]);
   const [privateMessageStore, setPrivateMessageStore] = useState({});
-  //const [userAlertCounts, setUserAlertCount] = useState(new Map<string, number | undefined>([["0",0]])); // 
-  const [userAlertCounts, setUserAlertCount] = useState(new Map<string, number | undefined>()); // 
+  //const [userAlertCountMap, setUserAlertCount] = useState(new Map<string, number | undefined>([["0",0]])); // 
+  const [userAlertCountMap, setUserAlertCountMap] = useState(new Map<string, number | undefined>()); // 
   const [userNames, setUserNames] = useState(new Map<string, string | undefined>()); // 
   const [teacher, students] = useChannelInfo();
   
-  const [userAlertsCount, setUserAlertsCount] = useState(0); // 
+  const [userAlertUnreadCount, setUserAlertUnreadCount] = useState(0); // 
   const { whiteboardActive, setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom } =
     useContext(whiteboardContext);
   const [login, setLogin] = useState<boolean>(false);
@@ -54,31 +54,42 @@ const RtmConfigure = (props: any) => {
  
 
   const clearAlertCount = () => {
-    userAlertCounts.clear();
-    //setUserAlertsCount(0);
+    userAlertCountMap.clear();
+    setUserAlertUnreadCount(0);
   }
 
- const addMessageToStore = (uid: string, text: string, ts: string) => {
+ const addMessageToStore = (uid: number, text: string, ts: string) => {
+
     var iname="na";
-    var name=userNames.get(""+uid);
+    let adjustedUID = uid;
+    if (adjustedUID < 0) {
+      adjustedUID = uid + parseInt(0xffffffff) + 1;
+    }
+    var name=userNames.get(""+adjustedUID);
     if (name!==undefined) {
       iname=name.split('-')[0];
     } 
     
-    var current=userAlertCounts.get(iname)      
+    var current=userAlertCountMap.get(iname)      
     if (current==undefined) {
       current=0;
     }
     current++;
+
+
+    console.log("addMessageToStore ", uid,text,ts);
  /*
-    console.log("userAlertCounts 634 ",userAlertCounts);
     console.log("userNames 634 ",userNames);
     console.log("iname 633 ",iname);
     console.log("uid 633 ",uid);    
-    console.log("current 633 ",current); 
-   */
-    setUserAlertCount(state => (state.set(iname,current)));
-    setUserAlertsCount(userAlertsCount+1);
+    console.log("userNames  ",userNames);
+    console.log("userAlertUnreadCount  ",userAlertUnreadCount);
+    console.log("current  ",current);     
+    console.log("userAlertCountMap  ",userAlertCountMap);
+*/
+
+    setUserAlertCountMap(state => (state.set(iname,current)));
+    setUserAlertUnreadCount(userAlertUnreadCount+1);
   
     setMessageStore((m: messageStoreInterface[]) => {
       return [...m, { ts: ts, uid: uid, msg: text }];
@@ -182,7 +193,7 @@ const RtmConfigure = (props: any) => {
          //nameMap[data.uid]=attr?.attributes?.name || 'User';
 
          
-         //console.log("adding name"+data.uid+" "+ attr?.attributes?.name || 'User');
+         //console.log("setUserNames1 adding name"+data.uid+" "+ attr?.attributes?.name || 'User');
          setUserNames(state => (state.set(data.uid,attr?.attributes?.name || 'User')));
 
           setUserList((prevState) => {
@@ -342,7 +353,7 @@ const RtmConfigure = (props: any) => {
           try {
             const attr = await backoffAttributes;
 
-            //console.log('[user attributes]:', {attr});
+          // console.log('setUserNames2 [user attributes]:', {attr});
             setUserNames(state => (state.set(member.uid,attr?.attributes?.name || 'User')));
 
             setUserList((prevState) => {
@@ -474,9 +485,9 @@ const RtmConfigure = (props: any) => {
         engine: engine.current,
         localUid: localUid.current,
         userList: userList,
-        userAlertCounts: userAlertCounts,
+        userAlertCountMap: userAlertCountMap,
         clearAlertCount: clearAlertCount,
-        userAlertsCount: userAlertsCount,
+        userAlertUnreadCount: userAlertUnreadCount,
       }}>
       {login ? props.children : <></>}
     </ChatContext.Provider>

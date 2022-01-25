@@ -319,7 +319,7 @@ const VideoCall: React.FC = () => {
                                   )) : (
                                   <GridVideo
                                     setLayout={setLayout}
-                                    layoutAlerts={layout}
+                                    layoutForAlerts={layout}
                                     recordingFileReady={recordingFileReady}
                                     playbackSubUrl={playbackSubUrl}
                                     recordingStartTime={recordingStartTime}

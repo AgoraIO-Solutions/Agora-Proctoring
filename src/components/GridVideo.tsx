@@ -61,7 +61,7 @@ const layout = (len: number, isDesktop: boolean = true) => {
 
 interface GridVideoProps {
   setLayout: React.Dispatch<React.SetStateAction<Layout>>;
-  layoutAlerts: any;
+  layoutForAlerts: any;
   playbackSubUrl: string[];
   recordingFileReady: boolean;
   recordingStartTime: any;
@@ -69,7 +69,7 @@ interface GridVideoProps {
 
 const GridVideo = (props: GridVideoProps) => {
   const { dispatch } = useContext(RtcContext);
-  const { messageStore, userAlertCounts, userAlertsCount, userList, clearAlertCount } = useContext(ChatContext);
+  const { messageStore, userAlertCountMap, userAlertUnreadCount, userList, clearAlertCount } = useContext(ChatContext);
 
   const max = useContext(MaxUidContext);
   const min = useContext(MinUidContext);
@@ -125,10 +125,23 @@ const GridVideo = (props: GridVideoProps) => {
     [students.length, isDesktop, whiteboardActive],
   );
 
-  if (props.layoutAlerts != Layout.Pinned) {
-    //console.log(" layoutAlerts " + props.layoutAlerts);
+  if (props.layoutForAlerts != Layout.Pinned && userAlertUnreadCount>0) {
     clearAlertCount();
   }
+  /*
+  console.log("1=pinned layoutForAlerts ", props.layoutForAlerts);
+  if (props.layoutForAlerts != Layout.Pinned && userAlertUnreadCount>0) {
+    console.log("1=pinneda layoutForAlerts ", props.layoutForAlerts, Layout.Pinned);
+    console.log(" Grid userAlertUnreadCount1 ", userAlertUnreadCount);
+    //clearAlertCount();
+  } else {
+  console.log(" Grid userAlertUnreadCount2 ", userAlertUnreadCount);
+  }
+
+  console.log(" Grid userAlertCountMap ", userAlertCountMap);
+  */
+  
+  
 
   var cols = 1;
   if (students.length < 2) {
@@ -175,11 +188,11 @@ const GridVideo = (props: GridVideoProps) => {
             <View style={style.gridCell} key={"" + ridx + cidx}>
 
               <View style={style.gridVideoContainerInner} key={"" + ridx + cidx}>
-                {userAlertCounts.get(students[ridx * dims.c + cidx]) > 0 ? (
+                {userAlertCountMap.get(students[ridx * dims.c + cidx]) > 0 ? (
                   <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#aa0000' }}>
                     {students[ridx * dims.c + cidx].charAt(0).toUpperCase() + students[ridx * dims.c + cidx].slice(1)}
                     &nbsp;
-                    ({userAlertCounts.get(students[ridx * dims.c + cidx])})
+                    ({userAlertCountMap.get(students[ridx * dims.c + cidx])})
                   </Text>
                 ) : (
                   <Text style={{ fontSize: 14 }}>
@@ -187,7 +200,7 @@ const GridVideo = (props: GridVideoProps) => {
                   </Text>
                 )}
                 <View style={{ flex: 1 }}>
-                  {props.layoutAlerts != Layout.Pinned && userAlertsCount > 0 ? (
+                  {props.layoutForAlerts != Layout.Pinned ? (
 
                     <View
                       style={{
@@ -207,8 +220,10 @@ const GridVideo = (props: GridVideoProps) => {
                                 m.uid === u.uid ||
                                   m.uid + parseInt(0xffffffff) + 1 === u.uid ? (
                                   <View style={{ flexDirection: 'row' }} key={i}>
-                                    <Text style={{ flex: 1, fontSize: 13, fontVariant: ['tabular-nums'] }}>
-                                      {new Date(m.ts).getHours()}:
+                                    <Text style={{ flex: 1, fontSize: 13, fontVariant: ['tabular-nums'] }}>                                      
+                                      {('0' + new Date(m.ts).getHours()).slice(
+                                        -2,
+                                      )}:
                                       {('0' + new Date(m.ts).getMinutes()).slice(
                                         -2,
                                       )}:
@@ -247,7 +262,7 @@ const GridVideo = (props: GridVideoProps) => {
                                     </button>
                                   </View>
                                 ) : (
-                                  console.log(m.uid, u.uid)
+                                  <></>
                                 ),
                               )
                             : null,

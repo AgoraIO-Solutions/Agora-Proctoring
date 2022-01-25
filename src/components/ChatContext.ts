@@ -37,8 +37,8 @@ interface chatContext {
   engine: RtmEngine;
   localUid: string;
   userList: any;
-  userAlertCounts: any;
-  userAlertsCount: any;
+  userAlertCountMap: any;
+  userAlertUnreadCount: any;
   clearAlertCount: () => void;
   // peersRTM: Array<string>;
 }
