@@ -25,16 +25,16 @@ const RecPlayer = (props: any) => {
   return (
     <View
       style={{
-        width: '448px',
-        height: '408px',
+        width: '640px',
+        height: '368px',
         borderWidth: 0,
         paddingTop: 18,
         backgroundColor: 'transparent',
         borderColor: 'transparent',
         borderStyle: 'solid',
         position: 'absolute',
-        top: '0%',
-        left: '38%',
+        top: '10%',
+        left: '30%',
         marginLeft: 'auto',
         marginRight: 'auto',
         zIndex: 1000,
