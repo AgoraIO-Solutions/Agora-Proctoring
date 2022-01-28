@@ -40,6 +40,7 @@ const RtmConfigure = (props: any) => {
   const [privateMessageStore, setPrivateMessageStore] = useState({});
   //const [userAlertCountMap, setUserAlertCount] = useState(new Map<string, number | undefined>([["0",0]])); // 
   const [userAlertCountMap, setUserAlertCountMap] = useState(new Map<string, number | undefined>()); // 
+  const [userSimilarityMap, setUserSimilarityMap] = useState(new Map<string, string | undefined>()); // 
   const [userNames, setUserNames] = useState(new Map<string, string | undefined>()); // 
   const [teacher, students] = useChannelInfo();
   
@@ -77,7 +78,9 @@ const RtmConfigure = (props: any) => {
     current++;
 
 
-    console.log("addMessageToStore ", uid,text,ts);
+    //console.log("addMessageToStore ", uid,text,ts);
+
+
  /*
     console.log("userNames 634 ",userNames);
     console.log("iname 633 ",iname);
@@ -91,9 +94,16 @@ const RtmConfigure = (props: any) => {
     setUserAlertCountMap(state => (state.set(iname,current)));
     setUserAlertUnreadCount(userAlertUnreadCount+1);
   
+    if (text.indexOf("similarity")>0){      
+      let val=text.split(":")[1];
+      setUserSimilarityMap(state => (state.set(iname,val)));
+    } else {
+   //   console.log("BW73 in text "+ text);
     setMessageStore((m: messageStoreInterface[]) => {
       return [...m, { ts: ts, uid: uid, msg: text }];
     });
+  }
+    
   };
 
   useEffect(() => {
@@ -102,6 +112,7 @@ const RtmConfigure = (props: any) => {
       function processEvent(evt: string) {
         if (role === Role.Student) {
           //sendMessage(students[0] + ' - Browser Alert: ' + evt);
+        //  console.log("BW73 out text ", evt);
           sendMessage(evt);
         }
       }
@@ -111,19 +122,38 @@ const RtmConfigure = (props: any) => {
           sendMessage('Faces Detected: ' + evt);
         }
       }
-      if (window?.AgoraProctorUtils) {
-       
-        window.AgoraProctorUtils.init();
-        window.AgoraProctorUtilEvents.on(
-          AgoraProctorUtils.BrowserChangeAlert,
-          processEvent,
-        );
-        window.AgoraProctorUtilEvents.on(
-          AgoraProctorUtils.FaceDetected,
-          facesDetected,
-        );
 
-        
+      let _monitorFaceSimilarity=Date.now();
+      let _monitorFaceIdMatch=Date.now()-6000;
+
+      function faceSimilarity(evt: string) {    
+          let now=Date.now();
+          //console.log(_monitorFaceSimilarity,evt)
+          if (now-_monitorFaceSimilarity>1000) {
+            _monitorFaceSimilarity=now;
+            let sim=parseFloat(evt).toFixed(2);
+            sendMessage('Face similarity:' + sim);
+            if (parseFloat(evt)<0.3 && now-_monitorFaceIdMatch>12000) {
+              _monitorFaceIdMatch=now;
+              sendMessage('Face ID poor match:' + sim);
+            }
+          }                  
+      }
+
+      if (role === Role.Student) {
+        if (window?.AgoraProctorUtils) { 
+          window.AgoraProctorUtils.init();
+         // console.log("BW73 setup listeners ");
+          window.AgoraProctorUtilEvents.on(
+            AgoraProctorUtils.BrowserChangeAlert,
+            processEvent,
+          );
+          window.AgoraProctorUtilEvents.on(
+            AgoraProctorUtils.FaceDetected,
+            facesDetected,
+          );
+          window.AgoraProctorUtilEvents.on(AgoraProctorUtils.FaceSimilarity, faceSimilarity);
+        }
       }
     }
   }, [login]);
@@ -488,6 +518,7 @@ const RtmConfigure = (props: any) => {
         userAlertCountMap: userAlertCountMap,
         clearAlertCount: clearAlertCount,
         userAlertUnreadCount: userAlertUnreadCount,
+        userSimilarityMap: userSimilarityMap,
       }}>
       {login ? props.children : <></>}
     </ChatContext.Provider>

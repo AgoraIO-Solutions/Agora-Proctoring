@@ -80,7 +80,7 @@ const SurfaceView = (props: SurfaceViewInterface) => {
               document.getElementById('0')?.children[0]?.children[0],
             );
           } else {
-            console.log(" useEffect no video element ", stream);
+         //   console.log(" useEffect no video element ", stream);
           }
         }, 1000);
       }

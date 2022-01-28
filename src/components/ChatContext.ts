@@ -40,6 +40,7 @@ interface chatContext {
   userAlertCountMap: any;
   userAlertUnreadCount: any;
   clearAlertCount: () => void;
+  userSimilarityMap: any;
   // peersRTM: Array<string>;
 }
 

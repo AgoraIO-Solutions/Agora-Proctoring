@@ -69,7 +69,7 @@ interface GridVideoProps {
 
 const GridVideo = (props: GridVideoProps) => {
   const { dispatch } = useContext(RtcContext);
-  const { messageStore, userAlertCountMap, userAlertUnreadCount, userList, clearAlertCount } = useContext(ChatContext);
+  const { messageStore, userAlertCountMap, userSimilarityMap, userAlertUnreadCount, userList, clearAlertCount } = useContext(ChatContext);
 
   const max = useContext(MaxUidContext);
   const min = useContext(MinUidContext);
@@ -125,9 +125,7 @@ const GridVideo = (props: GridVideoProps) => {
     [students.length, isDesktop, whiteboardActive],
   );
 
-  if (props.layoutForAlerts != Layout.Pinned && userAlertUnreadCount>0) {
-    clearAlertCount();
-  }
+
   /*
   console.log("1=pinned layoutForAlerts ", props.layoutForAlerts);
   if (props.layoutForAlerts != Layout.Pinned && userAlertUnreadCount>0) {
@@ -140,8 +138,15 @@ const GridVideo = (props: GridVideoProps) => {
 
   console.log(" Grid userAlertCountMap ", userAlertCountMap);
   */
+
+
+  useEffect(() => {
+    if (props.layoutForAlerts != Layout.Pinned && userAlertUnreadCount>0) {
+      clearAlertCount();
+    }
+  }, [props.layoutForAlerts, userAlertUnreadCount]);
   
-  
+
 
   var cols = 1;
   if (students.length < 2) {
@@ -217,8 +222,8 @@ const GridVideo = (props: GridVideoProps) => {
                             ? messageStore.slice(0).reverse()
                               // .filter((m: any) => m.uid === u.uid)
                               .map((m: any, i) =>
-                                m.uid === u.uid ||
-                                  m.uid + parseInt(0xffffffff) + 1 === u.uid ? (
+                                (m.uid === u.uid ||
+                                  m.uid + parseInt(0xffffffff) + 1 === u.uid) && m.msg.indexOf("similarity")<0 ? (
                                   <View style={{ flexDirection: 'row' }} key={i}>
                                     <Text style={{ flex: 1, fontSize: 13, fontVariant: ['tabular-nums'] }}>                                      
                                       {('0' + new Date(m.ts).getHours()).slice(
@@ -317,6 +322,13 @@ const GridVideo = (props: GridVideoProps) => {
                                   }
                                 }}
                               />
+                             <Text style={{
+                                position: 'absolute',
+                                color: (userSimilarityMap.get(students[ridx * dims.c + cidx]) > 0.5) ? 'palegreen' : 'gold',
+                                marginLeft: '4px',
+                              }}>                                
+                                {userSimilarityMap.get(students[ridx * dims.c + cidx])}%
+                                </Text>
                             </View>
                           </React.Fragment>
                         ),
