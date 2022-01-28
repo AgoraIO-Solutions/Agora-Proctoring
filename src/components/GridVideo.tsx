@@ -325,7 +325,7 @@ const GridVideo = (props: GridVideoProps) => {
                              <Text style={{
                                 position: 'absolute',
                                 color: (userSimilarityMap.get(students[ridx * dims.c + cidx]) > 0.5) ? 'palegreen' : 'gold',
-                                marginLeft: '4px',
+                                margin: '4px',
                               }}>                                
                                 {userSimilarityMap.get(students[ridx * dims.c + cidx])}%
                                 </Text>
