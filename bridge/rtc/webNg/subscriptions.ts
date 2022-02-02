@@ -59,18 +59,22 @@ export default function setupListeners(
     } else {
       if (emitOnlyOnPublish) {
         (eventsMap.get('UserJoined') as callbackType)(user.uid);
-        (eventsMap.get('RemoteVideoStateChanged') as callbackType)(
-          user.uid,
-          0,
-          0,
-          0,
-        );
-        (eventsMap.get('RemoteAudioStateChanged') as callbackType)(
-          user.uid,
-          0,
-          0,
-          0,
-        );
+        if (mediaType === 'video') {
+          (eventsMap.get('RemoteVideoStateChanged') as callbackType)(
+            user.uid,
+            0,
+            0,
+            0,
+          );
+        }
+        if (mediaType === 'audio') {
+          (eventsMap.get('RemoteAudioStateChanged') as callbackType)(
+            user.uid,
+            0,
+            0,
+            0,
+          );
+        }
       }
       
       if (window.deviceType!=2) {
