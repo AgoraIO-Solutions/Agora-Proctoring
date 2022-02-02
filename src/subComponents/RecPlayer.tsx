@@ -25,16 +25,16 @@ const RecPlayer = (props: any) => {
   return (
     <View
       style={{
-        width: '640px',
-        height: '368px',
+        width: '448px',
+        height: '480px',
         borderWidth: 0,
         paddingTop: 18,
         backgroundColor: 'transparent',
         borderColor: 'transparent',
         borderStyle: 'solid',
         position: 'absolute',
-        top: '10%',
-        left: '30%',
+        top: '0%',
+        left: '38%',
         marginLeft: 'auto',
         marginRight: 'auto',
         zIndex: 1000,
@@ -43,7 +43,7 @@ const RecPlayer = (props: any) => {
     >
       <Text
         style={{ marginRight: "auto", backgroundColor: "black", padding: 2, color: 'white' }}>
-        Alert offset into recording: {props.elapsed}
+        Alert offset into recording: {elapsed}
       </Text>
       <button
         style={{

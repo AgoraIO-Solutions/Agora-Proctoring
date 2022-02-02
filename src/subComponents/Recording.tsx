@@ -17,7 +17,27 @@ import ColorContext from '../components/ColorContext';
 import PropsContext from '../../agora-rn-uikit/src/PropsContext';
 import Toast from '../../react-native-toast-message';
 import { whiteboardContext } from '../components/WhiteboardConfigure';
+import MinUidContext from '../../agora-rn-uikit/src/MinUidContext';
+import MaxUidContext from '../../agora-rn-uikit/src/MaxUidContext';
+import { useChannelInfo, useRole } from '../pages/VideoCall';
+import { introspectionFromSchema, isTypeSystemDefinitionNode } from 'graphql';
+import { InjectStreamStatus } from 'react-native-agora';
 
+const startLayoutRecordingQuery = async (list: string) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.append('list', JSON.stringify(list));
+
+  const start = await fetch(
+    `https://proctoring-recording.vercel.app/api/startlayout?${urlParams.toString()}`,
+    {
+      method: 'GET',
+      credentials: 'same-origin',
+    },
+  );
+  return start.json();
+};
+
+//not being used
 const startRecordingQuery = async () => {
   const start = await fetch(
     `https://proctoring-recording.vercel.app/api/start${window.location.search}`,
@@ -55,6 +75,28 @@ const queryRecordingQuery = async (data: string) => {
   return query.json();
 };
 
+const getUserList = (users: any, userList: any, students: any) => {
+  let item = { name: '', pUid: 0, sUid: 0, screen: 0 };
+  let items = [{ name: '', pUid: 0, sUid: 0, screen: 0 },];
+  items.unshift(item);
+  for (var i = 0; i < students.length; i++) {
+    if ((i > 0) && (i < students.length - 1)) items.push(item);
+    users.map(
+      (u) => {
+        userList[u.uid]?.name?.split('-')[0] === students[i] ? (
+          items[i].name = students[i],
+          userList[u.uid]?.name?.split('-')[1].endsWith('Primary') ?
+            (items[i].pUid = userList[u.uid]?.screenUid - 1,
+              items[i].screen = userList[u.uid]?.screenUid) :
+            (userList[u.uid]?.name?.split('-')[1].endsWith('Secondary') ?
+              items[i].sUid = userList[u.uid]?.screenUid - 1 : null)
+        ) : null
+      })
+  }
+  console.log("stuent uid list:", items);
+  return (items);
+}
+
 /**
  * Component to start / stop Agora cloud recording.
  * Sends a control message to all users in the channel over RTM to indicate that
@@ -72,10 +114,14 @@ const Recording = (props: any) => {
   const setPlaybackSubUrl = props.setPlaybackSubUrl;
   const playbackSubUrl = props.playbackSubUrl;
   const dataRef = useRef('');
+  const max = useContext(MaxUidContext);
+  const min = useContext(MinUidContext);
+  const users = [...max, ...min];
+  const [teacher, students] = useChannelInfo();
 
   const { whiteboardActive, setWhiteboardURL, whiteboardURLState, joinWhiteboardRoom, leaveWhiteboardRoom } =
     useContext(whiteboardContext);
-  const { engine, sendControlMessage, updateWbUserAttribute } =
+  const { engine, userList, sendControlMessage, updateWbUserAttribute } =
     useContext(ChatContext);
 
   useEffect(() => {
@@ -91,8 +137,9 @@ const Recording = (props: any) => {
       onPress={() => {
         if (!recordingActive) {
           setRecordingActive(true);
+          const ulist = getUserList(users, userList, students);
           // If recording is not going on, start the recording by executing the graphql query
-          startRecordingQuery()
+          startLayoutRecordingQuery(ulist)
             .then((res) => {
               console.log('started recording:', res);
               dataRef.current = JSON.stringify(res);
