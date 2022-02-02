@@ -16,7 +16,7 @@ import ReactPlayer from 'react-player';
 const RecPlayer = (props: any) => {
   const playUrl = props.playbackUrl;
   const playing = props.playing;
-  const elapsed = props.elapse;
+  const elapsed = props.elapsed;
 
   if (!props.playbackAction) {
     return null;
