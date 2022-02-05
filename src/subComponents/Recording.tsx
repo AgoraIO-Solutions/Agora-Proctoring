@@ -23,12 +23,14 @@ import { useChannelInfo, useRole } from '../pages/VideoCall';
 import { introspectionFromSchema, isTypeSystemDefinitionNode } from 'graphql';
 import { InjectStreamStatus } from 'react-native-agora';
 
+const recordingServerBaseUrl = "https://proctoring-recording-six-gray.vercel.app/";
 const startLayoutRecordingQuery = async (list: string) => {
   const urlParams = new URLSearchParams(window.location.search);
   urlParams.append('list', JSON.stringify(list));
+  const recordingAPI = recordingServerBaseUrl + "api/startlayout?" + urlParams.toString();
 
   const start = await fetch(
-    `https://proctoring-recording.vercel.app/api/startlayout?${urlParams.toString()}`,
+    `${recordingAPI}`,
     {
       method: 'GET',
       credentials: 'same-origin',
@@ -39,8 +41,9 @@ const startLayoutRecordingQuery = async (list: string) => {
 
 //not being used
 const startRecordingQuery = async () => {
+  const recordingAPI = recordingServerBaseUrl + "api/start" + window.location.search;
   const start = await fetch(
-    `https://proctoring-recording.vercel.app/api/start${window.location.search}`,
+    `${recordingAPI}`,
     {
       method: 'GET',
       credentials: 'same-origin',
@@ -52,8 +55,9 @@ const startRecordingQuery = async () => {
 const stopRecordingQuery = async (data: string) => {
   const urlParams = new URLSearchParams(window.location.search);
   urlParams.append('data', data);
+  const recordingAPI = recordingServerBaseUrl + "api/stop?" + urlParams.toString();
   const stop = await fetch(
-    `https://proctoring-recording.vercel.app/api/stop?${urlParams.toString()}`,
+    `${recordingAPI}`,
     {
       method: 'GET',
       credentials: 'same-origin',
@@ -65,8 +69,9 @@ const stopRecordingQuery = async (data: string) => {
 const queryRecordingQuery = async (data: string) => {
   const urlParams = new URLSearchParams(window.location.search);
   urlParams.append('data', data);
+  const recordingAPI = recordingServerBaseUrl + "api/query?" + urlParams.toString();
   const query = await fetch(
-    `https://proctoring-recording.vercel.app/api/query?${urlParams.toString()}`,
+    `${recordingAPI}`,
     {
       method: 'GET',
       credentials: 'same-origin',
