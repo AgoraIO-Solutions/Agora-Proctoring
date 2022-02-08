@@ -23,11 +23,12 @@ import { useChannelInfo, useRole } from '../pages/VideoCall';
 import { introspectionFromSchema, isTypeSystemDefinitionNode } from 'graphql';
 import { InjectStreamStatus } from 'react-native-agora';
 
-const recordingServerBaseUrl = "https://proctoring-recording-six-gray.vercel.app/";
+//const recordingServerBaseUrl = "https://proctoring-recording-six-gray.vercel.app/api/";  //Monica's Vercel
+const recordingServerBaseUrl = "https://proctoring-recording.vercel.app/api/";             //Vineeth's Vercel
 const startLayoutRecordingQuery = async (list: string) => {
   const urlParams = new URLSearchParams(window.location.search);
   urlParams.append('list', JSON.stringify(list));
-  const recordingAPI = recordingServerBaseUrl + "api/startlayout?" + urlParams.toString();
+  const recordingAPI = recordingServerBaseUrl + "startlayout?" + urlParams.toString();
 
   const start = await fetch(
     `${recordingAPI}`,
@@ -39,9 +40,9 @@ const startLayoutRecordingQuery = async (list: string) => {
   return start.json();
 };
 
-//not being used
+//for default recording layout, not being used
 const startRecordingQuery = async () => {
-  const recordingAPI = recordingServerBaseUrl + "api/start" + window.location.search;
+  const recordingAPI = recordingServerBaseUrl + "start" + window.location.search;
   const start = await fetch(
     `${recordingAPI}`,
     {
@@ -55,7 +56,7 @@ const startRecordingQuery = async () => {
 const stopRecordingQuery = async (data: string) => {
   const urlParams = new URLSearchParams(window.location.search);
   urlParams.append('data', data);
-  const recordingAPI = recordingServerBaseUrl + "api/stop?" + urlParams.toString();
+  const recordingAPI = recordingServerBaseUrl + "stop?" + urlParams.toString();
   const stop = await fetch(
     `${recordingAPI}`,
     {
@@ -69,7 +70,7 @@ const stopRecordingQuery = async (data: string) => {
 const queryRecordingQuery = async (data: string) => {
   const urlParams = new URLSearchParams(window.location.search);
   urlParams.append('data', data);
-  const recordingAPI = recordingServerBaseUrl + "api/query?" + urlParams.toString();
+  const recordingAPI = recordingServerBaseUrl + "query?" + urlParams.toString();
   const query = await fetch(
     `${recordingAPI}`,
     {
