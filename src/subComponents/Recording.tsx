@@ -27,6 +27,7 @@ import { InjectStreamStatus } from 'react-native-agora';
 const recordingServerBaseUrl = "https://proctoring-recording.vercel.app/api/";             //Vineeth's Vercel
 const startLayoutRecordingQuery = async (list: string) => {
   const urlParams = new URLSearchParams(window.location.search);
+  console.log(list);
   urlParams.append('list', JSON.stringify(list));
   const recordingAPI = recordingServerBaseUrl + "startlayout?" + urlParams.toString();
 
@@ -82,22 +83,22 @@ const queryRecordingQuery = async (data: string) => {
 };
 
 const getUserList = (users: any, userList: any, students: any) => {
-  let item = { name: '', pUid: 0, sUid: 0, screen: 0 };
-  let items = [{ name: '', pUid: 0, sUid: 0, screen: 0 },];
-  items.unshift(item);
+
+  let items = [];
   for (var i = 0; i < students.length; i++) {
-    if ((i > 0) && (i < students.length - 1)) items.push(item);
+    const item = { name: '', pUid: 0, sUid: 0, screen: 0 };
     users.map(
       (u) => {
         userList[u.uid]?.name?.split('-')[0] === students[i] ? (
-          items[i].name = students[i],
+          item.name = students[i],
           userList[u.uid]?.name?.split('-')[1].endsWith('Primary') ?
-            (items[i].pUid = userList[u.uid]?.screenUid - 1,
-              items[i].screen = userList[u.uid]?.screenUid) :
+            (item.pUid = userList[u.uid]?.screenUid - 1,
+              item.screen = userList[u.uid]?.screenUid) :
             (userList[u.uid]?.name?.split('-')[1].endsWith('Secondary') ?
-              items[i].sUid = userList[u.uid]?.screenUid - 1 : null)
+              item.sUid = userList[u.uid]?.screenUid - 1 : null)
         ) : null
       })
+    items.push(item);
   }
   console.log("stuent uid list:", items);
   return (items);
